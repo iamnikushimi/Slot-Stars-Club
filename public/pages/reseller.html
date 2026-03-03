@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reseller — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700; --gold2: #FFA500; --neon: #00FFCC; --red: #FF4455;
+    --dark: #050510; --dark2: #0a0a1f; --dark3: #0f0f2e;
+    --border: rgba(0,255,204,0.15); --text-muted: rgba(255,255,255,0.4);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: #fff; font-family: 'Rajdhani', sans-serif; min-height: 100vh; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(0,255,204,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; border-bottom: 1px solid var(--border);
+    background: rgba(5,5,16,0.9); position: sticky; top: 0; z-index: 50;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 3px; background: linear-gradient(135deg, var(--gold), var(--gold2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .lobby-btn { padding:0.3rem 0.9rem;border:1px solid rgba(0,255,204,0.3);background:transparent;color:rgba(0,255,204,0.7);font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s; }
+  .lobby-btn:hover { background:rgba(0,255,204,0.08);border-color:var(--neon);color:var(--neon); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .balance-badge {
+    padding: 0.4rem 1.2rem;
+    border: 1px solid var(--neon);
+    background: rgba(0,255,204,0.05);
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .balance-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+  .balance-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--neon); }
+  .username { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1px; }
+  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 0.3rem 0.8rem; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 2rem; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 4px; color: var(--neon); margin-bottom: 0.3rem; }
+  .subtitle { color: var(--text-muted); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2rem; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+  @media(max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { background: var(--dark2); border: 1px solid var(--border); border-top: 2px solid var(--neon); }
+  .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,255,204,0.1); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+  .card-body { padding: 1.5rem; }
+
+  .form-group { margin-bottom: 1.1rem; }
+  label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+  input {
+    width: 100%; padding: 0.65rem 0.9rem;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--neon); }
+  .btn {
+    width: 100%; padding: 0.8rem;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px;
+    border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-neon { background: var(--neon); color: var(--dark); }
+  .btn-neon:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
+  .btn-neon:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .result-box {
+    margin-top: 1rem; padding: 1rem;
+    background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.2);
+    display: none; text-align: center;
+  }
+  .result-box.show { display: block; }
+  .result-code {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; color: var(--neon);
+    cursor: pointer;
+  }
+  .result-hint { font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted); margin-top: 0.3rem; }
+
+  .error-box { color: var(--red); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+  .success-box { color: var(--neon); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+
+  .log-section { margin-top: 2rem; }
+  .log-title { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .log-list { display: flex; flex-direction: column; gap: 0.4rem; }
+  .log-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  }
+  .log-item .log-action { font-size: 0.85rem; }
+  .log-item .log-amount { font-weight: 700; color: var(--neon); font-size: 0.9rem; }
+  .log-item .log-time { font-size: 0.75rem; color: var(--text-muted); }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--dark2); border: 1px solid var(--neon); color: var(--neon);
+    padding: 0.75rem 1.25rem; font-weight: 600; letter-spacing: 1px;
+    transform: translateX(120%); transition: transform 0.3s; z-index: 200;
+  }
+  .toast.show { transform: translateX(0); }
+
+  /* ── Mobile ── */
+  @media (max-width: 600px) {
+    nav { padding: 0.75rem 1rem; }
+    .balance-badge { padding: 0.35rem 0.75rem; gap: 0.5rem; }
+    .balance-label { display: none; }
+    .balance-val { font-size: 1.2rem; }
+    .username { display: none; }
+    .logout-btn { padding: 0.3rem 0.6rem; font-size: 0.7rem; }
+
+    main { padding: 1.25rem 1rem; }
+    h1 { font-size: 1.8rem; letter-spacing: 2px; }
+    .subtitle { font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 1.25rem; }
+
+    .grid { grid-template-columns: 1fr; gap: 1rem; }
+    .card-body { padding: 1.1rem; }
+
+    .log-item { flex-wrap: wrap; gap: 0.25rem; }
+    .log-time { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">★ SSC</div>
+  <div class="nav-right">
+    <a class="lobby-btn" href="/play">← Lobby</a>
+    <span class="username" id="username">—</span>
+    <div class="balance-badge">
+      <span class="balance-label">Balance</span>
+      <span class="balance-val" id="resellerBalance">—</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Exit</button>
+  </div>
+</nav>
+
+<main>
+  <h1>Reseller Panel</h1>
+  <p class="subtitle">Distribute access & manage player credits</p>
+
+  <div class="grid">
+    <!-- Generate Invite -->
+    <div class="card">
+      <div class="card-header">Generate Invite Code</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Starting Credits</label>
+          <input type="number" id="invCredits" value="5" min="1" placeholder="e.g. 10">
+        </div>
+        <button class="btn btn-neon" onclick="generateInvite()">Create Invite</button>
+        <div class="error-box" id="invError"></div>
+        <div class="result-box" id="invResult">
+          <div class="result-code" id="invCode" onclick="copyInvite()">—</div>
+          <div class="result-hint">Click to copy code</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Credits -->
+    <div class="card">
+      <div class="card-header">Add Credits to Player</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Player Username</label>
+          <input type="text" id="credUsername" placeholder="username">
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="credAmount" value="10" min="1" placeholder="e.g. 20">
+        </div>
+        <button class="btn btn-neon" onclick="addCredits()">Send Credits</button>
+        <div class="error-box" id="credError"></div>
+        <div class="success-box" id="credSuccess"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="log-section">
+    <div class="log-title">Activity Log</div>
+    <div class="log-list" id="activityLog">
+      <div class="log-item"><span class="log-action" style="color:var(--text-muted)">No activity yet</span></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let resellerBalance = 0;
+let actLog = [];
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function loadMe() {
+  const res = await fetch('/api/me');
+  if (!res.ok) { window.location = '/'; return; }
+  const d = await res.json();
+  if (d.role !== 'reseller' && d.role !== 'admin') { window.location = d.role === 'player' ? '/play' : '/'; return; }
+  resellerBalance = d.reseller_credits;
+  document.getElementById('username').textContent = d.username;
+  document.getElementById('resellerBalance').textContent = resellerBalance;
+}
+loadMe();
+
+async function generateInvite() {
+  const credits = parseInt(document.getElementById('invCredits').value);
+  const errEl = document.getElementById('invError');
+  errEl.style.display = 'none';
+  document.getElementById('invResult').classList.remove('show');
+
+  const res = await fetch('/api/reseller/invite', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({credits})
+  });
+  const d = await res.json();
+  if (!res.ok) { errEl.textContent = d.error; errEl.style.display = 'block'; return; }
+
+  document.getElementById('invCode').textContent = d.code;
+  document.getElementById('invResult').classList.add('show');
+
+  resellerBalance = d.creditsRemaining;
+  document.getElementById('resellerBalance').textContent = resellerBalance;
+
+  addLog(`Invite ${d.code} created`, credits);
+}
+
+function copyInvite() {
+  const code = document.getElementById('invCode').textContent;
+  navigator.clipboard.writeText(code).then(() => toast(`Copied: ${code}`));
+}
+
+async function addCredits() {
+  const username = document.getElementById('credUsername').value.trim();
+  const amount = parseInt(document.getElementById('credAmount').value);
+  const errEl = document.getElementById('credError');
+  const sucEl = document.getElementById('credSuccess');
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+
+  const res = await fetch('/api/reseller/add-credits', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username, amount})
+  });
+  const d = await res.json();
+  if (!res.ok) { errEl.textContent = d.error; errEl.style.display = 'block'; return; }
+
+  resellerBalance = d.resellerCredits;
+  document.getElementById('resellerBalance').textContent = resellerBalance;
+  sucEl.textContent = `✓ Sent ${amount} credits to ${username}`;
+  sucEl.style.display = 'block';
+
+  addLog(`+${amount} to ${username}`, amount);
+  document.getElementById('credUsername').value = '';
+}
+
+function addLog(action, amount) {
+  actLog.unshift({action, amount, time: new Date().toLocaleTimeString()});
+  if (actLog.length > 10) actLog.pop();
+  const list = document.getElementById('activityLog');
+  list.innerHTML = actLog.map(l => `
+    <div class="log-item">
+      <span class="log-action">${l.action}</span>
+      <span class="log-amount">−${l.amount}</span>
+      <span class="log-time">${l.time}</span>
+    </div>`).join('');
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', {method:'POST'});
+  window.location = '/';
+}
+</script>
+</body>
+</html>

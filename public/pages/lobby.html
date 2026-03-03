@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#050510">
+
+<title>Game Lobby — Slot Stars Club | Free Slots, Crash & Bingo</title>
+<meta name="description" content="Browse all games at Slot Stars Club. Play Fortune Dragon slots, Ocean Bingo Blitz, Nebula Bots, Crash Out, and more. Free to play — no download required.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://slotstarsclub.fun/lobby">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Game Lobby — Slot Stars Club">
+<meta property="og:description" content="Browse and play all games. Fortune Dragon, Ocean Bingo, Nebula Bots, Crash & more. Free to play instantly.">
+<meta property="og:url" content="https://slotstarsclub.fun/lobby">
+<meta property="og:image" content="https://slotstarsclub.fun/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Game Lobby — Slot Stars Club">
+<meta name="twitter:description" content="Browse and play free slot machines, crash games & bingo at Slot Stars Club.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;--border:rgba(255,215,0,0.15);--muted:rgba(255,255,255,0.4);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;}
+
+  /* Stars background */
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(255,165,0,0.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,255,204,0.04),transparent 50%);pointer-events:none;}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.5rem;padding-top:max(0.9rem,env(safe-area-inset-top));border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+  .nav-right{display:flex;align-items:center;gap:0.75rem;}
+  .credits-pill{display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.8rem;border:1px solid var(--gold);background:rgba(255,215,0,0.06);}
+  .credits-label{font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .credits-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);}
+  .username{font-size:0.8rem;color:var(--muted);letter-spacing:1px;}
+
+  /* Level & XP */
+  .level-pill{display:flex;align-items:center;gap:0.4rem;padding:0.25rem 0.65rem;border:1px solid rgba(0,255,204,0.25);background:rgba(0,255,204,0.05);cursor:pointer;position:relative;}
+  .level-pill:hover{background:rgba(0,255,204,0.1);}
+  .level-num{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);line-height:1;}
+  .level-label{font-size:0.5rem;letter-spacing:1.5px;color:rgba(0,255,204,0.5);text-transform:uppercase;}
+  .xp-bar-wrap{position:absolute;bottom:-3px;left:0;right:0;height:3px;background:rgba(255,255,255,0.06);overflow:hidden;}
+  .xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--gold));transition:width 0.6s ease;min-width:2px;}
+
+  /* Level up toast */
+  .level-up-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:200;background:rgba(5,5,16,0.95);border:2px solid var(--neon);padding:2rem 3rem;text-align:center;backdrop-filter:blur(12px);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);pointer-events:none;}
+  .level-up-toast.show{transform:translate(-50%,-50%) scale(1);pointer-events:auto;}
+  .level-up-toast .lu-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;background:linear-gradient(135deg,var(--neon),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .level-up-toast .lu-level{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--neon);line-height:1;margin:0.3rem 0;}
+  .level-up-toast .lu-title-name{font-size:0.85rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;}
+  .level-up-toast .lu-reward{font-size:0.75rem;color:var(--muted);}
+
+  /* Level details popup */
+  .level-popup{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;}
+  .level-popup.show{display:flex;}
+  .level-popup-inner{background:var(--dark2);border:1px solid var(--border);padding:1.5rem;max-width:360px;width:90%;max-height:80vh;overflow-y:auto;}
+  .level-popup-inner h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--gold);margin-bottom:1rem;}
+  .lp-row{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .lp-row.current{background:rgba(0,255,204,0.05);margin:0 -0.5rem;padding:0.4rem 0.5rem;}
+  .lp-lvl{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--neon);width:2rem;text-align:center;}
+  .lp-title{flex:1;font-size:0.8rem;font-weight:600;letter-spacing:1px;}
+  .lp-xp{font-size:0.65rem;color:var(--muted);letter-spacing:1px;}
+  .lp-reward{font-size:0.65rem;color:var(--gold);letter-spacing:1px;}
+  .panel-btn{display:none;padding:0.3rem 0.8rem;border:1px solid var(--neon);background:rgba(0,255,204,0.06);color:var(--neon);font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+  .panel-btn:hover{background:rgba(0,255,204,0.15);}
+  .logout-btn{background:none;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:0.3rem 0.7rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
+  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+  main{flex:1;padding:1.5rem;padding-bottom:max(1.5rem,env(safe-area-inset-bottom));}
+
+  /* Daily Bonus floating button */
+  .daily-bonus-btn {
+    position:fixed; bottom:max(1.5rem,env(safe-area-inset-bottom,1.5rem)); right:1rem; z-index:40;
+    display:none; align-items:center; gap:0.5rem;
+    padding:0.6rem 1rem; border:2px solid var(--gold);
+    background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+    backdrop-filter:blur(12px); cursor:pointer; text-decoration:none;
+    animation: bonusBounce 2s infinite; border-radius:4px;
+    box-shadow: 0 0 20px rgba(255,215,0,0.2);
+    transition: all 0.2s;
+  }
+  .daily-bonus-btn:hover { background:linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,165,0,0.2)); transform:scale(1.05); }
+  .daily-bonus-btn .bonus-icon { font-size:1.4rem; }
+  .daily-bonus-btn .bonus-text { font-family:'Bebas Neue',sans-serif; font-size:0.95rem; letter-spacing:2px; color:var(--gold); }
+  .daily-bonus-btn .bonus-sub { font-size:0.55rem; letter-spacing:1px; color:rgba(255,215,0,0.6); text-transform:uppercase; }
+  @keyframes bonusBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+  .lobby-header{text-align:center;margin-bottom:2rem;}
+  .lb-btn{display:inline-block;margin-top:0.6rem;padding:0.35rem 1rem;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+  .lb-btn:hover{background:rgba(255,215,0,0.12);border-color:var(--gold);}
+  .lobby-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .lobby-sub{font-size:0.75rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:0.25rem;}
+
+  /* Featured jackpot ticker */
+  .jackpot-bar{display:flex;gap:1rem;padding:0.75rem 1rem;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.12);margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;}
+  .jackpot-bar::-webkit-scrollbar{display:none;}
+  .jackpot-item{display:flex;flex-direction:column;align-items:center;gap:0.15rem;min-width:90px;}
+  .jackpot-type{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;}
+  .jackpot-type.mini{color:rgba(255,255,255,0.5);}
+  .jackpot-type.major{color:var(--gold);}
+  .jackpot-type.grand{color:var(--neon);}
+  .jackpot-amt{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;}
+  .jackpot-item.mini .jackpot-amt{color:#fff;}
+  .jackpot-item.major .jackpot-amt{color:var(--gold);}
+  .jackpot-item.grand .jackpot-amt{color:var(--neon);text-shadow:0 0 12px rgba(0,255,204,0.4);}
+  .jackpot-divider{width:1px;background:rgba(255,255,255,0.08);align-self:stretch;}
+
+  /* Games grid */
+  .section-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;}
+  .section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06);}
+
+  .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+
+  .game-card{background:var(--dark2);border:1px solid var(--border);border-top:3px solid var(--gold);padding:1.25rem 1rem;text-decoration:none;color:#fff;transition:all 0.2s;display:flex;flex-direction:column;gap:0.6rem;position:relative;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .game-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.2s;background:rgba(255,215,0,0.03);}
+  .game-card.crash{border-top-color:var(--red);}
+  .game-card.crash::after{background:rgba(255,68,85,0.04);}
+  .game-card.pro{border-top-color:var(--neon);}
+  .game-card.pro::after{background:rgba(0,255,204,0.04);}
+  .game-card.poker-card{border-top-color:#9966ff;}
+  .game-card.roulette-card{border-top-color:#ff6600;}
+  .game-card.bj-card{border-top-color:#33aaff;}
+  .game-card.pull-card{border-top-color:#ff99cc;}
+  .game-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+  .game-card:hover::after{opacity:1;}
+  .game-card:active{transform:scale(0.97);}
+
+  .game-icon{font-size:2rem;line-height:1;}
+  .game-name{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;line-height:1.1;}
+  .game-desc{font-size:0.75rem;color:var(--muted);line-height:1.4;}
+  .game-badge{display:inline-block;padding:0.15rem 0.4rem;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;border:1px solid;margin-top:auto;}
+  .game-badge.hot{border-color:rgba(255,165,0,0.4);color:rgba(255,165,0,0.8);}
+  .game-badge.new{border-color:rgba(0,255,204,0.4);color:rgba(0,255,204,0.8);}
+  .game-badge.jackpot{border-color:rgba(255,215,0,0.5);color:rgba(255,215,0,0.9);}
+  .game-rtp{position:absolute;top:0.5rem;right:0.6rem;font-size:0.6rem;color:var(--muted);letter-spacing:1px;}
+
+  @media(max-width:480px){
+    nav{padding:0.75rem 1rem;}
+    .username{display:none;}
+    .credits-label{display:none;}
+    main{padding:1rem;}
+    .lobby-title{font-size:1.8rem;}
+    .games-grid{grid-template-columns:repeat(2,1fr);gap:0.75rem;}
+    .game-card{padding:1rem 0.75rem;}
+    .game-icon{font-size:1.6rem;}
+    .game-name{font-size:1rem;}
+    .game-desc{display:none;}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">★ SSC</a>
+  <div class="nav-right">
+    <span class="username" id="username">—</span>
+    <a class="panel-btn" id="panelBtn" href="#" style="display:none">Panel</a>
+    <div class="level-pill" id="levelPill" onclick="toggleLevelPopup()" title="View levels">
+      <div>
+        <div class="level-label">LVL</div>
+        <div class="level-num" id="levelNum">1</div>
+      </div>
+      <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
+    </div>
+    <div class="credits-pill">
+      <span class="credits-label">Balance</span>
+      <span class="credits-val" id="credits">—</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Exit</button>
+  </div>
+</nav>
+
+<!-- Level-up celebration toast -->
+<div class="level-up-toast" id="levelUpToast">
+  <div class="lu-title">LEVEL UP!</div>
+  <div class="lu-level" id="luLevel">2</div>
+  <div class="lu-title-name" id="luTitle">Beginner</div>
+  <div class="lu-reward" id="luReward">+$1.00 bonus credits!</div>
+</div>
+
+<!-- Level details popup -->
+<div class="level-popup" id="levelPopup" onclick="if(event.target===this)toggleLevelPopup()">
+  <div class="level-popup-inner">
+    <h3>★ PLAYER LEVELS</h3>
+    <div style="margin-bottom:0.8rem">
+      <div style="font-size:0.7rem;color:var(--muted);letter-spacing:1px;margin-bottom:0.3rem">YOUR PROGRESS</div>
+      <div style="display:flex;align-items:baseline;gap:0.5rem">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--neon)" id="lpLevel">1</span>
+        <span style="font-size:0.85rem;color:var(--gold);letter-spacing:1px" id="lpTitle">Rookie</span>
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted)" id="lpXP">0 / 150 XP</div>
+      <div style="height:6px;background:rgba(255,255,255,0.06);margin-top:0.4rem;overflow:hidden">
+        <div style="height:100%;background:linear-gradient(90deg,var(--neon),var(--gold));transition:width 0.4s" id="lpBar"></div>
+      </div>
+    </div>
+    <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">All Levels</div>
+    <div id="lpList"></div>
+    <button onclick="toggleLevelPopup()" style="margin-top:1rem;width:100%;padding:0.5rem;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.8rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Close</button>
+  </div>
+</div>
+
+<main>
+  <div class="lobby-header">
+    <div class="lobby-title">Game Lobby</div>
+    <div class="lobby-sub">Choose your game — Good luck ✦</div>
+    <a href="/play/leaderboard" class="lb-btn">🏆 Leaderboards</a>
+  </div>
+
+  <!-- Jackpot ticker -->
+  <div class="jackpot-bar" id="jackpotBar">
+    <div class="jackpot-item mini"><span class="jackpot-type mini">Mini</span><span class="jackpot-amt" id="jp-mini">—</span></div>
+    <div class="jackpot-divider"></div>
+    <div class="jackpot-item major"><span class="jackpot-type major">Major</span><span class="jackpot-amt" id="jp-major">—</span></div>
+    <div class="jackpot-divider"></div>
+    <div class="jackpot-item grand"><span class="jackpot-type grand">★ Grand</span><span class="jackpot-amt" id="jp-grand">—</span></div>
+    <div style="flex:1"></div>
+    <div style="font-size:0.65rem;color:var(--muted);align-self:center;letter-spacing:1px;white-space:nowrap">PRO SLOTS JACKPOTS</div>
+  </div>
+
+  <div class="section-label">Slots</div>
+  <!-- Featured game card -->
+  <!-- Nebula Bots -->
+  <a class="game-card featured-card" href="/play/nebula-bots" style="border-top-color:#00e5ff;margin-bottom:0.75rem;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
+    <div style="font-size:2.5rem;line-height:1;">🤖</div>
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;background:linear-gradient(135deg,#00e5ff,#7b2fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Nebula Bots</div>
+      <div style="font-size:0.65rem;letter-spacing:2px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-top:0.2rem;">Boost Meter · Stacked Multipliers · Free Spins</div>
+      <div style="display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap;">
+        <span style="font-size:0.6rem;padding:0.1rem 0.5rem;border:1px solid rgba(0,229,255,0.3);color:#00e5ff;letter-spacing:1px;">5×3 REELS</span>
+        <span style="font-size:0.6rem;padding:0.1rem 0.5rem;border:1px solid rgba(123,47,255,0.3);color:#b06cff;letter-spacing:1px;">10 LINES</span>
+        <span style="font-size:0.6rem;padding:0.1rem 0.5rem;border:1px solid rgba(255,170,0,0.3);color:#ffaa00;letter-spacing:1px;">BOOST ×10</span>
+        <span style="font-size:0.6rem;padding:0.1rem 0.5rem;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:#00e5ff;letter-spacing:1px;">NEW</span>
+      </div>
+    </div>
+  </a>
+
+  <a class="game-card featured-card" href="/play/fortune" style="border-top-color:#FF4422;margin-bottom:0.75rem;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
+    <div style="font-size:3.5rem;line-height:1;">🐉</div>
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;background:linear-gradient(135deg,#FFD700,#FF4422);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Fortune Dragon</div>
+      <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.5;margin:0.3rem 0;">5×3 reel · Expanding Wilds · Free Spins · 20 Paylines · Up to 500× bet</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+        <span class="game-badge hot" style="border-color:rgba(255,68,34,0.5);color:rgba(255,100,50,0.9);">Featured</span>
+        <span class="game-badge jackpot">Free Spins</span>
+        <span class="game-badge new">PixiJS</span>
+      </div>
+    </div>
+  </a>
+  <div class="games-grid">
+    <a class="game-card" href="/play/slots">
+      <span class="game-rtp" id="rtp-slots">—%</span>
+      <div class="game-icon">🎰</div>
+      <div class="game-name">Classic Slots</div>
+      <div class="game-desc">3-reel, 6 symbols. Up to 50× your bet.</div>
+      <span class="game-badge hot">Popular</span>
+    </a>
+    <a class="game-card pro" href="/play/slots-pro">
+      <span class="game-rtp" id="rtp-slots-pro">—%</span>
+      <div class="game-icon">💎</div>
+      <div class="game-name">Pro Slots</div>
+      <div class="game-desc">5-reel + Wilds. Mini, Major & Grand jackpots.</div>
+      <span class="game-badge jackpot">Jackpots</span>
+    </a>
+  </div>
+
+  <div class="section-label">Live Action</div>
+  <div class="games-grid">
+    <a class="game-card crash" href="/play/crash">
+      <span class="game-rtp" id="rtp-crash">—%</span>
+      <div class="game-icon">🚀</div>
+      <div class="game-name">Crash Out</div>
+      <div class="game-desc">Set cashout, watch it fly. Don't get greedy.</div>
+      <span class="game-badge hot">High Risk</span>
+    </a>
+    <a class="game-card roulette-card" href="/play/roulette">
+      <div class="game-icon">🎡</div>
+      <div class="game-name">Roulette</div>
+      <div class="game-desc">European roulette. Straights pay 36×.</div>
+      <span class="game-badge new">New</span>
+    </a>
+  </div>
+
+  <div class="section-label">Card Games</div>
+  <div class="games-grid">
+    <a class="game-card bj-card" href="/play/blackjack">
+      <div class="game-icon">🃏</div>
+      <div class="game-name">Blackjack</div>
+      <div class="game-desc">Hit, stand, or double down. Beat the dealer.</div>
+      <span class="game-badge new">New</span>
+    </a>
+    <a class="game-card poker-card" href="/play/poker">
+      <div class="game-icon">♠️</div>
+      <div class="game-name">Video Poker</div>
+      <div class="game-desc">Jacks or Better. Royal Flush pays 800×.</div>
+      <span class="game-badge new">New</span>
+    </a>
+  </div>
+
+  <div class="section-label">Instant Win</div>
+  <div class="games-grid">
+    <a class="game-card pull-card" href="/play/pulltab">
+      <div class="game-icon">🎟️</div>
+      <div class="game-name">Pull Tab</div>
+      <div class="game-desc">Scratch & reveal. Instant win tickets.</div>
+      <span class="game-badge new">New</span>
+    </a>
+    <a class="game-card" href="/play/ocean-bingo" style="border-top-color:#00d4ff;">
+      <div class="game-icon">🌊</div>
+      <div class="game-name">Ocean Bingo</div>
+      <div class="game-desc">Dual-mode: Slots + Bingo Blitz. Underwater theme.</div>
+      <span class="game-badge new">New</span>
+    </a>
+  </div>
+</main>
+
+<style>
+.game-card.status-maintenance {
+  pointer-events: none;
+  position: relative;
+}
+.game-card.status-maintenance::before {
+  content: '⚙ Maintenance';
+  position: absolute;
+  inset: 0;
+  background: rgba(5,5,16,0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  color: #ffaa00;
+  border: 1px solid rgba(255,170,0,0.3);
+  z-index: 5;
+}
+.game-card.status-disabled {
+  display: none !important;
+}
+/* Featured cards need slightly different overlay positioning */
+a.featured-card.status-maintenance::before {
+  border-radius: 0;
+}
+</style>
+
+<!-- Daily Bonus Button -->
+<a href="/play/daily-bonus" class="daily-bonus-btn" id="dailyBonusBtn">
+  <span class="bonus-icon">🎡</span>
+  <div>
+    <div class="bonus-text">DAILY BONUS</div>
+    <div class="bonus-sub" id="bonusSubText">Free credits!</div>
+  </div>
+</a>
+
+<script>
+async function loadUser() {
+  const res = await fetch('/api/me');
+  if (!res.ok) { window.location='/'; return; }
+  const d = await res.json();
+  document.getElementById('username').textContent = d.username;
+  document.getElementById('credits').textContent = '$'+(d.credits/100).toFixed(2);
+  if (d.role==='admin'||d.role==='reseller') {
+    const btn=document.getElementById('panelBtn');
+    btn.style.display='inline-block';
+    btn.href=d.role==='admin'?'/admin':'/reseller';
+    btn.textContent=d.role==='admin'?'⬡ Admin':'◈ Reseller';
+  }
+}
+
+async function loadRTPs() {
+  try {
+    const r=await fetch('/api/game/public-settings');
+    const d=await r.json();
+    if(document.getElementById('rtp-slots'))    document.getElementById('rtp-slots').textContent=`RTP ${d.rtp_slots}%`;
+    if(document.getElementById('rtp-slots-pro'))document.getElementById('rtp-slots-pro').textContent=`RTP ${d.rtp_slots_pro}%`;
+    if(document.getElementById('rtp-crash'))    document.getElementById('rtp-crash').textContent=`RTP ${d.rtp_crash}%`;
+  } catch(e){}
+}
+
+async function loadJackpots() {
+  try {
+    const r=await fetch('/api/game/jackpots');
+    const d=await r.json();
+    if(document.getElementById('jp-mini'))  document.getElementById('jp-mini').textContent='$'+(d.jackpots.mini/100).toFixed(2);
+    if(document.getElementById('jp-major')) document.getElementById('jp-major').textContent='$'+(d.jackpots.major/100).toFixed(2);
+    if(document.getElementById('jp-grand')) document.getElementById('jp-grand').textContent='$'+(d.jackpots.grand/100).toFixed(2);
+  } catch(e){}
+}
+
+// Map href paths to game IDs
+const GAME_ROUTE_MAP = {
+  '/play/slots':       'slots',
+  '/play/slots-pro':   'slots-pro',
+  '/play/fortune':     'fortune',
+  '/play/nebula-bots': 'nebula-bots',
+  '/play/crash':       'crash',
+  '/play/blackjack':   'blackjack',
+  '/play/roulette':    'roulette',
+  '/play/poker':       'poker',
+  '/play/pulltab':     'pulltab',
+  '/play/ocean-bingo': 'ocean-bingo',
+};
+
+async function applyGameStatuses() {
+  try {
+    const r = await fetch('/api/game/statuses');
+    if (!r.ok) return;
+    const { games } = await r.json();
+
+    // Find all game card links and apply status classes
+    document.querySelectorAll('a.game-card, a.featured-card').forEach(card => {
+      const href = card.getAttribute('href');
+      const gameId = GAME_ROUTE_MAP[href];
+      if (!gameId) return;
+      const status = games[gameId] || 'active';
+      card.classList.remove('status-active','status-maintenance','status-disabled');
+      card.classList.add('status-' + status);
+      // Prevent clicking maintenance/disabled cards
+      if (status !== 'active') {
+        card.onclick = e => e.preventDefault();
+      }
+    });
+  } catch(e) {}
+}
+
+// Dynamically apply game descriptions and tags from the database
+async function applyLobbyData() {
+  try {
+    const r = await fetch('/api/admin/games/lobby-data');
+    if (!r.ok) return;
+    const { games } = await r.json();
+    const gameMap = {};
+    games.forEach(g => gameMap[g.id] = g);
+
+    document.querySelectorAll('a.game-card, a.featured-card').forEach(card => {
+      const href = card.getAttribute('href');
+      const gameId = GAME_ROUTE_MAP[href];
+      if (!gameId || !gameMap[gameId]) return;
+      const g = gameMap[gameId];
+
+      // Update description
+      const descEl = card.querySelector('.game-desc');
+      if (descEl && g.description) descEl.textContent = g.description;
+
+      // Update name
+      const nameEl = card.querySelector('.game-name');
+      if (nameEl && g.name) nameEl.textContent = g.name;
+
+      // Update icon
+      const iconEl = card.querySelector('.game-icon');
+      if (iconEl && g.icon) iconEl.textContent = g.icon;
+
+      // Update badges/tags — replace existing badges
+      if (g.tags) {
+        const tags = g.tags.split(',').filter(t => t.trim());
+        if (tags.length > 0) {
+          // Remove old badges
+          card.querySelectorAll('.game-badge').forEach(b => b.remove());
+          // Add new ones
+          const badgeColors = { 'New': 'new', 'Popular': 'hot', 'Hot': 'hot', 'Featured': 'hot', 'Jackpots': 'jackpot', 'High Risk': 'hot' };
+          tags.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'game-badge ' + (badgeColors[tag] || 'new');
+            span.textContent = tag;
+            card.appendChild(span);
+          });
+        }
+      }
+
+      // For featured cards, update inline description too
+      const featuredDesc = card.querySelector('[style*="font-size:0.8rem"]');
+      if (featuredDesc && g.description) featuredDesc.textContent = g.description;
+      const featuredDesc2 = card.querySelector('[style*="font-size:0.65rem"][style*="letter-spacing:2px"]');
+      if (featuredDesc2 && g.description) featuredDesc2.textContent = g.description;
+    });
+  } catch(e) { console.error('Lobby data error:', e); }
+}
+
+async function logout() { await fetch('/api/auth/logout',{method:'POST'}); window.location='/'; }
+
+// Track lobby visit and send heartbeats
+fetch('/api/admin/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(()=>{});
+setInterval(()=>{fetch('/api/admin/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(()=>{});},30000);
+
+loadUser();
+loadRTPs();
+loadJackpots();
+loadPlayerLevel();
+applyGameStatuses();
+applyLobbyData();
+checkDailyBonus();
+checkBroadcast();
+setInterval(loadJackpots, 15000);
+setInterval(applyGameStatuses, 30000);
+
+async function checkDailyBonus() {
+  try {
+    var r = await fetch('/api/game/daily-bonus');
+    if (!r.ok) return;
+    var data = await r.json();
+    if (data.available) {
+      var btn = document.getElementById('dailyBonusBtn');
+      var sub = document.getElementById('bonusSubText');
+      if (btn) btn.style.display = 'flex';
+      if (sub) {
+        var streak = data.streak || 1;
+        sub.textContent = streak > 1 ? data.multiplier + '\u00d7 streak bonus!' : 'Spin for free credits!';
+      }
+    }
+  } catch(e) {}
+}
+
+var playerLevelData = null;
+
+async function loadPlayerLevel() {
+  try {
+    var r = await fetch('/api/game/player-level');
+    if (!r.ok) return;
+    playerLevelData = await r.json();
+    updateLevelUI();
+  } catch(e) {}
+}
+
+function updateLevelUI() {
+  if (!playerLevelData) return;
+  var d = playerLevelData;
+  document.getElementById('levelNum').textContent = d.level;
+  document.getElementById('xpBar').style.width = Math.round(d.progress * 100) + '%';
+  document.getElementById('levelPill').title = d.title + ' \u2014 ' + d.xp + ' XP';
+}
+
+function toggleLevelPopup() {
+  var popup = document.getElementById('levelPopup');
+  popup.classList.toggle('show');
+  if (popup.classList.contains('show') && playerLevelData) {
+    var d = playerLevelData;
+    document.getElementById('lpLevel').textContent = d.level;
+    document.getElementById('lpTitle').textContent = d.title;
+    var next = d.nextLevel;
+    document.getElementById('lpXP').textContent = next ? d.xp + ' / ' + next.xp + ' XP' : d.xp + ' XP (MAX)';
+    document.getElementById('lpBar').style.width = Math.round(d.progress * 100) + '%';
+    var html = '';
+    (d.allLevels || []).forEach(function(l) {
+      var isCurrent = l.level === d.level;
+      var isLocked = l.level > d.level;
+      html += '<div class="lp-row ' + (isCurrent ? 'current' : '') + '">'
+        + '<div class="lp-lvl" style="color:' + (isLocked ? 'rgba(255,255,255,0.2)' : 'var(--neon)') + '">' + l.level + '</div>'
+        + '<div class="lp-title" style="color:' + (isLocked ? 'rgba(255,255,255,0.2)' : '#fff') + '">' + l.title + '</div>'
+        + '<div class="lp-xp">' + (l.xp > 0 ? l.xp + ' XP' : '\u2014') + '</div>'
+        + '<div class="lp-reward">' + (l.reward > 0 ? '+$' + (l.reward / 100).toFixed(2) : '') + '</div>'
+        + '</div>';
+    });
+    document.getElementById('lpList').innerHTML = html;
+  }
+}
+
+function showLevelUp(level, title, reward) {
+  document.getElementById('luLevel').textContent = level;
+  document.getElementById('luTitle').textContent = title;
+  document.getElementById('luReward').textContent = reward > 0 ? '+$' + (reward / 100).toFixed(2) + ' bonus credits!' : '';
+  var toast = document.getElementById('levelUpToast');
+  toast.classList.add('show');
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784, 1047, 1318].forEach(function(f, i) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = f; o.type = 'sine';
+      var s = ctx.currentTime + i * 0.1;
+      g.gain.setValueAtTime(0.1, s);
+      g.gain.exponentialRampToValueAtTime(0.001, s + 0.35);
+      o.start(s); o.stop(s + 0.35);
+    });
+  } catch(e) {}
+  setTimeout(function() { toast.classList.remove('show'); }, 3000);
+}
+
+async function checkBroadcast() {
+  try {
+    var r = await fetch('/api/broadcast');
+    if (!r.ok) return;
+    var d = await r.json();
+    if (d.broadcast) {
+      var colors = { gold: 'var(--gold)', neon: 'var(--neon)', red: 'var(--red)' };
+      var c = colors[d.broadcast.style] || 'var(--gold)';
+      var existing = document.getElementById('broadcastBanner');
+      if (existing) existing.remove();
+      var banner = document.createElement('div');
+      banner.id = 'broadcastBanner';
+      banner.style.cssText = 'padding:0.5rem 1rem;text-align:center;font-size:0.8rem;font-weight:700;letter-spacing:1px;color:' + c + ';border-bottom:1px solid ' + c + ';background:rgba(0,0,0,0.3);cursor:pointer;';
+      banner.textContent = d.broadcast.message;
+      banner.onclick = function() { banner.remove(); };
+      document.body.insertBefore(banner, document.body.firstChild);
+    }
+  } catch(e) {}
+}
+</script>
+</body>
+</html>

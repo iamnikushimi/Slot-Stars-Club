@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classic Slots — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;--border:rgba(255,215,0,0.2);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,165,0,0.06) 0%,transparent 60%);pointer-events:none;}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--border);background:rgba(5,5,16,0.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+  .nav-right{display:flex;align-items:center;gap:1rem;}
+  .back-btn{padding:0.3rem 0.9rem;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+  .back-btn:hover{border-color:rgba(255,255,255,0.4);color:#fff;}
+  .credits-pill{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.9rem;border:1px solid var(--gold);background:rgba(255,215,0,0.05);}
+  .credits-label{font-size:0.65rem;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+  .credits-val{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold);}
+  .logout-btn{background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:0.3rem 0.8rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
+  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;z-index:5;}
+
+  .machine{background:var(--dark2);border:1px solid var(--border);border-top:3px solid var(--gold);width:100%;max-width:520px;padding:2rem;box-shadow:0 0 60px rgba(255,165,0,0.1);}
+  .machine-title{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:4px;color:var(--gold);margin-bottom:1.5rem;opacity:0.6;}
+
+  .reels{display:flex;gap:0.75rem;margin-bottom:1.5rem;background:rgba(0,0,0,0.4);padding:1.5rem;border:1px solid rgba(255,215,0,0.1);}
+  .reel{flex:1;height:100px;background:var(--dark3);border:1px solid rgba(255,215,0,0.15);display:flex;align-items:center;justify-content:center;font-size:3.2rem;overflow:hidden;}
+  .reel.spinning{animation:reelSpin 0.1s linear infinite;}
+  @keyframes reelSpin{0%{transform:translateY(0);}50%{transform:translateY(-5px);}100%{transform:translateY(0);}}
+
+  .win-line{height:2px;background:transparent;margin:-0.75rem 0 0.75rem;transition:background 0.3s;}
+  .win-line.active{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+  .result-banner{text-align:center;min-height:3rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:4px;opacity:0;transition:opacity 0.3s;}
+  .result-banner.show{opacity:1;}
+  .result-banner.win{color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.5);}
+  .result-banner.lose{color:rgba(255,255,255,0.3);font-size:1rem;letter-spacing:2px;}
+  .result-banner.jackpot{color:var(--neon);font-size:2.2rem;text-shadow:0 0 30px rgba(0,255,204,0.6);animation:pulse 0.5s infinite alternate;}
+  @keyframes pulse{from{transform:scale(1);}to{transform:scale(1.05);}}
+
+  .bet-section{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .bet-label{font-size:0.75rem;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;white-space:nowrap;}
+  .bet-controls{display:flex;align-items:center;gap:0.5rem;flex:1;}
+  .bet-btn{width:36px;height:36px;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);cursor:pointer;font-size:1.2rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+  .bet-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .bet-display{flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);background:var(--dark3);border:1px solid rgba(255,215,0,0.15);padding:0.2rem 0;}
+  .bet-presets{display:flex;gap:0.4rem;flex-wrap:wrap;}
+  .bet-preset{padding:0.25rem 0.6rem;background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);cursor:pointer;font-size:0.75rem;font-family:'Rajdhani',sans-serif;transition:all 0.2s;}
+  .bet-preset:hover{border-color:var(--gold);color:var(--gold);}
+
+  .spin-btn{width:100%;padding:1.2rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--dark);border:none;font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 0 30px rgba(255,165,0,0.2);position:relative;overflow:hidden;}
+  .spin-btn:not(:disabled):hover{box-shadow:0 0 50px rgba(255,165,0,0.4);transform:translateY(-1px);}
+  .spin-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .payout-table{margin-top:1.5rem;border:1px solid rgba(255,215,0,0.1);background:rgba(0,0,0,0.2);}
+  .payout-title{padding:0.6rem 1rem;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);border-bottom:1px solid rgba(255,215,0,0.1);}
+  .payout-row{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);}
+  .payout-row:last-child{border-bottom:none;}
+  .payout-combo{font-size:1.1rem;letter-spacing:2px;}
+  .payout-mult{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--gold);}
+  .payout-row.jackpot .payout-mult{color:var(--neon);}
+
+  .history-section{margin-top:1.5rem;width:100%;max-width:520px;}
+  .history-title{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:0.75rem;}
+  .history-list{display:flex;flex-direction:column;gap:0.3rem;}
+  .history-item{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0.75rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);font-size:0.9rem;}
+  .h-reels{letter-spacing:4px;}
+  .h-result{font-weight:700;}
+  .h-result.win{color:var(--gold);}
+  .h-result.lose{color:rgba(255,255,255,0.3);}
+
+  @media(max-width:480px){
+    nav{padding:0.75rem 1rem;}
+    .credits-label{display:none;}
+    .machine{padding:1rem;}
+    .machine-title{font-size:1rem;letter-spacing:2px;margin-bottom:1rem;}
+    .reels{padding:0.75rem;gap:0.5rem;margin-bottom:1rem;}
+    .reel{height:76px;font-size:2.5rem;}
+    .result-banner{font-size:1.3rem;min-height:2.2rem;margin-bottom:1rem;}
+    .bet-section{gap:0.5rem;margin-bottom:1rem;}
+    .bet-presets{gap:0.3rem;}
+    .bet-preset{padding:0.3rem 0.5rem;}
+    .spin-btn{font-size:1.5rem;letter-spacing:2px;padding:1rem;}
+    .payout-combo{font-size:0.9rem;letter-spacing:1px;}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/play">★ SSC</a>
+  <div class="nav-right">
+    <a class="back-btn" href="/play">← Lobby</a>
+    <div class="credits-pill">
+      <span class="credits-label">Balance</span>
+      <span class="credits-val" id="credits">—</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Exit</button>
+  </div>
+</nav>
+
+<main>
+  <div class="machine">
+    <div class="machine-title">✦ Classic Slots ✦</div>
+    <div class="reels" id="reels">
+      <div class="reel" id="r0"><span id="ri0">⭐</span></div>
+      <div class="reel" id="r1"><span id="ri1">⭐</span></div>
+      <div class="reel" id="r2"><span id="ri2">⭐</span></div>
+    </div>
+    <div class="win-line" id="winLine"></div>
+    <div class="result-banner" id="resultBanner"></div>
+
+    <div class="bet-section">
+      <span class="bet-label">Bet</span>
+      <div class="bet-controls">
+        <button class="bet-btn" onclick="changeBet(-1)">−</button>
+        <div class="bet-display" id="betDisplay">$0.10</div>
+        <button class="bet-btn" onclick="changeBet(1)">+</button>
+      </div>
+      <div class="bet-presets">
+        <button class="bet-preset" onclick="setBet(10)">$0.10</button>
+        <button class="bet-preset" onclick="setBet(50)">$0.50</button>
+        <button class="bet-preset" onclick="setBet(100)">$1</button>
+        <button class="bet-preset" onclick="setBet(500)">$5</button>
+      </div>
+    </div>
+
+    <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
+
+    <div class="payout-table">
+      <div class="payout-title">Payout Table</div>
+      <div class="payout-row jackpot"><span class="payout-combo">7️⃣ 7️⃣ 7️⃣</span><span class="payout-mult">50× BET</span></div>
+      <div class="payout-row jackpot"><span class="payout-combo">💎 💎 💎</span><span class="payout-mult">25× BET</span></div>
+      <div class="payout-row"><span class="payout-combo">⭐ ⭐ ⭐</span><span class="payout-mult">15× BET</span></div>
+      <div class="payout-row"><span class="payout-combo">🍊 🍊 🍊</span><span class="payout-mult">8× BET</span></div>
+      <div class="payout-row"><span class="payout-combo">🍒 🍒 🍒</span><span class="payout-mult">6× BET</span></div>
+      <div class="payout-row"><span class="payout-combo">🍋 🍋 🍋</span><span class="payout-mult">5× BET</span></div>
+      <div class="payout-row"><span class="payout-combo">Any 2 Match</span><span class="payout-mult">1.5× BET</span></div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-title">Recent Spins</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</main>
+
+<script>
+const SYMBOLS = ['🍒','🍋','🍊','⭐','💎','7️⃣'];
+let betCents = 10; // $0.10
+let minBet = 10, maxBet = 10000;
+let credits = 0;
+let spinning = false;
+
+async function loadUser() {
+  const res = await fetch('/api/me');
+  if (!res.ok) { window.location='/'; return; }
+  const d = await res.json();
+  credits = d.credits;
+  document.getElementById('credits').textContent = '$' + (credits/100).toFixed(2);
+}
+
+async function loadSettings() {
+  const res = await fetch('/api/game/settings');
+  if (!res.ok) return;
+  const d = await res.json();
+  minBet = d.minBet; maxBet = d.maxBet;
+  betCents = minBet;
+  updateBetDisplay();
+}
+
+function updateBetDisplay() {
+  document.getElementById('betDisplay').textContent = '$' + (betCents/100).toFixed(2);
+}
+
+function changeBet(dir) {
+  const steps = [10,25,50,100,200,500,1000,2500,5000,10000];
+  let idx = steps.findIndex(s => s >= betCents);
+  if (idx === -1) idx = steps.length - 1;
+  if (dir > 0) idx = Math.min(steps.length-1, idx+1);
+  else idx = Math.max(0, idx-1);
+  betCents = Math.max(minBet, Math.min(maxBet, steps[idx]));
+  updateBetDisplay();
+}
+
+function setBet(cents) {
+  betCents = Math.max(minBet, Math.min(maxBet, cents));
+  updateBetDisplay();
+}
+
+async function spin() {
+  if (spinning || credits < betCents) return;
+  spinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  const banner = document.getElementById('resultBanner');
+  banner.className = 'result-banner';
+  banner.textContent = '';
+  document.getElementById('winLine').classList.remove('active');
+
+  [0,1,2].forEach(i => document.getElementById('r'+i).classList.add('spinning'));
+  const interval = setInterval(() => {
+    [0,1,2].forEach(i => { document.getElementById('ri'+i).textContent = SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)]; });
+  }, 80);
+
+  try {
+    const res = await fetch('/api/game/spin', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bet:betCents})});
+    const data = await res.json();
+    await new Promise(r => setTimeout(r, 700));
+    clearInterval(interval);
+    [0,1,2].forEach((i,idx) => {
+      setTimeout(() => {
+        document.getElementById('r'+i).classList.remove('spinning');
+        document.getElementById('ri'+i).textContent = data.reels[i];
+        if (idx === 2) showResult(data);
+      }, idx * 150);
+    });
+    credits = data.credits;
+    document.getElementById('credits').textContent = '$' + (credits/100).toFixed(2);
+    addHistory(data.reels, data.win, betCents);
+  } catch(e) { clearInterval(interval); [0,1,2].forEach(i => document.getElementById('r'+i).classList.remove('spinning')); }
+
+  spinning = false;
+  document.getElementById('spinBtn').disabled = false;
+}
+
+function showResult(data) {
+  const banner = document.getElementById('resultBanner');
+  const isJackpot = data.win > betCents * 5 && data.reels[0]===data.reels[1]&&data.reels[1]===data.reels[2];
+  setTimeout(() => {
+    if (data.win > 0) {
+      banner.className = 'result-banner show ' + (isJackpot ? 'jackpot' : 'win');
+      banner.textContent = isJackpot ? `🎰 JACKPOT! +$${(data.win/100).toFixed(2)} 🎰` : `WIN +$${(data.win/100).toFixed(2)}`;
+      document.getElementById('winLine').classList.add('active');
+    } else {
+      banner.className = 'result-banner show lose';
+      banner.textContent = 'No win — Try again';
+    }
+  }, 450);
+}
+
+let history = [];
+function addHistory(reels, win, bet) {
+  history.unshift({reels, win, bet});
+  if (history.length > 8) history.pop();
+  document.getElementById('historyList').innerHTML = history.map(h => `
+    <div class="history-item">
+      <span class="h-reels">${h.reels.join(' ')}</span>
+      <span class="h-result ${h.win>0?'win':'lose'}">${h.win>0?'+$'+(h.win/100).toFixed(2):'-$'+(h.bet/100).toFixed(2)}</span>
+    </div>`).join('');
+}
+
+async function logout() { await fetch('/api/auth/logout',{method:'POST'}); window.location='/'; }
+document.addEventListener('keydown', e => { if (e.code==='Space'&&!spinning){e.preventDefault();spin();} });
+
+loadUser();
+loadSettings();
+</script>
+</body>
+</html>

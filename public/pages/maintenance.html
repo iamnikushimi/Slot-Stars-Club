@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under Maintenance — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#050510;
+    color:#fff;
+    font-family:'Rajdhani',sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* Starfield */
+  .stars { position:fixed; inset:0; pointer-events:none; }
+  .star {
+    position:absolute;
+    width:2px; height:2px;
+    background:#fff;
+    border-radius:50%;
+    animation:twinkle var(--d,3s) infinite var(--delay,0s);
+  }
+  @keyframes twinkle { 0%,100%{opacity:0.2;} 50%{opacity:1;} }
+
+  .box {
+    text-align:center;
+    padding:3rem 2.5rem;
+    max-width:480px;
+    width:90%;
+    background:rgba(10,10,31,0.9);
+    border:1px solid rgba(255,215,0,0.2);
+    position:relative;
+    z-index:1;
+  }
+  .box::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(255,215,0,0.03),transparent,rgba(0,229,255,0.03));
+    pointer-events:none;
+  }
+
+  .icon { font-size:4rem; margin-bottom:1.5rem; animation:spin 4s linear infinite; display:inline-block; }
+  @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+
+  .title {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:2.2rem;
+    letter-spacing:4px;
+    background:linear-gradient(135deg,#FFD700,#FFA500);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:0.5rem;
+  }
+  .game-name {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.3rem;
+    letter-spacing:3px;
+    color:rgba(255,255,255,0.6);
+    margin-bottom:1.5rem;
+  }
+  .message {
+    font-size:0.95rem;
+    color:rgba(255,255,255,0.55);
+    line-height:1.7;
+    margin-bottom:2rem;
+  }
+  .status-badge {
+    display:inline-block;
+    padding:0.35rem 1rem;
+    font-size:0.7rem;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:2rem;
+  }
+  .status-badge.maintenance {
+    background:rgba(255,170,0,0.1);
+    border:1px solid rgba(255,170,0,0.4);
+    color:#ffaa00;
+  }
+  .status-badge.disabled {
+    background:rgba(255,68,85,0.1);
+    border:1px solid rgba(255,68,85,0.4);
+    color:#ff4455;
+  }
+  .back-btn {
+    display:inline-block;
+    padding:0.75rem 2rem;
+    border:1px solid rgba(255,215,0,0.4);
+    color:#FFD700;
+    text-decoration:none;
+    font-family:'Rajdhani',sans-serif;
+    font-size:0.9rem;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    transition:all 0.2s;
+  }
+  .back-btn:hover { background:rgba(255,215,0,0.1); }
+
+  .ticker {
+    margin-top:1.5rem;
+    font-size:0.72rem;
+    color:rgba(255,255,255,0.25);
+    letter-spacing:1px;
+  }
+
+  /* Animated border glow */
+  @keyframes borderGlow {
+    0%,100%{box-shadow:0 0 20px rgba(255,170,0,0.1);}
+    50%{box-shadow:0 0 40px rgba(255,170,0,0.3),0 0 80px rgba(255,170,0,0.1);}
+  }
+  .box { animation:borderGlow 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="box">
+  <div class="icon" id="statusIcon">⚙️</div>
+  <div class="title" id="pageTitle">Under Maintenance</div>
+  <div class="game-name" id="gameName">Loading...</div>
+  <span class="status-badge maintenance" id="statusBadge">Maintenance</span>
+  <div class="message" id="statusMsg">
+    This game is temporarily unavailable while we perform maintenance.<br>
+    Please check back shortly — we'll have it back up soon!
+  </div>
+  <a href="/play" class="back-btn">← Back to Lobby</a>
+  <div class="ticker" id="ticker">All other games are available in the lobby</div>
+</div>
+
+<script>
+// Generate stars
+const starsEl = document.getElementById('stars');
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;opacity:${0.2+Math.random()*0.8}`;
+  starsEl.appendChild(s);
+}
+
+// Read status from URL params passed by server
+const params = new URLSearchParams(window.location.search);
+const status = params.get('status') || 'maintenance';
+const gameName = params.get('game') || 'This Game';
+
+document.getElementById('gameName').textContent = gameName;
+
+if(status === 'disabled') {
+  document.getElementById('statusIcon').textContent = '🚫';
+  document.getElementById('pageTitle').textContent = 'Not Available';
+  document.getElementById('statusBadge').textContent = 'Unavailable';
+  document.getElementById('statusBadge').className = 'status-badge disabled';
+  document.getElementById('statusMsg').textContent = 'This game is currently not available. Please visit the lobby to see all available games.';
+  document.querySelector('.box').style.animationName = 'none';
+  document.querySelector('.box').style.borderColor = 'rgba(255,68,85,0.2)';
+}
+</script>
+</body>
+</html>

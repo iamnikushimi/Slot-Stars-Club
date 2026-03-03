@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- no-seo -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--amber:#ffaa00;
+  --dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;
+  --border:rgba(255,215,0,0.15);--border2:rgba(255,255,255,0.06);
+  --muted:rgba(255,255,255,0.4);
+  --c-active:#00ff9d;--c-maint:#ffaa00;--c-disabled:#ff4455;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;}
+
+/* ── SIDEBAR ── */
+aside{width:230px;min-height:100vh;background:var(--dark2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:50;overflow-y:auto;}
+.s-logo{padding:1.4rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-bottom:1px solid var(--border);}
+.s-who{padding:0.65rem 1.5rem;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);border-bottom:1px solid var(--border);}
+.s-section{padding:0.6rem 1.5rem 0.2rem;font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:0.4rem;}
+.nav-link{display:flex;align-items:center;gap:0.7rem;padding:0.78rem 1.5rem;color:var(--muted);font-size:0.86rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;border-left:2px solid transparent;}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.03);}
+.nav-link.active{color:var(--gold);border-left-color:var(--gold);background:rgba(255,215,0,0.05);}
+.nav-live-dot{width:6px;height:6px;border-radius:50%;background:var(--c-active);box-shadow:0 0 6px var(--c-active);margin-left:auto;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.s-footer{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--border);}
+.btn-lobby{display:block;text-align:center;padding:0.55rem;margin-bottom:0.5rem;border:1px solid rgba(0,255,204,0.3);color:rgba(0,255,204,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
+.btn-lobby:hover{background:rgba(0,255,204,0.07);}
+.logout-btn{width:100%;padding:0.55rem;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.82rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* ── MAIN ── */
+main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
+.page-header{margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--gold);}
+.section{display:none;}.section.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--dark2);border:1px solid var(--border);margin-bottom:1.25rem;}
+.card-header{padding:0.9rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:2px;color:var(--gold);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.card-body{padding:1.25rem;}
+
+/* ── STAT GRIDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:0.85rem;margin-bottom:1.25rem;}
+.stat-card{background:var(--dark2);border:1px solid var(--border);padding:1.1rem 1rem;text-align:center;border-top:2px solid var(--gold);position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.02),transparent);pointer-events:none;}
+.stat-card.neon{border-top-color:var(--neon);}
+.stat-card.red{border-top-color:var(--red);}
+.stat-card.amber{border-top-color:var(--amber);}
+.stat-card.purple{border-top-color:#9b59b6;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;color:var(--gold);line-height:1;}
+.stat-card.neon .stat-num{color:var(--neon);} .stat-card.red .stat-num{color:var(--red);}
+.stat-card.amber .stat-num{color:var(--amber);} .stat-card.purple .stat-num{color:#9b59b6;}
+.stat-label{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:0.2rem;}
+.stat-sub{font-size:0.68rem;color:var(--muted);margin-top:0.15rem;}
+
+/* ── LIVE BADGE ── */
+.live-badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.18rem 0.6rem;border:1px solid rgba(0,255,157,0.3);background:rgba(0,255,157,0.05);font-size:0.62rem;letter-spacing:2px;color:var(--c-active);}
+.live-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--c-active);animation:blink 1.5s infinite;}
+
+/* ── TABLES ── */
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{padding:0.6rem 0.9rem;text-align:left;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+.data-table td{padding:0.62rem 0.9rem;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.86rem;}
+.data-table tr:hover td{background:rgba(255,255,255,0.02);}
+.winner-row td{color:var(--gold);}
+
+/* ── BUTTONS ── */
+.btn{padding:0.45rem 1.1rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;border:1px solid;background:transparent;}
+.btn-gold{border-color:var(--gold);color:var(--gold);}.btn-gold:hover{background:rgba(255,215,0,0.08);}
+.btn-neon{border-color:var(--neon);color:var(--neon);}.btn-neon:hover{background:rgba(0,255,204,0.08);}
+.btn-sm{padding:0.18rem 0.5rem;font-size:0.72rem;border:1px solid rgba(255,215,0,0.3);color:var(--gold);background:transparent;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
+.btn-sm:hover{background:rgba(255,215,0,0.08);}
+
+/* ── FORMS ── */
+.form-row{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;}
+.form-group{display:flex;flex-direction:column;gap:0.3rem;min-width:150px;}
+.form-group label{font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.form-group input,.form-group select{background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.45rem 0.7rem;font-family:'Rajdhani',sans-serif;font-size:0.88rem;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--gold);}
+.edit-form{display:flex;gap:0.35rem;align-items:center;}
+.edit-form input{width:78px;padding:0.22rem 0.38rem;font-size:0.82rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:#fff;}
+
+/* ── ROLE BADGES ── */
+.role-badge{padding:0.18rem 0.5rem;font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;border:1px solid;}
+.role-badge.admin{border-color:var(--red);color:var(--red);}
+.role-badge.reseller{border-color:var(--neon);color:var(--neon);}
+.role-badge.player{border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.35);}
+
+/* ── STATUS BADGES ── */
+.status-pill{padding:0.15rem 0.55rem;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.status-pill.active{background:rgba(0,255,157,0.1);color:var(--c-active);border:1px solid rgba(0,255,157,0.28);}
+.status-pill.disabled{background:rgba(255,68,85,0.1);color:var(--c-disabled);border:1px solid rgba(255,68,85,0.28);}
+.status-pill.maintenance{background:rgba(255,170,0,0.1);color:var(--c-maint);border:1px solid rgba(255,170,0,0.28);}
+
+/* ── GAME CARDS ── */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;}
+.game-card{background:var(--dark3);border:1px solid var(--border2);padding:1.1rem;transition:border-color 0.2s;position:relative;}
+.game-card:hover{border-color:rgba(255,215,0,0.2);}
+.game-card.is-disabled{opacity:0.55;}
+.game-card.is-maintenance{border-left:3px solid var(--amber);}
+.gc-top{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem;}
+.gc-icon{font-size:1.75rem;line-height:1;flex-shrink:0;}
+.gc-info{flex:1;min-width:0;}
+.gc-name{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:2px;line-height:1.1;}
+.gc-cat{font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.gc-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.35rem;margin-bottom:0.9rem;}
+.gc-stat{background:rgba(0,0,0,0.3);padding:0.35rem 0.45rem;}
+.gc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--gold);}
+.gc-stat-lbl{font-size:0.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.gc-meta{font-size:0.68rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.5;}
+.gc-meta strong{color:#ccc;}
+.gc-controls{display:flex;gap:0.35rem;flex-wrap:wrap;}
+.ctrl-btn{padding:0.2rem 0.55rem;font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;font-family:'Rajdhani',sans-serif;font-weight:700;cursor:pointer;border:1px solid;background:transparent;transition:all 0.15s;}
+.ctrl-btn.set-active{border-color:rgba(0,255,157,0.35);color:var(--c-active);}
+.ctrl-btn.set-active:hover,.ctrl-btn.set-active.curr{background:rgba(0,255,157,0.1);}
+.ctrl-btn.set-maintenance{border-color:rgba(255,170,0,0.35);color:var(--c-maint);}
+.ctrl-btn.set-maintenance:hover,.ctrl-btn.set-maintenance.curr{background:rgba(255,170,0,0.1);}
+.ctrl-btn.set-disabled{border-color:rgba(255,68,85,0.35);color:var(--c-disabled);}
+.ctrl-btn.set-disabled:hover,.ctrl-btn.set-disabled.curr{background:rgba(255,68,85,0.1);}
+.ctrl-btn.curr{font-weight:900;}
+.gc-live{display:flex;align-items:center;gap:0.3rem;font-size:0.62rem;color:var(--c-active);margin-top:0.45rem;}
+.gc-live-dot{width:5px;height:5px;border-radius:50%;background:var(--c-active);animation:blink 1.5s infinite;}
+
+/* ── JACKPOT BADGES ── */
+.jp-badge{padding:0.12rem 0.42rem;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.jp-badge.grand{background:rgba(0,255,204,0.1);color:var(--neon);border:1px solid rgba(0,255,204,0.3);}
+.jp-badge.major{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);}
+.jp-badge.mini{background:rgba(255,255,255,0.05);color:#bbb;border:1px solid rgba(255,255,255,0.15);}
+
+/* ── CHART ── */
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:90px;padding-bottom:1.4rem;position:relative;}
+.bar{flex:1;min-height:3px;background:linear-gradient(to top,rgba(255,215,0,0.55),rgba(255,215,0,0.15));position:relative;cursor:default;}
+.bar:hover{background:linear-gradient(to top,var(--gold),rgba(255,215,0,0.35));}
+.bar::after{content:attr(data-h);position:absolute;bottom:-1.2rem;left:50%;transform:translateX(-50%);font-size:0.48rem;color:var(--muted);white-space:nowrap;}
+.bar-neon{background:linear-gradient(to top,rgba(0,255,204,0.45),rgba(0,255,204,0.08));}
+.bar-neon:hover{background:linear-gradient(to top,var(--neon),rgba(0,255,204,0.2));}
+
+/* ── CODES ── */
+.codes-out{display:none;margin-top:1rem;}.codes-out.on{display:block;}
+.codes-grid{display:flex;flex-wrap:wrap;gap:0.45rem;margin-top:0.4rem;}
+.code-chip{padding:0.35rem 0.7rem;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.22);color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:3px;cursor:pointer;transition:all 0.2s;}
+.code-chip:hover{background:rgba(255,215,0,0.14);}
+
+/* ── HIGHLIGHTS ── */
+.highlight-box{background:var(--dark3);border:1px solid var(--border2);padding:1.1rem 1.25rem;}
+.highlight-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--gold);line-height:1;}
+.highlight-val.neon{color:var(--neon);}
+.highlight-sub{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;line-height:1.4;}
+
+/* ── LOBBY EDITOR ── */
+.le-card{background:var(--dark2);border:1px solid var(--border);padding:1.1rem 1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:start;}
+.le-icon-wrap{display:flex;flex-direction:column;align-items:center;gap:0.3rem;}
+.le-icon-input{width:3.5rem;height:3.5rem;text-align:center;font-size:2rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;cursor:pointer;line-height:3.5rem;}
+.le-fields{display:flex;flex-direction:column;gap:0.55rem;}
+.le-field{display:flex;flex-direction:column;gap:0.2rem;}
+.le-label{font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.le-input{padding:0.45rem 0.7rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;font-family:'Rajdhani',sans-serif;font-size:0.88rem;font-weight:600;outline:none;transition:border-color 0.2s;width:100%;}
+.le-input:focus{border-color:var(--gold);}
+.le-textarea{padding:0.45rem 0.7rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;font-family:'Rajdhani',sans-serif;font-size:0.82rem;outline:none;resize:vertical;min-height:2.5rem;transition:border-color 0.2s;width:100%;}
+.le-textarea:focus{border-color:var(--gold);}
+.le-tags{display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.2rem;}
+.le-tag{padding:0.15rem 0.5rem;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);color:var(--gold);font-size:0.7rem;letter-spacing:1px;cursor:default;display:flex;align-items:center;gap:0.3rem;}
+.le-tag-x{cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.8rem;}
+.le-tag-x:hover{color:var(--red);}
+.le-tag-add{padding:0.15rem 0.5rem;background:transparent;border:1px dashed rgba(255,255,255,0.15);color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;}
+.le-tag-add:hover{border-color:var(--neon);color:var(--neon);}
+.le-actions{display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end;}
+.le-save{padding:0.4rem 1rem;background:linear-gradient(135deg,rgba(0,255,204,0.1),rgba(0,255,204,0.05));border:1px solid var(--neon);color:var(--neon);font-family:'Rajdhani',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;}
+.le-save:hover{background:rgba(0,255,204,0.15);}
+.le-id{font-size:0.6rem;color:var(--muted);letter-spacing:1px;}
+@media(max-width:720px){.le-card{grid-template-columns:1fr;gap:0.6rem;}.le-icon-wrap{flex-direction:row;gap:0.6rem;}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--dark2);border:1px solid var(--neon);color:var(--neon);padding:0.7rem 1.2rem;font-weight:600;letter-spacing:1px;transform:translateX(130%);transition:transform 0.3s;z-index:300;font-family:'Rajdhani',sans-serif;font-size:0.88rem;}
+.toast.show{transform:translateX(0);}
+
+/* ── GAME SELECTOR ── */
+.game-select{padding:0.5rem 0.9rem;background:var(--dark3);border:1px solid var(--gold);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:0.92rem;font-weight:600;letter-spacing:1px;min-width:250px;cursor:pointer;outline:none;}
+.game-select:focus{border-color:var(--neon);}
+.game-select option{background:var(--dark2);color:#fff;}
+
+/* ── MOBILE ── */
+.menu-btn{display:none;position:fixed;top:0.75rem;left:0.75rem;z-index:200;background:var(--dark2);border:1px solid var(--border);color:var(--gold);padding:0.42rem 0.65rem;font-size:1.25rem;cursor:pointer;line-height:1;}
+.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
+.s-overlay.on{display:block;}
+@media(max-width:720px){
+  body{display:block;}
+  .menu-btn{display:block;}
+  aside{transform:translateX(-100%);transition:transform 0.25s;z-index:100;}
+  aside.open{transform:translateX(0);}
+  main{margin-left:0;padding:4.2rem 0.85rem 1.25rem;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:0.65rem;}
+  .stat-num{font-size:1.7rem;}
+  .games-grid{grid-template-columns:1fr;}
+  .form-row{flex-direction:column;}
+  .two-col{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" onclick="toggleSidebar()">☰</button>
+<div class="s-overlay" id="sOverlay" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar">
+  <div class="s-logo">★ Slot Stars</div>
+  <div class="s-who" id="adminWho">Admin Panel</div>
+  <nav>
+    <div class="s-section">Overview</div>
+    <button class="nav-link active" onclick="show('dashboard')">⬡ Dashboard <span class="nav-live-dot"></span></button>
+    <button class="nav-link" onclick="show('analytics')">◈ Analytics</button>
+    <div class="s-section">Management</div>
+    <button class="nav-link" onclick="show('games')">◉ Games</button>
+    <button class="nav-link" onclick="show('users')">◈ Users</button>
+    <button class="nav-link" onclick="show('invites')">◇ Invites</button>
+    <button class="nav-link" onclick="show('spins')">◎ Spin History</button>
+    <div class="s-section">Engage</div>
+    <button class="nav-link" onclick="show('bonuses')">🎡 Daily Bonuses</button>
+    <button class="nav-link" onclick="show('broadcast')">📢 Broadcast</button>
+    <div class="s-section">Config</div>
+    <button class="nav-link" onclick="show('settings')">⚙ Global Settings</button>
+  </nav>
+  <div class="s-footer">
+    <a href="/play" class="btn-lobby">← Back to Lobby</a>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</aside>
+
+<main>
+
+<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+<div class="section active" id="s-dashboard">
+  <div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="live-badge" id="liveBadge">0 Live</span>
+      <button class="btn btn-gold" onclick="loadDashboard()">↻ Refresh</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="d-users">—</div><div class="stat-label">Total Users</div><div class="stat-sub" id="d-new"></div></div>
+    <div class="stat-card neon"><div class="stat-num" id="d-live">—</div><div class="stat-label">Live Now</div><div class="stat-sub">Active ≤5 min</div></div>
+    <div class="stat-card"><div class="stat-num" id="d-spins">—</div><div class="stat-label">Total Rounds</div><div class="stat-sub" id="d-spins-today"></div></div>
+    <div class="stat-card amber"><div class="stat-num" id="d-wagered">—</div><div class="stat-label">Total Wagered</div></div>
+    <div class="stat-card red"><div class="stat-num" id="d-house">—</div><div class="stat-label">House Revenue</div><div class="stat-sub" id="d-rev-today"></div></div>
+    <div class="stat-card purple"><div class="stat-num" id="d-visits">—</div><div class="stat-label">Page Visits</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;" class="two-col">
+    <div class="highlight-box">
+      <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">🏆 Biggest Win Ever</div>
+      <div id="d-biggest">Loading...</div>
+    </div>
+    <div class="highlight-box">
+      <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">⚡ Peak Play Hour</div>
+      <div id="d-peak">Loading...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Activity — Last 24 Hours <span style="font-size:0.68rem;color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:400;letter-spacing:0">Rounds per hour</span></div>
+    <div class="card-body">
+      <div class="bar-chart" id="actChart"><div style="color:var(--muted);font-size:0.8rem">Loading...</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">💰 Latest Jackpot Winners</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="jpTable">
+        <thead><tr><th>Player</th><th>Type</th><th>Game</th><th>Amount</th><th>When</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Recent Rounds</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="recentTable">
+        <thead><tr><th>User</th><th>Game</th><th>Bet</th><th>Win</th><th>Time</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ANALYTICS ═══════════════════════ -->
+<div class="section" id="s-analytics">
+  <div class="page-header">
+    <div class="page-title">Analytics</div>
+    <button class="btn btn-gold" onclick="loadAnalytics()">↻ Refresh</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">🏆 Top Winners — All Time</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="topWinnersTable">
+        <thead><tr><th>#</th><th>Username</th><th>Best Single Win</th><th>Total Won</th><th>Rounds</th><th>Top Game</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">💰 All Jackpot Winners</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="allJpTable">
+        <thead><tr><th>Player</th><th>Jackpot</th><th>Game</th><th>Amount</th><th>Time</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Per-Game Breakdown</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="gameBreakTable">
+        <thead><tr><th>Game</th><th>Visits</th><th>Rounds</th><th>Wagered</th><th>Paid Out</th><th>House Take</th><th>Actual RTP</th><th>Biggest Win</th><th>Top Player</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Live Players by Game <span class="live-badge" id="anLive" style="margin-left:0.5rem">0 Live</span></div>
+    <div class="card-body" id="liveByGame">Loading...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ UNIFIED GAMES ═══════════════════════ -->
+<div class="section" id="s-games">
+  <div class="page-header">
+    <div class="page-title">Games</div>
+    <button class="btn btn-gold" onclick="loadUnifiedGames()">↻ Refresh</button>
+  </div>
+
+  <!-- Game selector dropdown -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-body" style="padding:0.9rem 1.25rem">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Select Game</div>
+        <select id="gameSelector" onchange="showGameCard()" class="game-select">
+          <option value="">— Choose a game to edit —</option>
+        </select>
+        <div style="display:flex;gap:0.5rem;margin-left:auto">
+          <span class="status-pill active" style="font-size:0.55rem">Active</span>
+          <span class="status-pill maintenance" style="font-size:0.55rem">Maintenance</span>
+          <span class="status-pill disabled" style="font-size:0.55rem">Disabled</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected game card (hidden until selection) -->
+  <div id="gameCardArea" style="display:none">
+
+    <!-- Game Identity + Status -->
+    <div class="card">
+      <div class="card-header"><span id="ugc-icon">🎰</span> <span id="ugc-title">Game</span> <span class="status-pill" id="ugc-status-pill" style="margin-left:auto"></span></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.25rem;align-items:start">
+
+          <!-- Icon input -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem">
+            <input class="le-icon-input" id="ugc-icon-input" maxlength="4" title="Edit game icon">
+            <div style="font-size:0.55rem;color:var(--muted);letter-spacing:1px" id="ugc-id"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:0.7rem">
+            <!-- Name -->
+            <div class="le-field">
+              <div class="le-label">Display Name</div>
+              <input class="le-input" id="ugc-name" placeholder="Game name shown in lobby">
+            </div>
+            <!-- Description -->
+            <div class="le-field">
+              <div class="le-label">Description</div>
+              <textarea class="le-textarea" id="ugc-desc" rows="2" placeholder="Short description for the lobby card"></textarea>
+            </div>
+            <!-- Tags -->
+            <div class="le-field">
+              <div class="le-label">Tags / Badges</div>
+              <div class="le-tags" id="ugc-tags"></div>
+              <input type="hidden" id="ugc-tags-val">
+            </div>
+          </div>
+        </div>
+
+        <!-- Status controls -->
+        <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);">
+          <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Game Status</div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+            <button class="ctrl-btn set-active" id="ugc-btn-active" onclick="ugcSetStatus('active')">✓ Active</button>
+            <button class="ctrl-btn set-maintenance" id="ugc-btn-maintenance" onclick="ugcSetStatus('maintenance')">⚠ Maintenance</button>
+            <button class="ctrl-btn set-disabled" id="ugc-btn-disabled" onclick="ugcSetStatus('disabled')">✕ Disabled</button>
+            <a id="ugc-play-link" href="#" target="_blank" style="margin-left:auto;color:var(--neon);font-size:0.72rem;letter-spacing:1px;text-decoration:none;text-transform:uppercase">Open Game ↗</a>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;display:flex;gap:0.7rem;align-items:center">
+          <button class="btn btn-gold" onclick="ugcSaveCard()">💾 Save Lobby Card</button>
+          <span id="ugc-card-msg" style="font-size:0.82rem;color:var(--neon);display:none">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RTP + Limits for this game -->
+    <div class="card">
+      <div class="card-header">RTP & Config <span style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:400;color:var(--muted);letter-spacing:0">Changes live on next spin</span></div>
+      <div class="card-body">
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group">
+            <label>Return to Player %</label>
+            <input type="number" id="ugc-rtp" min="50" max="99" placeholder="96">
+            <div style="font-size:0.6rem;color:var(--muted);margin-top:0.2rem">Recommended: 90–97%</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.7rem;align-items:center">
+          <button class="btn btn-gold" onclick="ugcSaveRTP()">Save RTP</button>
+          <span id="ugc-rtp-msg" style="font-size:0.82rem;color:var(--neon);display:none">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Stats -->
+    <div class="card">
+      <div class="card-header">Performance Stats</div>
+      <div class="card-body">
+        <div class="stats-grid" id="ugc-stats" style="margin-bottom:0">
+          <div class="stat-card"><div class="stat-num" id="ugc-visits">—</div><div class="stat-label">Visits</div></div>
+          <div class="stat-card"><div class="stat-num" id="ugc-rounds">—</div><div class="stat-label">Rounds</div></div>
+          <div class="stat-card amber"><div class="stat-num" id="ugc-wagered">—</div><div class="stat-label">Wagered</div></div>
+          <div class="stat-card neon"><div class="stat-num" id="ugc-house">—</div><div class="stat-label">House Take</div></div>
+          <div class="stat-card"><div class="stat-num" id="ugc-actual-rtp">—</div><div class="stat-label">Actual RTP</div></div>
+          <div class="stat-card purple"><div class="stat-num" id="ugc-best-win">—</div><div class="stat-label">Biggest Win</div></div>
+        </div>
+        <div style="margin-top:0.7rem;font-size:0.72rem;color:var(--muted)" id="ugc-top-player"></div>
+        <div id="ugc-live-players" style="margin-top:0.4rem"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick overview of all games (always visible) -->
+  <div class="card" style="margin-top:1rem">
+    <div class="card-header">All Games Overview</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="allGamesTable">
+        <thead><tr><th></th><th>Game</th><th>Status</th><th>RTP</th><th>Rounds</th><th>House Take</th><th>Live</th></tr></thead>
+        <tbody><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DAILY BONUSES ═══════════════════════ -->
+<div class="section" id="s-bonuses">
+  <div class="page-header">
+    <div class="page-title">Daily Bonuses</div>
+    <button class="btn btn-gold" onclick="loadBonuses()">↻ Refresh</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="b-total">—</div><div class="stat-label">Total Claims</div></div>
+    <div class="stat-card neon"><div class="stat-num" id="b-today">—</div><div class="stat-label">Today</div></div>
+    <div class="stat-card amber"><div class="stat-num" id="b-given">—</div><div class="stat-label">Credits Given</div></div>
+    <div class="stat-card purple"><div class="stat-num" id="b-avg-streak">—</div><div class="stat-label">Avg Streak</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Recent Claims</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="bonusTable">
+        <thead><tr><th>Player</th><th>Prize</th><th>Streak</th><th>Multiplier</th><th>When</th></tr></thead>
+        <tbody><tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BROADCAST ═══════════════════════ -->
+<div class="section" id="s-broadcast">
+  <div class="page-header">
+    <div class="page-title">Broadcast Messages</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Send Announcement</div>
+    <div class="card-body">
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">
+        Messages appear as a banner at the top of the lobby for all players. Only one active broadcast at a time.
+      </div>
+      <div class="form-row" style="margin-bottom:1rem">
+        <div class="form-group" style="flex:1;min-width:250px">
+          <label>Message</label>
+          <input type="text" id="bc-message" placeholder="Double XP Weekend! 2x credits on all games..." maxlength="200">
+        </div>
+        <div class="form-group" style="min-width:100px">
+          <label>Style</label>
+          <select id="bc-style">
+            <option value="gold">Gold (Promo)</option>
+            <option value="neon">Neon (Info)</option>
+            <option value="red">Red (Urgent)</option>
+          </select>
+        </div>
+        <div class="form-group" style="min-width:100px">
+          <label>Duration</label>
+          <select id="bc-duration">
+            <option value="1">1 hour</option>
+            <option value="6">6 hours</option>
+            <option value="24" selected>24 hours</option>
+            <option value="72">3 days</option>
+            <option value="168">1 week</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="sendBroadcast()">📢 Send Broadcast</button>
+        <button class="btn" style="border-color:var(--red);color:var(--red)" onclick="clearBroadcast()">✕ Clear Active</button>
+        <span id="bc-msg" style="font-size:0.82rem;color:var(--neon);display:none">✓ Sent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Active Broadcast</div>
+    <div class="card-body" id="bc-active">
+      <div style="color:var(--muted);font-size:0.85rem">No active broadcast</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ USERS ═══════════════════════ -->
+<div class="section" id="s-users">
+  <div class="page-header">
+    <div class="page-title">Users</div>
+    <button class="btn btn-gold" onclick="loadUsers()">↻ Refresh</button>
+  </div>
+  <div class="card">
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="usersTable">
+        <thead><tr><th>ID</th><th>Username</th><th>Level</th><th>Role</th><th>Player Credits</th><th>Reseller Credits</th><th>Set Role</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ INVITES ═══════════════════════ -->
+<div class="section" id="s-invites">
+  <div class="page-header"><div class="page-title">Invite Codes</div></div>
+  <div class="card">
+    <div class="card-header">Generate Codes</div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group"><label>Starting Credits</label><input type="number" id="inv-credits" value="10" min="1" max="1000"></div>
+        <div class="form-group"><label>Quantity</label><input type="number" id="inv-count" value="1" min="1" max="50"></div>
+        <button class="btn btn-gold" onclick="generateInvites()" style="align-self:flex-end">Generate</button>
+      </div>
+      <div class="codes-out" id="codesOut">
+        <div style="font-size:0.7rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem">Click to copy</div>
+        <div class="codes-grid" id="codesGrid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">Existing Invites</div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="invitesTable">
+        <thead><tr><th>Code</th><th>Credits</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SPIN HISTORY ═══════════════════════ -->
+<div class="section" id="s-spins">
+  <div class="page-header"><div class="page-title">Spin History</div></div>
+  <div class="card">
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="spinsTable">
+        <thead><tr><th>User</th><th>Game</th><th>Bet</th><th>Payout</th><th>Net</th><th>Time</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ GLOBAL SETTINGS ═══════════════════════ -->
+<div class="section" id="s-settings">
+  <div class="page-header"><div class="page-title">Global Settings</div></div>
+
+  <div class="card">
+    <div class="card-header">Betting Limits</div>
+    <div class="card-body">
+      <div class="form-row" style="margin-bottom:1.25rem">
+        <div class="form-group"><label>Min Bet (cents)</label><input type="number" id="s-min-bet" min="1" placeholder="10 = $0.10"></div>
+        <div class="form-group"><label>Max Bet (cents)</label><input type="number" id="s-max-bet" min="100" step="100" placeholder="10000 = $100"></div>
+        <div class="form-group"><label>Crash Max Mult</label><input type="number" id="s-crash-max" min="10" max="10000" step="10" placeholder="100"></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <button class="btn btn-gold" onclick="saveLimits()">Save Limits</button>
+        <span id="limits-msg" style="font-size:0.82rem;color:var(--neon);display:none">✓ Saved</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Jackpot Seed Values</div>
+    <div class="card-body">
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Jackpot resets to seed amount after each win. Values in cents.</div>
+      <div class="form-row" style="margin-bottom:1.25rem">
+        <div class="form-group"><label>Mini Seed (cents)</label><input type="number" id="s-jp-mini" min="100" step="100" placeholder="50000"></div>
+        <div class="form-group"><label>Major Seed (cents)</label><input type="number" id="s-jp-major" min="1000" step="1000" placeholder="500000"></div>
+        <div class="form-group"><label>Grand Seed (cents)</label><input type="number" id="s-jp-grand" min="10000" step="10000" placeholder="2000000"></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <button class="btn btn-gold" onclick="saveJP()">Save Seeds</button>
+        <span id="jp-msg" style="font-size:0.82rem;color:var(--neon);display:none">✓ Saved</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RTP Audit (all games at a glance) -->
+  <div class="card">
+    <div class="card-header">RTP Audit — All Games <span style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:400;color:var(--muted);letter-spacing:0">Actual vs target payout rates</span></div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="data-table" id="rtpAuditTable">
+        <thead>
+          <tr><th>Game</th><th>Target RTP</th><th>Actual RTP</th><th>Difference</th><th>Rounds</th><th>Wagered</th><th>Status</th></tr>
+        </thead>
+        <tbody><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Helpers ─────────────────────────────────────────────────
+const fmt  = c => '$'+(c/100).toFixed(2);
+const fmtN = n => n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n||0);
+const ago  = s => { const d=Math.floor((Date.now()-new Date(s))/1000); return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago'; };
+const flashMsg = (id,msg='✓ Saved') => { const el=document.getElementById(id); el.textContent=msg; el.style.display='inline'; setTimeout(()=>el.style.display='none',3000); };
+
+function toast(msg, col) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.borderColor=col||'var(--neon)'; t.style.color=col||'var(--neon)';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sOverlay').classList.toggle('on');
+}
+
+function show(name) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(a=>a.classList.remove('active'));
+  document.getElementById('s-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sOverlay').classList.remove('on');
+  const loaders = {
+    dashboard:loadDashboard, analytics:loadAnalytics, games:loadUnifiedGames,
+    users:loadUsers, invites:loadInvites, spins:loadSpins, settings:loadSettings,
+    bonuses:loadBonuses, broadcast:loadBroadcast
+  };
+  loaders[name]?.();
+}
+
+async function logout() { await fetch('/api/auth/logout',{method:'POST'}); window.location='/'; }
+
+// ─── DASHBOARD ───────────────────────────────────────────────
+async function loadDashboard() {
+  const [sRes, aRes] = await Promise.all([fetch('/api/admin/stats'), fetch('/api/admin/analytics')]);
+  if(!sRes.ok || !aRes.ok) return;
+  const stats = await sRes.json();
+  const an    = await aRes.json();
+
+  document.getElementById('d-users').textContent    = fmtN(an.totalUsers);
+  document.getElementById('d-new').textContent      = an.todayNew ? `+${an.todayNew} today` : '';
+  document.getElementById('d-live').textContent     = an.liveUsers;
+  document.getElementById('d-spins').textContent    = fmtN(an.totalSpins);
+  document.getElementById('d-spins-today').textContent = an.todaySpins ? `${fmtN(an.todaySpins)} today` : '';
+  document.getElementById('d-wagered').textContent  = fmt(an.totalWagered);
+  document.getElementById('d-house').textContent    = fmt(an.totalWagered - an.totalPaid);
+  document.getElementById('d-rev-today').textContent= an.todayRevenue ? `${fmt(an.todayRevenue)} today` : '';
+  document.getElementById('d-visits').textContent   = fmtN(an.totalVisits);
+  document.getElementById('liveBadge').textContent  = an.liveUsers + ' Live';
+
+  const bw = an.biggestWin;
+  document.getElementById('d-biggest').innerHTML = bw
+    ? `<div class="highlight-val">${fmt(bw.payout)}</div><div class="highlight-sub"><strong style="color:#fff">${bw.username}</strong> on ${bw.game} · bet ${fmt(bw.bet)} · ${ago(bw.created_at)}</div>`
+    : '<div style="color:var(--muted);font-size:0.82rem">No data yet</div>';
+
+  const ph = an.peakHour;
+  document.getElementById('d-peak').innerHTML = ph
+    ? `<div class="highlight-val neon">${ph.hour}</div><div class="highlight-sub">${fmtN(ph.count)} rounds recorded in this hour</div>`
+    : '<div style="color:var(--muted);font-size:0.82rem">Not enough data yet</div>';
+
+  const chart = document.getElementById('actChart');
+  if(an.hourlyActivity && an.hourlyActivity.length) {
+    const maxV = Math.max(...an.hourlyActivity.map(d=>d.spins),1);
+    chart.innerHTML = an.hourlyActivity.map(d=>{
+      const pct = Math.max(3,Math.round((d.spins/maxV)*100));
+      return `<div class="bar" style="height:${pct}%" data-h="${d.hour}h" title="${d.spins} rounds"></div>`;
+    }).join('');
+  } else {
+    chart.innerHTML = '<div style="color:var(--muted);font-size:0.8rem">No activity in the last 24 hours</div>';
+  }
+
+  const jpTbody = document.querySelector('#jpTable tbody');
+  jpTbody.innerHTML = (an.jackpotWinners||[]).slice(0,5).map(w=>`
+    <tr>
+      <td><strong>${w.username}</strong></td>
+      <td><span class="jp-badge ${w.jackpot_type}">${w.jackpot_type}</span></td>
+      <td style="color:var(--muted);font-size:0.8rem">${w.game}</td>
+      <td style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1rem">${fmt(w.amount)}</td>
+      <td style="color:var(--muted);font-size:0.75rem">${ago(w.created_at)}</td>
+    </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem">No jackpot winners yet</td></tr>';
+
+  const recTbody = document.querySelector('#recentTable tbody');
+  recTbody.innerHTML = (stats.recentSpins||[]).map(s=>`
+    <tr>
+      <td><strong>${s.username}</strong></td>
+      <td style="color:var(--muted);font-size:0.78rem">${s.game}</td>
+      <td>${fmt(s.bet)}</td>
+      <td style="color:${s.payout>s.bet?'var(--neon)':s.payout>0?'var(--muted)':'var(--muted)'}">${s.payout>0?'+'+fmt(s.payout):'—'}</td>
+      <td style="color:var(--muted);font-size:0.72rem">${ago(s.created_at)}</td>
+    </tr>`).join('');
+}
+
+// ─── ANALYTICS ───────────────────────────────────────────────
+async function loadAnalytics() {
+  const res = await fetch('/api/admin/analytics');
+  if(!res.ok) return;
+  const an = await res.json();
+
+  document.getElementById('anLive').textContent = an.liveUsers + ' Live';
+
+  document.querySelector('#topWinnersTable tbody').innerHTML =
+    (an.topWinners||[]).map((w,i)=>`
+      <tr class="${i===0?'winner-row':''}">
+        <td style="color:${['var(--gold)','#aaa','#cd7f32'][i]||'var(--muted)'};">${['🥇','🥈','🥉'][i]||`#${i+1}`}</td>
+        <td><strong>${w.username}</strong></td>
+        <td style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.05rem">${fmt(w.best_win)}</td>
+        <td>${fmt(w.total_won)}</td>
+        <td style="color:var(--muted)">${fmtN(w.rounds)}</td>
+        <td style="color:var(--muted);font-size:0.78rem">${w.game}</td>
+      </tr>`).join('')
+    || '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem">No winners yet</td></tr>';
+
+  document.querySelector('#allJpTable tbody').innerHTML =
+    (an.jackpotWinners||[]).map(w=>`
+      <tr>
+        <td><strong>${w.username}</strong></td>
+        <td><span class="jp-badge ${w.jackpot_type}">${w.jackpot_type}</span></td>
+        <td style="color:var(--muted);font-size:0.78rem">${w.game}</td>
+        <td style="color:var(--gold);font-family:'Bebas Neue',sans-serif">${fmt(w.amount)}</td>
+        <td style="color:var(--muted);font-size:0.72rem">${ago(w.created_at)}</td>
+      </tr>`).join('')
+    || '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem">No jackpot winners yet</td></tr>';
+
+  const vMap = {};
+  (an.visitsByGame||[]).forEach(v=>vMap[v.game_id]=v.visits);
+
+  document.querySelector('#gameBreakTable tbody').innerHTML =
+    (an.gameStats||[]).map(g=>{
+      const house = g.wagered - g.paid;
+      const rtp   = g.wagered>0 ? ((g.paid/g.wagered)*100).toFixed(1)+'%' : '—';
+      const rtpNum= g.wagered>0 ? (g.paid/g.wagered)*100 : 0;
+      return `<tr>
+        <td><strong>${g.game}</strong></td>
+        <td style="color:var(--muted)">${fmtN(vMap[g.game]||0)}</td>
+        <td>${fmtN(g.rounds)}</td>
+        <td>${fmt(g.wagered)}</td>
+        <td>${fmt(g.paid)}</td>
+        <td style="color:${house>0?'var(--neon)':'var(--red)'}">${fmt(house)}</td>
+        <td style="color:${rtpNum>97?'var(--red)':rtpNum>90?'var(--amber)':'var(--neon)'}">${rtp}</td>
+        <td style="color:var(--gold)">${g.biggest_win?fmt(g.biggest_win):'—'}</td>
+        <td style="color:var(--muted);font-size:0.78rem">${g.top_winner||'—'}</td>
+      </tr>`;
+    }).join('')
+    || '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:1.5rem">No game data yet</td></tr>';
+
+  const lbg = document.getElementById('liveByGame');
+  if(!an.liveByGame?.length) {
+    lbg.innerHTML = '<div style="color:var(--muted);font-size:0.85rem">No active players right now</div>';
+  } else {
+    lbg.innerHTML = an.liveByGame.map(g=>`
+      <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.5rem">
+        <div class="gc-live-dot"></div>
+        <div style="flex:1;font-weight:600">${g.game_id||'Lobby'}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--neon)">${g.count}</div>
+        <div style="font-size:0.68rem;color:var(--muted)">players</div>
+      </div>`).join('');
+  }
+}
+
+// ─── UNIFIED GAMES ──────────────────────────────────────────
+// RTP setting key map — built dynamically from games DB (rtp_key column)
+let RTP_KEYS = {};
+
+function buildRTPKeys(games) {
+  RTP_KEYS = {};
+  games.forEach(function(g) {
+    if (g.rtp_key) RTP_KEYS[g.id] = g.rtp_key;
+  });
+}
+
+let allGamesData = [];
+let allSettingsData = {};
+let allAnalyticsData = {};
+
+async function loadUnifiedGames() {
+  const [gRes, sRes, aRes] = await Promise.all([
+    fetch('/api/admin/games'),
+    fetch('/api/admin/settings'),
+    fetch('/api/admin/analytics')
+  ]);
+  if(!gRes.ok) return;
+
+  const {games} = await gRes.json();
+  allGamesData = games;
+  buildRTPKeys(games);
+  allSettingsData = sRes.ok ? (await sRes.json()).settings || {} : {};
+  allAnalyticsData = aRes.ok ? await aRes.json() : {};
+
+  // Build dropdown
+  const sel = document.getElementById('gameSelector');
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">— Choose a game to edit —</option>' +
+    games.map(g => `<option value="${g.id}" ${g.id===currentVal?'selected':''}>${g.icon||'🎰'} ${g.name} (${g.status})</option>`).join('');
+
+  // Build overview table
+  const liveMap = {};
+  (allAnalyticsData.liveByGame||[]).forEach(g=>liveMap[g.game_id]=g.count);
+  const gameStatsMap = {};
+  (allAnalyticsData.gameStats||[]).forEach(g=>gameStatsMap[g.game]=g);
+
+  document.querySelector('#allGamesTable tbody').innerHTML = games.map(g => {
+    const gs = gameStatsMap[g.id] || {};
+    const house = (gs.wagered||0) - (gs.paid||0);
+    const rtp = gs.wagered>0 ? ((gs.paid/gs.wagered)*100).toFixed(1)+'%' : '—';
+    const targetRTP = allSettingsData[RTP_KEYS[g.id]] || '—';
+    const live = liveMap[g.id] || 0;
+    return `<tr style="cursor:pointer" onclick="document.getElementById('gameSelector').value='${g.id}';showGameCard()">
+      <td>${g.icon||'🎰'}</td>
+      <td><strong>${g.name}</strong></td>
+      <td><span class="status-pill ${g.status}" style="font-size:0.55rem">${g.status}</span></td>
+      <td style="color:var(--gold)">${targetRTP}%</td>
+      <td style="color:var(--muted)">${fmtN(gs.rounds||0)}</td>
+      <td style="color:${house>=0?'var(--neon)':'var(--red)'}">${fmt(house)}</td>
+      <td>${live>0?`<span style="color:var(--c-active)"><span class="gc-live-dot" style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--c-active);animation:blink 1.5s infinite;vertical-align:middle;margin-right:3px"></span>${live}</span>`:''}</td>
+    </tr>`;
+  }).join('');
+
+  // If a game was selected, refresh its card
+  if(currentVal) showGameCard();
+}
+
+function showGameCard() {
+  const gameId = document.getElementById('gameSelector').value;
+  const area = document.getElementById('gameCardArea');
+  if(!gameId) { area.style.display='none'; return; }
+  area.style.display='block';
+
+  const g = allGamesData.find(x=>x.id===gameId);
+  if(!g) return;
+
+  // Identity
+  document.getElementById('ugc-icon').textContent = g.icon||'🎰';
+  document.getElementById('ugc-title').textContent = g.name;
+  document.getElementById('ugc-id').textContent = g.id;
+  document.getElementById('ugc-icon-input').value = g.icon||'🎰';
+  document.getElementById('ugc-name').value = g.name||'';
+  document.getElementById('ugc-desc').value = g.description||'';
+  document.getElementById('ugc-play-link').href = g.route||'#';
+
+  // Status
+  const pill = document.getElementById('ugc-status-pill');
+  pill.className = 'status-pill ' + g.status;
+  pill.textContent = g.status;
+  ['active','maintenance','disabled'].forEach(s => {
+    const btn = document.getElementById('ugc-btn-'+s);
+    btn.classList.toggle('curr', g.status===s);
+  });
+
+  // Tags
+  const tags = (g.tags||'').split(',').filter(t=>t.trim());
+  document.getElementById('ugc-tags-val').value = g.tags||'';
+  renderUgcTags(tags);
+
+  // RTP
+  const rtpKey = RTP_KEYS[gameId];
+  const rtpEl = document.getElementById('ugc-rtp');
+  if(rtpKey && allSettingsData[rtpKey]) {
+    rtpEl.value = allSettingsData[rtpKey];
+  } else {
+    rtpEl.value = '';
+  }
+
+  // Stats
+  const gameStatsMap = {};
+  (allAnalyticsData.gameStats||[]).forEach(gs=>gameStatsMap[gs.game]=gs);
+  const vMap = {};
+  (allAnalyticsData.visitsByGame||[]).forEach(v=>vMap[v.game_id]=v.visits);
+  const liveMap = {};
+  (allAnalyticsData.liveByGame||[]).forEach(l=>liveMap[l.game_id]=l.count);
+
+  const gs = gameStatsMap[gameId] || {};
+  const house = (gs.wagered||0) - (gs.paid||0);
+  const actualRTP = gs.wagered>0 ? (gs.paid/gs.wagered)*100 : 0;
+
+  document.getElementById('ugc-visits').textContent = fmtN(vMap[gameId]||0);
+  document.getElementById('ugc-rounds').textContent = fmtN(gs.rounds||0);
+  document.getElementById('ugc-wagered').textContent = fmt(gs.wagered||0);
+  document.getElementById('ugc-house').textContent = fmt(house);
+  document.getElementById('ugc-actual-rtp').textContent = actualRTP ? actualRTP.toFixed(1)+'%' : '—';
+  document.getElementById('ugc-best-win').textContent = gs.biggest_win ? fmt(gs.biggest_win) : '—';
+  document.getElementById('ugc-top-player').innerHTML = gs.top_winner ? `🏆 Top player: <strong>${gs.top_winner}</strong>` : '';
+
+  const live = liveMap[gameId]||0;
+  document.getElementById('ugc-live-players').innerHTML = live>0
+    ? `<div style="display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;color:var(--c-active)"><div class="gc-live-dot"></div>${live} playing now</div>`
+    : '';
+}
+
+function renderUgcTags(tags) {
+  document.getElementById('ugc-tags').innerHTML =
+    tags.map((t,i) => `<span class="le-tag">${t.trim()}<span class="le-tag-x" onclick="ugcRemoveTag(${i})">×</span></span>`).join('')
+    + `<button class="le-tag-add" onclick="ugcAddTag()">+ Tag</button>`;
+}
+
+function ugcRemoveTag(idx) {
+  const el = document.getElementById('ugc-tags-val');
+  const tags = el.value.split(',').filter(t=>t.trim());
+  tags.splice(idx,1);
+  el.value = tags.join(',');
+  renderUgcTags(tags);
+}
+
+function ugcAddTag() {
+  const newTag = prompt('Enter tag name (e.g. New, Hot, Featured, Jackpots):');
+  if(!newTag||!newTag.trim()) return;
+  const el = document.getElementById('ugc-tags-val');
+  const tags = el.value ? el.value.split(',').filter(t=>t.trim()) : [];
+  tags.push(newTag.trim());
+  el.value = tags.join(',');
+  renderUgcTags(tags);
+}
+
+async function ugcSetStatus(status) {
+  const gameId = document.getElementById('gameSelector').value;
+  if(!gameId) return;
+  const r = await fetch('/api/admin/games/status',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({gameId,status})
+  });
+  if(r.ok) {
+    toast(`${gameId} → ${status}`);
+    loadUnifiedGames();
+  }
+}
+
+async function ugcSaveCard() {
+  const gameId = document.getElementById('gameSelector').value;
+  if(!gameId) return;
+  const name = document.getElementById('ugc-name').value.trim();
+  const description = document.getElementById('ugc-desc').value.trim();
+  const icon = document.getElementById('ugc-icon-input').value.trim();
+  const tags = document.getElementById('ugc-tags-val').value;
+
+  const r = await fetch('/api/admin/games/update',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({gameId,name,description,tags,icon})
+  });
+  if(r.ok) {
+    flashMsg('ugc-card-msg');
+    toast('Game card updated ✓');
+    loadUnifiedGames();
+  } else {
+    toast('Failed to save','var(--red)');
+  }
+}
+
+async function ugcSaveRTP() {
+  const gameId = document.getElementById('gameSelector').value;
+  if(!gameId) return;
+  const rtpKey = RTP_KEYS[gameId];
+  if(!rtpKey) { toast('No RTP setting for this game','var(--amber)'); return; }
+  const val = document.getElementById('ugc-rtp').value;
+  if(!val||val<50||val>99) { toast('RTP must be 50-99','var(--red)'); return; }
+
+  const body = {};
+  body[rtpKey] = val;
+  const r = await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(r.ok) {
+    flashMsg('ugc-rtp-msg');
+    toast(`RTP for ${gameId} → ${val}% ✓`);
+    allSettingsData[rtpKey] = val;
+  }
+}
+
+// ─── USERS ───────────────────────────────────────────────────
+async function loadUsers() {
+  const res = await fetch('/api/admin/users');
+  if(!res.ok) return;
+  const {users} = await res.json();
+  document.querySelector('#usersTable tbody').innerHTML = users.map(u=>`
+    <tr>
+      <td style="color:var(--muted);font-size:0.75rem">${u.id}</td>
+      <td><strong>${u.username}</strong></td>
+      <td style="color:var(--neon);font-family:Bebas Neue,sans-serif;font-size:0.9rem">${u.level||1} <span style="font-size:0.55rem;color:var(--muted)">${u.title||"Rookie"}</span></td>
+      <td><span class="role-badge ${u.role}">${u.role}</span></td>
+      <td>
+        <div class="edit-form">
+          <input type="number" value="${(u.credits/100).toFixed(2)}" id="cr-${u.id}" min="0" step="0.01">
+          <button class="btn-sm" onclick="updateCredits(${u.id})">Save</button>
+        </div>
+      </td>
+      <td>
+        <div class="edit-form">
+          <input type="number" value="${(u.reseller_credits/100).toFixed(2)}" id="rc-${u.id}" min="0" step="0.01" ${u.role!=='reseller'&&u.role!=='admin'?'style="opacity:0.4"':''}>
+          <button class="btn-sm" style="border-color:var(--neon);color:var(--neon)" onclick="updateReseller(${u.id})">Set</button>
+        </div>
+      </td>
+      <td>
+        <select onchange="setRole(${u.id},this.value)" style="padding:0.22rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:0.78rem">
+          <option value="player" ${u.role==='player'?'selected':''}>player</option>
+          <option value="reseller" ${u.role==='reseller'?'selected':''}>reseller</option>
+          <option value="admin" ${u.role==='admin'?'selected':''}>admin</option>
+        </select>
+      </td>
+    </tr>`).join('');
+}
+
+async function updateCredits(id) {
+  const credits=parseFloat(document.getElementById('cr-'+id).value);
+  const r=await fetch('/api/admin/update-credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:id,credits})});
+  if(r.ok) toast('Credits updated ✓');
+}
+async function updateReseller(id) {
+  const resellerCredits=parseFloat(document.getElementById('rc-'+id).value);
+  if(isNaN(resellerCredits)||resellerCredits<0){toast('Invalid amount','var(--red)');return;}
+  const r=await fetch('/api/admin/update-reseller-credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:id,resellerCredits})});
+  if(r.ok) toast('Reseller credits updated ✓');
+}
+async function setRole(id,role) {
+  const r=await fetch('/api/admin/set-role',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:id,role})});
+  if(r.ok) toast(`Role → ${role}`);
+}
+
+// ─── INVITES ─────────────────────────────────────────────────
+async function loadInvites() {
+  const res=await fetch('/api/admin/invites');
+  if(!res.ok)return;
+  const {invites}=await res.json();
+  document.querySelector('#invitesTable tbody').innerHTML=invites.map(i=>`
+    <tr>
+      <td style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:2px;color:var(--gold)">${i.code}</td>
+      <td>${fmt(i.credits)}</td>
+      <td style="color:${i.used?'var(--muted)':'var(--neon)'}">${i.used?'Used':'Available'}</td>
+    </tr>`).join('');
+}
+async function generateInvites() {
+  const credits=parseFloat(document.getElementById('inv-credits').value)*100;
+  const count=parseInt(document.getElementById('inv-count').value);
+  const r=await fetch('/api/admin/invite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credits,count})});
+  const d=await r.json();
+  document.getElementById('codesGrid').innerHTML=d.codes.map(c=>`<div class="code-chip" onclick="copyCode('${c}')">${c}</div>`).join('');
+  document.getElementById('codesOut').classList.add('on');
+}
+function copyCode(c){navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));}
+
+// ─── SPINS ───────────────────────────────────────────────────
+async function loadSpins() {
+  const res=await fetch('/api/admin/stats');
+  if(!res.ok)return;
+  const d=await res.json();
+  document.querySelector('#spinsTable tbody').innerHTML=(d.recentSpins||[]).map(s=>`
+    <tr>
+      <td><strong>${s.username}</strong></td>
+      <td style="color:var(--muted);font-size:0.78rem">${s.game}</td>
+      <td>${fmt(s.bet)}</td>
+      <td style="color:${s.payout>0?'var(--muted)':'var(--muted)'}">${s.payout>0?fmt(s.payout):'—'}</td>
+      <td style="color:${(s.payout-s.bet)>0?'var(--neon)':'var(--red)'}">${(s.payout-s.bet)>0?'+':''}${fmt(s.payout-s.bet)}</td>
+      <td style="color:var(--muted);font-size:0.72rem">${ago(s.created_at)}</td>
+    </tr>`).join('');
+}
+
+// ─── GLOBAL SETTINGS ────────────────────────────────────────
+async function loadSettings() {
+  const [sRes, aRes] = await Promise.all([fetch('/api/admin/settings'), fetch('/api/admin/analytics')]);
+  if(!sRes.ok) return;
+  const {settings:s} = await sRes.json();
+  const set=(id,k)=>{const el=document.getElementById(id);if(el&&s[k])el.value=s[k];};
+  set('s-min-bet','min_bet'); set('s-max-bet','max_bet'); set('s-crash-max','crash_max_mult');
+  set('s-jp-mini','jackpot_mini_seed'); set('s-jp-major','jackpot_major_seed'); set('s-jp-grand','jackpot_grand_seed');
+
+  // RTP Audit
+  if(!aRes.ok) return;
+  const an = await aRes.json();
+  const tbody = document.querySelector('#rtpAuditTable tbody');
+  if(!an.gameStats||!an.gameStats.length){
+    tbody.innerHTML='<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1.5rem">No spin data yet</td></tr>';
+    return;
+  }
+  // Build reverse RTP map dynamically — analytics uses underscores for game ids (e.g. nebula_bots)
+  // but the games table uses hyphens (nebula-bots). Map both forms.
+  var rtpMapAudit = {};
+  Object.keys(RTP_KEYS).forEach(function(id) {
+    rtpMapAudit[id] = RTP_KEYS[id];
+    rtpMapAudit[id.replace(/-/g, '_')] = RTP_KEYS[id];
+  });
+  tbody.innerHTML = an.gameStats.map(g=>{
+    const settingKey = rtpMapAudit[g.game];
+    const targetRTP = settingKey ? parseFloat(s[settingKey]||'0') : null;
+    const actualRTP = g.wagered>0 ? (g.paid/g.wagered)*100 : null;
+    const diff = (targetRTP && actualRTP) ? (actualRTP - targetRTP).toFixed(1) : null;
+    const diffNum = parseFloat(diff);
+    const statusColor = !diff ? 'var(--muted)' : Math.abs(diffNum)<=3 ? 'var(--neon)' : diffNum>3 ? 'var(--red)' : 'var(--amber)';
+    const statusText = !diff ? '—' : Math.abs(diffNum)<=3 ? '✓ On Target' : diffNum>3 ? '⚠ Over-paying' : '↓ Under-paying';
+    return `<tr>
+      <td><strong>${g.game}</strong></td>
+      <td style="color:var(--gold)">${targetRTP ? targetRTP+'%' : '—'}</td>
+      <td style="color:${actualRTP?(actualRTP>97?'var(--red)':actualRTP>90?'var(--amber)':'var(--neon)'):'var(--muted)'}">${actualRTP?actualRTP.toFixed(1)+'%':'—'}</td>
+      <td style="color:${diff?(diffNum>3?'var(--red)':diffNum<-3?'var(--amber)':'var(--neon)'):'var(--muted)'}">
+        ${diff ? (diffNum>0?'+':'')+diff+'%' : '—'}
+      </td>
+      <td style="color:var(--muted)">${fmtN(g.rounds)}</td>
+      <td>${fmt(g.wagered)}</td>
+      <td style="color:${statusColor};font-weight:700;font-size:0.75rem">${statusText}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function saveLimits() {
+  const b={min_bet:document.getElementById('s-min-bet').value,max_bet:document.getElementById('s-max-bet').value,crash_max_mult:document.getElementById('s-crash-max').value};
+  const r=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+  if(r.ok){flashMsg('limits-msg');toast('Limits saved ✓');}
+}
+async function saveJP() {
+  const b={jackpot_mini_seed:document.getElementById('s-jp-mini').value,jackpot_major_seed:document.getElementById('s-jp-major').value,jackpot_grand_seed:document.getElementById('s-jp-grand').value};
+  const r=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+  if(r.ok){flashMsg('jp-msg');toast('Seeds saved ✓');}
+}
+
+// ─── DAILY BONUSES ──────────────────────────────────────────
+async function loadBonuses() {
+  try {
+    const res = await fetch('/api/admin/daily-bonus-stats');
+    if(!res.ok) {
+      // If endpoint doesn't exist yet, show placeholder
+      document.getElementById('b-total').textContent = '—';
+      document.getElementById('b-today').textContent = '—';
+      document.getElementById('b-given').textContent = '—';
+      document.getElementById('b-avg-streak').textContent = '—';
+      document.querySelector('#bonusTable tbody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem">Bonus API not configured yet</td></tr>';
+      return;
+    }
+    const d = await res.json();
+    document.getElementById('b-total').textContent = fmtN(d.totalClaims||0);
+    document.getElementById('b-today').textContent = fmtN(d.todayClaims||0);
+    document.getElementById('b-given').textContent = fmt(d.totalCreditsGiven||0);
+    document.getElementById('b-avg-streak').textContent = d.avgStreak ? d.avgStreak.toFixed(1)+'d' : '—';
+
+    document.querySelector('#bonusTable tbody').innerHTML = (d.recentClaims||[]).map(c=>`
+      <tr>
+        <td><strong>${c.username}</strong></td>
+        <td style="color:var(--gold);font-family:'Bebas Neue',sans-serif">${c.prize_label}</td>
+        <td style="color:var(--neon)">${c.day_streak} day${c.day_streak>1?'s':''}</td>
+        <td style="color:var(--muted)">${c.day_streak>=7?'2.0×':c.day_streak>=5?'1.6×':c.day_streak>=3?'1.25×':'1.0×'}</td>
+        <td style="color:var(--muted);font-size:0.72rem">${ago(c.claimed_at)}</td>
+      </tr>`).join('')
+      || '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1.5rem">No bonus claims yet</td></tr>';
+  } catch(e) {
+    console.error('Bonus stats error:', e);
+  }
+}
+
+// ─── BROADCAST ──────────────────────────────────────────────
+async function loadBroadcast() {
+  try {
+    const res = await fetch('/api/admin/broadcast');
+    if(!res.ok) {
+      document.getElementById('bc-active').innerHTML = '<div style="color:var(--muted);font-size:0.85rem">Broadcast API not configured yet</div>';
+      return;
+    }
+    const d = await res.json();
+    if(d.broadcast) {
+      const b = d.broadcast;
+      const styleColors = {gold:'var(--gold)',neon:'var(--neon)',red:'var(--red)'};
+      document.getElementById('bc-active').innerHTML = `
+        <div style="padding:0.8rem 1rem;border:1px solid ${styleColors[b.style]||'var(--gold)'};background:rgba(255,255,255,0.03);margin-bottom:0.5rem">
+          <div style="color:${styleColors[b.style]||'var(--gold)'};font-weight:700;font-size:0.95rem">${b.message}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem">Expires: ${new Date(b.expires).toLocaleString()}</div>
+        </div>`;
+    } else {
+      document.getElementById('bc-active').innerHTML = '<div style="color:var(--muted);font-size:0.85rem">No active broadcast</div>';
+    }
+  } catch(e) {
+    document.getElementById('bc-active').innerHTML = '<div style="color:var(--muted);font-size:0.85rem">Broadcast API not configured yet</div>';
+  }
+}
+
+async function sendBroadcast() {
+  const message = document.getElementById('bc-message').value.trim();
+  if(!message) { toast('Enter a message','var(--red)'); return; }
+  const style = document.getElementById('bc-style').value;
+  const hours = parseInt(document.getElementById('bc-duration').value);
+  const r = await fetch('/api/admin/broadcast',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message,style,hours})
+  });
+  if(r.ok) {
+    flashMsg('bc-msg','✓ Sent');
+    toast('Broadcast sent ✓');
+    document.getElementById('bc-message').value='';
+    loadBroadcast();
+  } else {
+    toast('Failed to send','var(--red)');
+  }
+}
+
+async function clearBroadcast() {
+  const r = await fetch('/api/admin/broadcast',{method:'DELETE'});
+  if(r.ok) {
+    toast('Broadcast cleared');
+    loadBroadcast();
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+async function init() {
+  try {
+    const r=await fetch('/api/me');
+    if(!r.ok){window.location='/';return;}
+    const d=await r.json();
+    if(d.role!=='admin'){window.location='/play';return;}
+    document.getElementById('adminWho').textContent=d.username+' — Admin';
+  } catch(e){window.location='/';}
+  loadDashboard();
+  setInterval(async()=>{
+    try{
+      const r=await fetch('/api/admin/analytics');
+      if(!r.ok)return;
+      const an=await r.json();
+      document.getElementById('liveBadge').textContent=an.liveUsers+' Live';
+      document.getElementById('d-live').textContent=an.liveUsers;
+    }catch(e){}
+  },30000);
+}
+
+init();
+</script>
+</body>
+</html>

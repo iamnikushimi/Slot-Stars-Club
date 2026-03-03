@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Jackpot Slots — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;--border:rgba(255,165,0,0.2);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100dvh;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,165,0,0.08),transparent 60%);pointer-events:none;}
+
+nav{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;padding-top:max(0.75rem,env(safe-area-inset-top));border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;flex-shrink:0;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.nav-right{display:flex;align-items:center;gap:0.6rem;}
+.nav-back{padding:0.3rem 0.75rem;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.5);font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+.nav-back:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
+.nav-balance{display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.75rem;border:1px solid var(--gold);background:rgba(255,215,0,0.05);}
+.nav-balance-label{font-size:0.6rem;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;}
+.nav-balance-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);}
+.nav-logout{background:none;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);padding:0.3rem 0.65rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;}
+.nav-logout:hover{border-color:var(--red);color:var(--red);}
+
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem;gap:1rem;overflow-y:auto;}
+
+/* Jackpot meters */
+.jp-meters{display:flex;gap:0.75rem;width:100%;max-width:560px;flex-wrap:wrap;}
+.jp-meter{flex:1;min-width:100px;padding:0.6rem 0.75rem;border:1px solid;text-align:center;background:rgba(0,0,0,0.3);position:relative;overflow:hidden;}
+.jp-meter::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.5s;}
+.jp-meter.mini{border-color:rgba(255,215,0,0.3);}
+.jp-meter.major{border-color:rgba(255,150,0,0.4);}
+.jp-meter.grand{border-color:rgba(0,255,204,0.4);}
+.jp-meter.grand::before{background:radial-gradient(ellipse,rgba(0,255,204,0.07),transparent);}
+.jp-meter.grand{animation:jpPulse 3s ease-in-out infinite;}
+@keyframes jpPulse{0%,100%{box-shadow:0 0 10px rgba(0,255,204,0.1);}50%{box-shadow:0 0 25px rgba(0,255,204,0.25);}}
+.jp-meter-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+.jp-meter-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:1px;}
+.jp-mini-val{color:var(--gold);}
+.jp-major-val{color:#ff9900;}
+.jp-grand-val{color:var(--neon);}
+
+/* Machine */
+.machine{background:var(--dark2);border:1px solid var(--border);border-top:3px solid var(--gold2);width:100%;max-width:560px;padding:1.25rem;box-shadow:0 0 60px rgba(255,165,0,0.07);}
+
+.reels-wrap{position:relative;margin-bottom:0.75rem;}
+.reels{display:flex;gap:0.5rem;background:rgba(0,0,0,0.5);padding:1rem;border:1px solid rgba(255,215,0,0.08);}
+.reel-col{flex:1;display:flex;flex-direction:column;gap:0.3rem;}
+.reel-window{height:80px;background:var(--dark3);border:1px solid rgba(255,215,0,0.1);display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;position:relative;transition:border-color 0.3s;}
+.reel-window.lit{border-color:var(--gold);box-shadow:0 0 12px rgba(255,215,0,0.3);}
+.reel-window.spinning-anim{animation:reelBlur 0.08s linear infinite;}
+@keyframes reelBlur{0%{transform:translateY(0);}50%{transform:translateY(-4px);}100%{transform:translateY(0);}}
+.payline{position:absolute;top:50%;left:0;right:0;height:2px;background:transparent;transform:translateY(-50%);transition:background 0.3s;pointer-events:none;z-index:2;}
+.payline.active{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+.win-banner{text-align:center;min-height:2.5rem;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;opacity:0;transition:opacity 0.3s;margin-bottom:0.75rem;}
+.win-banner.show{opacity:1;}
+.win-banner.win{color:var(--gold);}
+.win-banner.big{color:var(--neon);animation:bigWin 0.4s ease infinite alternate;}
+.win-banner.lose{font-size:0.9rem;letter-spacing:2px;color:rgba(255,255,255,0.25);}
+@keyframes bigWin{from{transform:scale(1);}to{transform:scale(1.04);}}
+
+/* Jackpot celebration overlay */
+.jp-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.85);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+.jp-overlay.show{display:flex;}
+.jp-overlay-type{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:6px;margin-bottom:0.5rem;opacity:0.7;}
+.jp-overlay-label{font-family:'Bebas Neue',sans-serif;font-size:4rem;letter-spacing:6px;animation:jpFlash 0.5s infinite alternate;}
+@keyframes jpFlash{from{opacity:1;text-shadow:0 0 30px currentColor;}to{opacity:0.7;text-shadow:0 0 60px currentColor;}}
+.jp-overlay-amount{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#fff;margin:1rem 0;}
+.jp-overlay-close{padding:0.75rem 2rem;background:var(--gold);color:var(--dark);border:none;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;margin-top:1rem;}
+
+/* Bet controls */
+.bet-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;}
+.bet-label{font-size:0.7rem;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;white-space:nowrap;}
+.bet-stepper{display:flex;align-items:center;gap:0.4rem;}
+.bet-btn{width:34px;height:34px;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.bet-btn:hover{border-color:var(--gold);color:var(--gold);}
+.bet-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold);background:var(--dark3);border:1px solid rgba(255,215,0,0.15);padding:0 0.75rem;height:34px;display:flex;align-items:center;min-width:80px;justify-content:center;}
+.bet-presets{display:flex;gap:0.35rem;flex-wrap:wrap;}
+.bp{padding:0.25rem 0.55rem;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);background:transparent;cursor:pointer;font-size:0.75rem;font-family:'Rajdhani',sans-serif;font-weight:600;transition:all 0.15s;}
+.bp:hover{border-color:var(--gold);color:var(--gold);}
+
+.spin-btn{width:100%;padding:1.1rem;background:linear-gradient(135deg,#ff9900,var(--gold));color:var(--dark);border:none;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 0 30px rgba(255,165,0,0.2);}
+.spin-btn:not(:disabled):hover{box-shadow:0 0 50px rgba(255,165,0,0.35);transform:translateY(-1px);}
+.spin-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* Paytable */
+.paytable{margin-top:1rem;border:1px solid rgba(255,215,0,0.08);background:rgba(0,0,0,0.2);font-size:0.8rem;width:100%;max-width:560px;}
+.pt-head{padding:0.5rem 0.75rem;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);border-bottom:1px solid rgba(255,215,0,0.08);}
+.pt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.pt-row{padding:0.35rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;}
+.pt-sym{letter-spacing:2px;}
+.pt-mult{font-family:'Bebas Neue',sans-serif;color:var(--gold);}
+.pt-row.jackpot .pt-mult{color:var(--neon);}
+
+@media(max-width:480px){
+  nav{padding:0.6rem 0.75rem;padding-top:max(0.6rem,env(safe-area-inset-top));}
+  .nav-balance-label{display:none;}
+  main{padding:0.75rem;gap:0.75rem;}
+  .reel-window{height:64px;font-size:1.75rem;}
+  .reels{padding:0.6rem;gap:0.35rem;}
+  .jp-meter-val{font-size:1rem;}
+  .spin-btn{font-size:1.4rem;padding:0.9rem;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/play">★ SSC</a>
+  <div class="nav-right">
+    <a class="nav-back" href="/play">← Lobby</a>
+    <div class="nav-balance"><span class="nav-balance-label">Balance</span><span class="nav-balance-val" id="navCredits">—</span></div>
+    <button class="nav-logout" onclick="navLogout()">Exit</button>
+  </div>
+</nav>
+
+<main>
+  <div class="jp-meters">
+    <div class="jp-meter mini"><div class="jp-meter-label">Mini Jackpot</div><div class="jp-meter-val jp-mini-val" id="jpMini">—</div></div>
+    <div class="jp-meter major"><div class="jp-meter-label">Major Jackpot</div><div class="jp-meter-val jp-major-val" id="jpMajor">—</div></div>
+    <div class="jp-meter grand"><div class="jp-meter-label">★ Grand ★</div><div class="jp-meter-val jp-grand-val" id="jpGrand">—</div></div>
+  </div>
+
+  <div class="machine">
+    <div class="reels-wrap">
+      <div class="reels" id="reels">
+        <div class="reel-col"><div class="reel-window" id="r0"><span id="ri0">⭐</span></div></div>
+        <div class="reel-col"><div class="reel-window" id="r1"><span id="ri1">⭐</span></div></div>
+        <div class="reel-col"><div class="reel-window" id="r2"><span id="ri2">⭐</span></div></div>
+        <div class="reel-col"><div class="reel-window" id="r3"><span id="ri3">⭐</span></div></div>
+        <div class="reel-col"><div class="reel-window" id="r4"><span id="ri4">⭐</span></div></div>
+      </div>
+      <div class="payline" id="payline"></div>
+    </div>
+
+    <div class="win-banner" id="winBanner"></div>
+
+    <div class="bet-row">
+      <span class="bet-label">Bet</span>
+      <div class="bet-stepper">
+        <button class="bet-btn" onclick="chgBet(-1)">−</button>
+        <div class="bet-val" id="betVal">$0.10</div>
+        <button class="bet-btn" onclick="chgBet(1)">+</button>
+      </div>
+      <div class="bet-presets">
+        <button class="bp" onclick="setBet(10)">$0.10</button>
+        <button class="bp" onclick="setBet(50)">$0.50</button>
+        <button class="bp" onclick="setBet(100)">$1</button>
+        <button class="bp" onclick="setBet(500)">$5</button>
+        <button class="bp" onclick="setBet(1000)">$10</button>
+      </div>
+    </div>
+    <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
+  </div>
+
+  <div class="paytable">
+    <div class="pt-head">Paytable — consecutive from left (🃏 = Wild)</div>
+    <div class="pt-grid">
+      <div class="pt-row jackpot"><span class="pt-sym">7️⃣×5</span><span class="pt-mult">500×</span></div>
+      <div class="pt-row jackpot"><span class="pt-sym">💎×5</span><span class="pt-mult">200×</span></div>
+      <div class="pt-row jackpot"><span class="pt-sym">💰×5</span><span class="pt-mult">150×</span></div>
+      <div class="pt-row"><span class="pt-sym">⭐×5</span><span class="pt-mult">100×</span></div>
+      <div class="pt-row"><span class="pt-sym">7️⃣×4</span><span class="pt-mult">100×</span></div>
+      <div class="pt-row"><span class="pt-sym">💎×4</span><span class="pt-mult">50×</span></div>
+      <div class="pt-row"><span class="pt-sym">7️⃣×3</span><span class="pt-mult">30×</span></div>
+      <div class="pt-row"><span class="pt-sym">🃏×3+</span><span class="pt-mult">Scatter</span></div>
+      <div class="pt-row"><span class="pt-sym">Any×3</span><span class="pt-mult">2-12×</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- Jackpot overlay -->
+<div class="jp-overlay" id="jpOverlay">
+  <div class="jp-overlay-type" id="jpType">JACKPOT</div>
+  <div class="jp-overlay-label" id="jpLabel" style="color:var(--neon)">GRAND</div>
+  <div class="jp-overlay-amount" id="jpAmount">$0.00</div>
+  <button class="jp-overlay-close" onclick="closeJP()">COLLECT</button>
+</div>
+
+<script src="/js/nav.js"></script>
+<script>
+const SYMS = ['🍒','🍋','🍊','🔔','⭐','💎','7️⃣','🃏','💰'];
+let bet=10,min=10,max=10000,spinning=false,credits=0;
+
+async function load(){
+  const u=await initNav(); if(!u)return; credits=u.credits;
+  const s=await (await fetch('/api/game/settings')).json();
+  min=s.minBet;max=s.maxBet;bet=min;updBet();
+  loadJP();
+}
+
+async function loadJP(){
+  try{
+    const d=await (await fetch('/api/game/jackpots')).json();
+    document.getElementById('jpMini').textContent='$'+(d.mini/100).toFixed(0);
+    document.getElementById('jpMajor').textContent='$'+(d.major/100).toFixed(0);
+    document.getElementById('jpGrand').textContent='$'+(d.grand/100).toFixed(0);
+  }catch(e){}
+}
+
+function updBet(){document.getElementById('betVal').textContent='$'+(bet/100).toFixed(2);}
+const STEPS=[10,25,50,100,200,500,1000,2500,5000,10000];
+function chgBet(d){let i=STEPS.findIndex(s=>s>=bet);if(i<0)i=STEPS.length-1;i=Math.max(0,Math.min(STEPS.length-1,i+d));bet=Math.max(min,Math.min(max,STEPS[i]));updBet();}
+function setBet(v){bet=Math.max(min,Math.min(max,v));updBet();}
+
+async function spin(){
+  if(spinning||credits<bet)return;
+  spinning=true; document.getElementById('spinBtn').disabled=true;
+  const wb=document.getElementById('winBanner');wb.className='win-banner';wb.textContent='';
+  document.getElementById('payline').classList.remove('active');
+  for(let i=0;i<5;i++){document.getElementById('r'+i).classList.add('spinning-anim');document.getElementById('r'+i).classList.remove('lit');}
+
+  const interval=setInterval(()=>{for(let i=0;i<5;i++)document.getElementById('ri'+i).textContent=SYMS[Math.floor(Math.random()*SYMS.length)];},80);
+  try{
+    const res=await fetch('/api/game/spin-jackpot',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bet})});
+    const data=await res.json();
+    if(data.error){clearInterval(interval);for(let i=0;i<5;i++)document.getElementById('r'+i).classList.remove('spinning-anim');spinning=false;document.getElementById('spinBtn').disabled=false;return;}
+    await new Promise(r=>setTimeout(r,600));
+    clearInterval(interval);
+    // Reveal reels one by one
+    for(let i=0;i<5;i++){
+      await new Promise(r=>setTimeout(r,150));
+      document.getElementById('r'+i).classList.remove('spinning-anim');
+      document.getElementById('ri'+i).textContent=data.reels[i];
+      if(data.win>0) document.getElementById('r'+i).classList.add('lit');
+    }
+    credits=data.credits;
+    document.getElementById('navCredits').textContent='$'+(credits/100).toFixed(2);
+    setTimeout(()=>{
+      if(data.jackpotWon){showJP(data.jackpotWon);}
+      else if(data.win>0){
+        wb.className='win-banner show '+(data.win>=bet*50?'big':'win');
+        wb.textContent=(data.win>=bet*50?'🎰 BIG WIN! ':'WIN ')+'+$'+(data.win/100).toFixed(2);
+        document.getElementById('payline').classList.add('active');
+      } else {
+        wb.className='win-banner show lose';wb.textContent='No win';
+      }
+      loadJP();
+    },500);
+  }catch(e){clearInterval(interval);}
+  for(let i=0;i<5;i++)document.getElementById('r'+i).classList.remove('spinning-anim');
+  spinning=false;document.getElementById('spinBtn').disabled=false;
+}
+
+function showJP(jp){
+  const colors={MINI:['var(--gold)','#FFD700'],MAJOR:['#ff9900','#ff9900'],GRAND:['var(--neon)','#00FFCC']};
+  const [col]=(colors[jp.type]||colors.MINI);
+  document.getElementById('jpType').textContent=jp.type+' JACKPOT';
+  document.getElementById('jpLabel').style.color=col;
+  document.getElementById('jpLabel').textContent=jp.type;
+  document.getElementById('jpAmount').textContent='+$'+(jp.amount/100).toFixed(2);
+  document.getElementById('jpOverlay').classList.add('show');
+}
+function closeJP(){document.getElementById('jpOverlay').classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!spinning){e.preventDefault();spin();}});
+load();
+setInterval(loadJP,10000);
+</script>
+</body>
+</html>

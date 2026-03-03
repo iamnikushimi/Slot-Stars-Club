@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Debug — Slot Stars Club</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a1f;color:#fff;font-family:monospace;padding:1.5rem;font-size:14px;line-height:1.6;}
+h1{color:#ffd700;font-size:1.3rem;margin-bottom:1rem;letter-spacing:2px;}
+.test{margin-bottom:0.8rem;padding:0.8rem;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);}
+.test-name{color:#aaa;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.3rem;}
+.pass{border-left:3px solid #00ff9d;}
+.fail{border-left:3px solid #ff4455;}
+.warn{border-left:3px solid #ffaa00;}
+.status{font-weight:bold;}
+.status.ok{color:#00ff9d;}
+.status.err{color:#ff4455;}
+.status.warn{color:#ffaa00;}
+.detail{color:#888;font-size:0.8rem;margin-top:0.3rem;white-space:pre-wrap;max-height:200px;overflow-y:auto;}
+button{margin-top:1rem;padding:0.6rem 1.5rem;background:rgba(255,215,0,0.1);border:1px solid #ffd700;color:#ffd700;cursor:pointer;font-family:monospace;font-size:0.9rem;}
+button:hover{background:rgba(255,215,0,0.2);}
+#results{margin-top:1rem;}
+</style>
+</head>
+<body>
+<h1>🔧 ADMIN PANEL DIAGNOSTIC</h1>
+<p style="color:#888;margin-bottom:1rem;">This page tests each API endpoint to find what's broken.</p>
+<button onclick="runTests()">RUN ALL TESTS</button>
+<div id="results"></div>
+
+<script>
+const results = document.getElementById('results');
+
+function addResult(name, status, detail, cls) {
+  const div = document.createElement('div');
+  div.className = 'test ' + cls;
+  div.innerHTML = `
+    <div class="test-name">${name}</div>
+    <div class="status ${cls === 'pass' ? 'ok' : cls === 'fail' ? 'err' : 'warn'}">${status}</div>
+    ${detail ? `<div class="detail">${detail}</div>` : ''}
+  `;
+  results.appendChild(div);
+}
+
+async function testEndpoint(name, url, method = 'GET', body = null) {
+  try {
+    const opts = { method, headers: {} };
+    if (body) {
+      opts.headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(body);
+    }
+    const start = Date.now();
+    const res = await fetch(url, opts);
+    const elapsed = Date.now() - start;
+    const text = await res.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch(e) {}
+
+    if (res.ok) {
+      const keys = json ? Object.keys(json).join(', ') : '(not JSON)';
+      addResult(name, `✓ ${res.status} OK (${elapsed}ms)`, `Response keys: ${keys}\n\nFirst 500 chars:\n${text.substring(0, 500)}`, 'pass');
+      return { ok: true, json, text };
+    } else {
+      addResult(name, `✗ ${res.status} ${res.statusText}`, `Response body:\n${text}`, 'fail');
+      return { ok: false, status: res.status, text };
+    }
+  } catch (e) {
+    addResult(name, `✗ NETWORK ERROR`, e.message, 'fail');
+    return { ok: false, error: e.message };
+  }
+}
+
+async function runTests() {
+  results.innerHTML = '<p style="color:#ffd700;margin:1rem 0">Running tests...</p>';
+  results.innerHTML = '';
+
+  // Test 1: Session check
+  addResult('SESSION CHECK', '⏳ Testing...', '', 'warn');
+  const me = await testEndpoint('1. GET /api/me', '/api/me');
+  results.children[0].remove(); // remove placeholder
+
+  if (!me.ok) {
+    addResult('⚠ SESSION PROBLEM', `Your session is invalid (got ${me.status}). The admin panel cannot make API calls.`,
+      `This means you need to log out and log back in.\n\nResponse: ${me.text}`, 'fail');
+
+    // Check if session cookie exists
+    addResult('COOKIE CHECK', document.cookie ? `Cookies present: ${document.cookie.substring(0, 100)}` : 'No cookies found', '', document.cookie ? 'warn' : 'fail');
+    return;
+  }
+
+  // Check role
+  if (me.json) {
+    if (me.json.role === 'admin') {
+      addResult('ROLE CHECK', `✓ Role is "admin" — session looks good`, `User: ${me.json.username}, ID: ${me.json.id}, Credits: ${me.json.credits}`, 'pass');
+    } else {
+      addResult('ROLE CHECK', `✗ Role is "${me.json.role}" — NOT admin!`, `The admin panel requires role="admin". Your user has role="${me.json.role}".`, 'fail');
+      return;
+    }
+  }
+
+  // Test 2: Session role field
+  addResult('SESSION.ROLE TEST', '⏳ Testing if session has role field...', 'The middleware checks req.session.role. If this is undefined, all admin API calls fail with 403.', 'warn');
+
+  // Test 3: /api/admin/stats
+  const stats = await testEndpoint('2. GET /api/admin/stats', '/api/admin/stats');
+
+  // Test 4: /api/admin/analytics
+  const analytics = await testEndpoint('3. GET /api/admin/analytics', '/api/admin/analytics');
+
+  // Test 5: /api/admin/users
+  const users = await testEndpoint('4. GET /api/admin/users', '/api/admin/users');
+
+  // Test 6: /api/admin/games
+  const games = await testEndpoint('5. GET /api/admin/games', '/api/admin/games');
+
+  // Test 7: /api/admin/settings
+  const settings = await testEndpoint('6. GET /api/admin/settings', '/api/admin/settings');
+
+  // Test 8: /api/admin/invites
+  const invites = await testEndpoint('7. GET /api/admin/invites', '/api/admin/invites');
+
+  // Test 9: /api/game/settings
+  const gameSets = await testEndpoint('8. GET /api/game/settings', '/api/game/settings');
+
+  // Test 10: /api/game/jackpots
+  const jp = await testEndpoint('9. GET /api/game/jackpots', '/api/game/jackpots');
+
+  // Summary
+  const allTests = [stats, analytics, users, games, settings, invites, gameSets, jp];
+  const passed = allTests.filter(t => t.ok).length;
+  const failed = allTests.filter(t => !t.ok).length;
+
+  addResult('═══ SUMMARY ═══',
+    `${passed} passed, ${failed} failed out of ${allTests.length} tests`,
+    failed > 0 ? generateDiagnosis(me, stats, analytics, users, games) : 'All endpoints working! The admin panel should be functional.',
+    failed > 0 ? 'fail' : 'pass'
+  );
+}
+
+function generateDiagnosis(me, stats, analytics, users, games) {
+  let diagnosis = '';
+
+  // Check for 403 pattern
+  const all403 = [stats, analytics, users, games].every(t => !t.ok && t.status === 403);
+  const some403 = [stats, analytics, users, games].some(t => !t.ok && t.status === 403);
+
+  if (all403) {
+    diagnosis += `ALL admin endpoints return 403 Forbidden.\n\n`;
+    diagnosis += `ROOT CAUSE: The requireRole('admin') middleware is rejecting your requests.\n`;
+    diagnosis += `This usually means req.session.role is undefined or not "admin".\n\n`;
+    diagnosis += `FIX: The middleware/auth.js file needs to look up the role from the database\n`;
+    diagnosis += `when req.session.role is missing. The patched auth.js does this.\n\n`;
+    diagnosis += `QUICK FIX: Log out completely, clear cookies, and log back in.\n`;
+    diagnosis += `If that doesn't work, the server-side middleware fix is required.\n`;
+  } else if (some403) {
+    diagnosis += `Some endpoints return 403 — partial auth issue.\n`;
+  }
+
+  // Check for 500 errors
+  const any500 = [stats, analytics, users, games].some(t => !t.ok && t.status === 500);
+  if (any500) {
+    diagnosis += `\nSome endpoints return 500 Internal Server Error.\n`;
+    diagnosis += `This means the server code is crashing. Check your PM2 logs:\n`;
+    diagnosis += `  pm2 logs slot-stars --lines 50\n`;
+  }
+
+  // Check for 401
+  const any401 = [stats, analytics, users, games].some(t => !t.ok && t.status === 401);
+  if (any401) {
+    diagnosis += `\nSome endpoints return 401 Not Authenticated.\n`;
+    diagnosis += `Your session has expired or was lost after a server restart.\n`;
+    diagnosis += `FIX: Log out and log back in.\n`;
+  }
+
+  return diagnosis;
+}
+</script>
+</body>
+</html>

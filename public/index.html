@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Slot Stars Club">
+<meta name="theme-color" content="#050510">
+
+<!-- SEO -->
+<title>Slot Stars Club — Free Online Slot Games, Crash & Bingo</title>
+<meta name="description" content="Play free slot machines, crash games, and bingo at Slot Stars Club. Featuring Fortune Dragon, Ocean Bingo Blitz, Nebula Bots, and more. No downloads required — play instantly in your browser.">
+<meta name="keywords" content="free slots, online slot machines, crash game, bingo, Fortune Dragon, Ocean Bingo, Nebula Bots, casino games, free to play, slot stars club">
+<meta name="author" content="Slot Stars Club">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slotstarsclub.fun/">
+
+<!-- Open Graph (Facebook, Discord, iMessage, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Slot Stars Club">
+<meta property="og:title" content="Slot Stars Club — Free Online Slot Games, Crash & Bingo">
+<meta property="og:description" content="Play free slot machines, crash games, and bingo. Fortune Dragon, Ocean Bingo Blitz, Nebula Bots & more. Play instantly — no download needed.">
+<meta property="og:url" content="https://slotstarsclub.fun/">
+<meta property="og:image" content="https://slotstarsclub.fun/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Slot Stars Club — Free Online Slot Games">
+<meta name="twitter:description" content="Play free slots, crash games & bingo. Fortune Dragon, Ocean Bingo, Nebula Bots & more. No download needed.">
+<meta name="twitter:image" content="https://slotstarsclub.fun/og-image.png">
+
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold2: #FFA500;
+    --neon: #00FFCC;
+    --dark: #050510;
+    --dark2: #0a0a1f;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,215,0,0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--dark);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,215,0,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 70%, rgba(0,255,204,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 50% 20%, rgba(255,165,0,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 10%, rgba(255,215,0,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 90%, rgba(0,255,204,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 70% 40%, rgba(255,215,0,0.5) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-bg {
+    position: fixed;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(ellipse, rgba(255,165,0,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: relative; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,5,16,0.8);
+    backdrop-filter: blur(10px);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo span { color: var(--neon); -webkit-text-fill-color: var(--neon); }
+  .nav-btn {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover { background: var(--gold); color: var(--dark); }
+
+  hero {
+    display: block;
+    position: relative; z-index: 5;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff 0%, var(--gold) 40%, var(--gold2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.5rem;
+  }
+  .subtitle {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    margin-bottom: 3rem;
+    font-weight: 600;
+  }
+
+  .reels-preview {
+    display: flex; justify-content: center; gap: 1rem;
+    margin: 2rem 0 3rem;
+  }
+  .reel-box {
+    width: 80px; height: 80px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  .reel-box:nth-child(2) { animation-delay: 0.5s; }
+  .reel-box:nth-child(3) { animation-delay: 1s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--dark);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 30px rgba(255,165,0,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(255,165,0,0.5); }
+  .btn-secondary {
+    padding: 1rem 3rem;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    width: 90%; max-width: 440px;
+    padding: 2.5rem;
+    position: relative;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .tab-row {
+    display: flex; gap: 0; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 0.5rem 1.5rem;
+    background: transparent; border: none;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    letter-spacing: 1px; cursor: pointer;
+    transition: all 0.2s; text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .form-group { margin-bottom: 1.2rem; }
+  label { display: block; font-size: 0.8rem; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 0.4rem; text-transform: uppercase; }
+  input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--gold); }
+  .form-submit {
+    width: 100%; padding: 0.9rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--dark); border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 2px;
+    cursor: pointer; transition: opacity 0.2s;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { opacity: 0.9; }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: rgba(255,255,255,0.4);
+    font-size: 1.5rem; cursor: pointer;
+  }
+  .modal-close:hover { color: #fff; }
+  .form-error { color: #ff4444; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+  .form-tab { display: none; }
+  .form-tab.active { display: block; }
+
+  /* Info strip */
+  .info-strip {
+    position: relative; z-index: 5;
+    display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,215,0,0.02);
+    margin-top: 3rem;
+  }
+  .info-item { text-align: center; }
+  .info-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; color: var(--gold);
+    line-height: 1;
+  }
+  .info-label { font-size: 0.8rem; letter-spacing: 2px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 0.3rem; }
+
+  footer {
+    position: relative; z-index: 5;
+    text-align: center; padding: 2rem;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.8rem; letter-spacing: 1px;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 480px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-btn { padding: 0.4rem 1rem; font-size: 0.85rem; }
+
+    hero { padding: 3rem 1.25rem 2.5rem; }
+    .hero-badge { font-size: 0.65rem; letter-spacing: 2px; margin-bottom: 1.25rem; }
+    h1 { font-size: clamp(3.5rem, 18vw, 6rem); letter-spacing: 2px; }
+    .subtitle { font-size: 1rem; letter-spacing: 1px; margin-bottom: 2rem; }
+
+    .reels-preview { gap: 0.6rem; margin: 1.5rem 0 2rem; }
+    .reel-box { width: 62px; height: 62px; font-size: 1.9rem; }
+
+    .cta-row { flex-direction: column; align-items: center; gap: 0.75rem; }
+    .btn-primary { padding: 0.9rem 2.5rem; font-size: 1.1rem; width: 100%; max-width: 280px; }
+    .btn-secondary { padding: 0.75rem 2rem; font-size: 0.9rem; width: 100%; max-width: 280px; }
+
+    .info-strip { gap: 2rem; padding: 2rem 1.25rem; }
+    .info-num { font-size: 2.2rem; }
+    .info-label { font-size: 0.7rem; letter-spacing: 1px; }
+
+    .modal { padding: 1.75rem 1.25rem; }
+    .modal-title { font-size: 1.6rem; }
+  }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--dark2);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 1rem 1.5rem;
+    font-weight: 600; letter-spacing: 1px;
+    transform: translateX(120%);
+    transition: transform 0.3s;
+    z-index: 200;
+  }
+  .toast.show { transform: translateX(0); }
+</style>
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Slot Stars Club",
+  "url": "https://slotstarsclub.fun",
+  "description": "Play free slot machines, crash games, and bingo. Featuring Fortune Dragon, Ocean Bingo Blitz, Nebula Bots, and more.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://slotstarsclub.fun/lobby?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Slot Stars Club",
+  "url": "https://slotstarsclub.fun",
+  "logo": "https://slotstarsclub.fun/og-image.png"
+}
+</script>
+</head>
+<body>
+<div class="glow-bg"></div>
+
+<nav>
+  <div class="logo">Slot Stars <span>★</span> Club</div>
+  <button class="nav-btn" onclick="openModal()">Enter Club</button>
+</nav>
+
+<hero>
+  <div class="hero-badge">✦ Invite Only ✦</div>
+  <h1>Slot Stars<br>Club</h1>
+  <p class="subtitle">Premium Social Slots Experience</p>
+
+  <div class="reels-preview">
+    <div class="reel-box">⭐</div>
+    <div class="reel-box">💎</div>
+    <div class="reel-box">7️⃣</div>
+  </div>
+
+  <div class="cta-row">
+    <button class="btn-primary" onclick="openModal('register')">Join With Invite</button>
+    <button class="btn-secondary" onclick="openModal('login')">Sign In</button>
+  </div>
+</hero>
+
+<div class="info-strip">
+  <div class="info-item">
+    <div class="info-num">5</div>
+    <div class="info-label">Starting Credits</div>
+  </div>
+  <div class="info-item">
+    <div class="info-num">50×</div>
+    <div class="info-label">Max Jackpot</div>
+  </div>
+  <div class="info-item">
+    <div class="info-num">5</div>
+    <div class="info-label">Symbols</div>
+  </div>
+  <div class="info-item">
+    <div class="info-num">∞</div>
+    <div class="info-label">Fun</div>
+  </div>
+</div>
+
+<footer>© 2025 Slot Stars Club — All rights reserved. For entertainment only.</footer>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Welcome Back</div>
+    <div class="tab-row">
+      <button class="tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-tab active" id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="your username" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="form-error" id="loginError"></div>
+      <button class="form-submit" onclick="doLogin()">Enter</button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-tab" id="registerForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="regUser" placeholder="choose a username" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPass" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label>Invite Code</label>
+        <input type="text" id="regInvite" placeholder="XXXXXXXX" style="text-transform:uppercase">
+      </div>
+      <div class="form-error" id="regError"></div>
+      <button class="form-submit" onclick="doRegister()">Join Club</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function openModal(tab = 'login') {
+  document.getElementById('authModal').classList.add('active');
+  switchTab(tab);
+}
+function closeModal() {
+  document.getElementById('authModal').classList.remove('active');
+}
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab + 'Tab').classList.add('active');
+  document.getElementById(tab + 'Form').classList.add('active');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error; errEl.style.display = 'block'; return; }
+    window.location = '/play';
+  } catch(e) { errEl.textContent = 'Connection error'; errEl.style.display = 'block'; }
+}
+
+async function doRegister() {
+  const username = document.getElementById('regUser').value.trim();
+  const password = document.getElementById('regPass').value;
+  const invite = document.getElementById('regInvite').value.trim().toUpperCase();
+  const errEl = document.getElementById('regError');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username, password, invite})
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error; errEl.style.display = 'block'; return; }
+    window.location = '/play';
+  } catch(e) { errEl.textContent = 'Connection error'; errEl.style.display = 'block'; }
+}
+
+// Check if already logged in — always send to /play
+fetch('/api/me').then(r => r.json()).then(data => {
+  if (data.username) window.location = '/play';
+}).catch(() => {});
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('loginForm').classList.contains('active')) doLogin();
+    else doRegister();
+  }
+});
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+}
+// Android WebView: expose postMessage bridge
+window.SSCBridge = {
+  onLogin: function(user) { try{Android.onLogin(JSON.stringify(user));}catch(e){} },
+  onBalance: function(bal) { try{Android.onBalance(bal);}catch(e){} }
+};
+</script>
+</body>
+</html>
