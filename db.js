@@ -62,7 +62,7 @@ if (gameCount.c === 0) {
   const games = [
     ['slots',       'Classic Slots',    'slots',   '/play/slots',       'active', '🎰', 'rtp_slots',      1, '3-reel, 6 symbols. Up to 50× your bet.', 'Popular'],
     ['slots-pro',   'Pro Slots',        'slots',   '/play/slots-pro',   'active', '⭐', 'rtp_slots_pro',  2, '5-reel + Wilds. Mini, Major & Grand jackpots.', 'Jackpots'],
-    ['fortune',     'Fortune Dragon',   'slots',   '/play/fortune',     'active', '🐉', 'rtp_slots_pro',  3, '5×3 reel · Expanding Wilds · Free Spins · 20 Paylines', 'Featured,Free Spins'],
+    ['fortune',     'Fortune Dragon',   'slots',   '/play/fortune',     'active', '🐉', 'rtp_fortune',    3, '5×3 reel · Expanding Wilds · Free Spins · 20 Paylines', 'Featured,Free Spins'],
     ['nebula-bots', 'Nebula Bots',      'slots',   '/play/nebula-bots', 'active', '🤖', 'rtp_nebula',     4, 'Boost Meter · Stacked Multipliers · Free Spins', 'New,Boost ×10'],
     ['ocean-bingo', 'Ocean Bingo',      'slots',   '/play/ocean-bingo', 'active', '🌊', 'rtp_ocean',      5, 'Dual-mode: Slots + Bingo Blitz. Underwater theme.', 'New'],
     ['crash',       'Crash Out',        'live',    '/play/crash',       'active', '📈', 'rtp_crash',      6, 'Set cashout, watch it fly. Don\'t get greedy.', 'High Risk'],
@@ -88,6 +88,9 @@ for (const [k,v] of Object.entries(defaults)) ins.run(k,v);
 db.getSetting    = (key) => { const r=db.prepare('SELECT value FROM settings WHERE key=?').get(key); return r?r.value:null; };
 db.getSettingNum = (key) => parseFloat(db.getSetting(key)||0);
 
+// Fix: Fortune Dragon rtp_key was incorrectly set to rtp_slots_pro in early seeds
+try { db.prepare("UPDATE games SET rtp_key = 'rtp_fortune' WHERE id = 'fortune' AND rtp_key = 'rtp_slots_pro'").run(); } catch(e) {}
+
 const bcrypt = require('bcryptjs');
 const adminExists = db.prepare('SELECT id FROM users WHERE username=?').get('admin');
 if (!adminExists) {
@@ -95,17 +98,4 @@ if (!adminExists) {
   db.prepare('INSERT INTO users (username,password,role,credits) VALUES (?,?,?,?)').run('admin',hash,'admin',999900);
   console.log('Admin created: admin / admin123');
 }
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS daily_bonus (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    day_streak INTEGER DEFAULT 1,
-    prize_amount INTEGER NOT NULL,
-    prize_label TEXT NOT NULL,
-    claimed_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-  CREATE INDEX IF NOT EXISTS idx_daily_bonus_user ON daily_bonus(user_id);
-`);
-
 module.exports = db;

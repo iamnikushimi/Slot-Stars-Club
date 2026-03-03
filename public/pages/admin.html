@@ -819,6 +819,13 @@ function buildRTPKeys(games) {
   });
 }
 
+// Spins table uses underscores (ocean_bingo), games table uses hyphens (ocean-bingo).
+// This helper normalizes both directions so lookups always match.
+function normalizeId(id) { return (id||'').replace(/-/g, '_'); }
+function statsLookup(map, gameId) {
+  return map[gameId] || map[normalizeId(gameId)] || map[gameId.replace(/_/g,'-')] || {};
+}
+
 let allGamesData = [];
 let allSettingsData = {};
 let allAnalyticsData = {};
@@ -850,11 +857,11 @@ async function loadUnifiedGames() {
   (allAnalyticsData.gameStats||[]).forEach(g=>gameStatsMap[g.game]=g);
 
   document.querySelector('#allGamesTable tbody').innerHTML = games.map(g => {
-    const gs = gameStatsMap[g.id] || {};
+    const gs = statsLookup(gameStatsMap, g.id);
     const house = (gs.wagered||0) - (gs.paid||0);
     const rtp = gs.wagered>0 ? ((gs.paid/gs.wagered)*100).toFixed(1)+'%' : '—';
     const targetRTP = allSettingsData[RTP_KEYS[g.id]] || '—';
-    const live = liveMap[g.id] || 0;
+    const live = liveMap[g.id] || liveMap[normalizeId(g.id)] || 0;
     return `<tr style="cursor:pointer" onclick="document.getElementById('gameSelector').value='${g.id}';showGameCard()">
       <td>${g.icon||'🎰'}</td>
       <td><strong>${g.name}</strong></td>
@@ -919,11 +926,11 @@ function showGameCard() {
   const liveMap = {};
   (allAnalyticsData.liveByGame||[]).forEach(l=>liveMap[l.game_id]=l.count);
 
-  const gs = gameStatsMap[gameId] || {};
+  const gs = statsLookup(gameStatsMap, gameId);
   const house = (gs.wagered||0) - (gs.paid||0);
   const actualRTP = gs.wagered>0 ? (gs.paid/gs.wagered)*100 : 0;
 
-  document.getElementById('ugc-visits').textContent = fmtN(vMap[gameId]||0);
+  document.getElementById('ugc-visits').textContent = fmtN(vMap[gameId]||vMap[normalizeId(gameId)]||0);
   document.getElementById('ugc-rounds').textContent = fmtN(gs.rounds||0);
   document.getElementById('ugc-wagered').textContent = fmt(gs.wagered||0);
   document.getElementById('ugc-house').textContent = fmt(house);
@@ -931,7 +938,7 @@ function showGameCard() {
   document.getElementById('ugc-best-win').textContent = gs.biggest_win ? fmt(gs.biggest_win) : '—';
   document.getElementById('ugc-top-player').innerHTML = gs.top_winner ? `🏆 Top player: <strong>${gs.top_winner}</strong>` : '';
 
-  const live = liveMap[gameId]||0;
+  const live = liveMap[gameId]||liveMap[normalizeId(gameId)]||0;
   document.getElementById('ugc-live-players').innerHTML = live>0
     ? `<div style="display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;color:var(--c-active)"><div class="gc-live-dot"></div>${live} playing now</div>`
     : '';

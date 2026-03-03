@@ -259,6 +259,19 @@ canvas#wheel {
   color: rgba(255,255,255,0.3);
   letter-spacing: 2px;
 }
+
+/* XP Popup */
+.xp-float{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;color:#00FFCC;text-shadow:0 0 12px rgba(0,255,204,0.5);pointer-events:none;z-index:200;opacity:0;animation:xpFloatUp 1.2s ease-out forwards;}
+@keyframes xpFloatUp{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}20%{opacity:1;transform:translate(-50%,-60%) scale(1.1);}100%{opacity:0;transform:translate(-50%,-120%) scale(0.8);}}
+.levelup-overlay{position:fixed;inset:0;z-index:250;background:rgba(5,5,16,0.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.levelup-overlay.show{opacity:1;pointer-events:auto;}
+.levelup-box{text-align:center;animation:levelPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes levelPop{0%{transform:scale(0);}100%{transform:scale(1);}}
+.levelup-box .lu-stars{font-size:2rem;margin-bottom:0.3rem;}
+.levelup-box .lu-text{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;background:linear-gradient(135deg,#00FFCC,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.levelup-box .lu-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:#00FFCC;line-height:1;text-shadow:0 0 30px rgba(0,255,204,0.4);}
+.levelup-box .lu-title{font-size:1rem;letter-spacing:2px;color:#FFD700;text-transform:uppercase;margin:0.2rem 0;}
+.levelup-box .lu-reward{font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.3rem;}
 </style>
 </head>
 <body>
@@ -559,6 +572,7 @@ function showWin(result) {
     winAmt.textContent = `+${result.prizeLabel}`;
     setTimeout(() => winAmt.classList.add('show'), 100);
   }
+  if (result.xp) setTimeout(function(){ showXPGain(result.xp); }, 500);
   if (winSub) {
     const streakText = result.streak > 1 ? ` (${result.multiplier}× streak bonus!)` : '';
     winSub.textContent = `Added to your balance${streakText}`;
@@ -669,6 +683,47 @@ function fireConfetti() {
 
 // ── INIT ───────────────────────────────────────────────────────
 init();
+</script>
+
+<div class="levelup-overlay" id="levelupOverlay" onclick="this.classList.remove('show')">
+  <div class="levelup-box">
+    <div class="lu-stars">✦ ✦ ✦</div>
+    <div class="lu-text">LEVEL UP!</div>
+    <div class="lu-num" id="luNum">2</div>
+    <div class="lu-title" id="luTitle">Beginner</div>
+    <div class="lu-reward" id="luReward">+$1.00 bonus credits</div>
+  </div>
+</div>
+<script>
+function showXPGain(xpData) {
+  if (!xpData || !xpData.xpGained) return;
+  var el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = '+' + xpData.xpGained + ' XP';
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 1300);
+  if (xpData.leveledUp) {
+    setTimeout(function() {
+      document.getElementById('luNum').textContent = xpData.level;
+      document.getElementById('luTitle').textContent = xpData.title;
+      document.getElementById('luReward').textContent = xpData.reward > 0 ? '+$' + (xpData.reward / 100).toFixed(2) + ' bonus credits!' : '';
+      document.getElementById('levelupOverlay').classList.add('show');
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [523, 659, 784, 1047, 1318].forEach(function(f, i) {
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.frequency.value = f; o.type = 'sine';
+          var t = ctx.currentTime + i * 0.12;
+          g.gain.setValueAtTime(0.12, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+          o.start(t); o.stop(t + 0.4);
+        });
+      } catch(e) {}
+      setTimeout(function() { document.getElementById('levelupOverlay').classList.remove('show'); }, 3000);
+    }, 800);
+  }
+}
 </script>
 </body>
 </html>
