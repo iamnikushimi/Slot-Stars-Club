@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark">#050510</color>
+    <color name="dark2">#0A0A1F</color>
+    <color name="gold">#FFD700</color>
+    <color name="gold2">#FFA500</color>
+    <color name="neon">#00FFCC</color>
+    <color name="red">#FF4455</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">Slot Stars Club</string>
+    <style name="Theme.SlotStarsClub" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#050510</item>
+        <item name="android:navigationBarColor">#050510</item>
+        <item name="android:windowBackground">#050510</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">#FFD700</item>
+        <item name="colorPrimaryVariant">#FFA500</item>
+        <item name="colorOnPrimary">#050510</item>
+        <item name="colorSecondary">#00FFCC</item>
+        <item name="colorOnSecondary">#050510</item>
+        <item name="android:colorBackground">#050510</item>
+        <item name="colorSurface">#0a0a1f</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+</resources>

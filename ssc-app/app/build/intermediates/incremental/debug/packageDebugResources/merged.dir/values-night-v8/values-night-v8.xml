@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SlotStarsClub" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#050510</item>
+        <item name="android:navigationBarColor">#050510</item>
+        <item name="android:windowBackground">#050510</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">#FFD700</item>
+        <item name="colorPrimaryVariant">#FFA500</item>
+        <item name="colorOnPrimary">#050510</item>
+        <item name="colorSecondary">#00FFCC</item>
+        <item name="colorOnSecondary">#050510</item>
+        <item name="android:colorBackground">#050510</item>
+        <item name="colorSurface">#0a0a1f</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+</resources>
