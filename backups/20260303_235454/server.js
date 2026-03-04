@@ -3,8 +3,6 @@ const session = require('express-session');
 const path = require('path');
 const db = require('./db');
 
-express.static.mime.define({'application/vnd.android.package-archive': ['apk']});
-
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -15,42 +13,21 @@ app.use(session({
   cookie: { secure: false, maxAge: 24*60*60*1000 }
 }));
 
-app.use('/api/game', require('./routes/levels'));
-app.use('/api/game', require('./routes/leaderboard'));
-app.use('/api/game', require('./routes/daily-bonus'));
-app.use('/api/admin', require('./routes/admin-extras'));
-app.get('/api/broadcast', require('./routes/admin-extras').publicBroadcast);
-app.get('/play/daily-bonus', gamePage('daily-bonus', 'daily-bonus.html'));
-app.get('/play/leaderboard', gamePage('leaderboard', 'leaderboard.html'));
-
-app.use('/api/game', require('./routes/daily-bonus'));
-app.use('/api/admin', require('./routes/admin-extras'));
-app.get('/api/broadcast', require('./routes/admin-extras').publicBroadcast);
-app.get('/play/daily-bonus', gamePage('daily-bonus', 'daily-bonus.html'));
-
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/game',     require('./routes/game'));
+app.use('/api/game',     require('./routes/levels'));
+app.use('/api/game',     require('./routes/leaderboard'));
+app.use('/api/game',     require('./routes/daily-bonus'));
 app.use('/api/admin',    require('./routes/admin'));
+app.use('/api/admin',    require('./routes/admin-extras'));
 app.use('/api/reseller', require('./routes/reseller'));
-app.use('/api/game', require('./routes/daily-bonus'));
 
-app.get('/sitemap.xml', (req, res) => {
-  res.header('Content-Type', 'application/xml');
-  res.sendFile(__dirname + '/public/sitemap.xml');
-});
-
-app.get('/robots.txt', (req, res) => {
-  res.header('Content-Type', 'text/plain');
-  res.sendFile(__dirname + '/public/robots.txt');
-});
-
-app.get('/og-image.png', (req, res) => {
-  res.sendFile(__dirname + '/public/og-image.png');
-});
+// Public broadcast endpoint (no auth)
+app.get('/api/broadcast', require('./routes/admin-extras').publicBroadcast);
 
 app.get('/api/me', (req, res) => {
   if (!req.session.userId) return res.status(401).json({ error: 'Not authenticated' });
-  const user = db.prepare('SELECT id,username,role,credits,reseller_credits FROM users WHERE id=?').get(req.session.userId);
+  const user = db.prepare('SELECT id,username,role,credits,reseller_credits,xp,level,title FROM users WHERE id=?').get(req.session.userId);
   if (!user) return res.status(404).json({ error: 'Not found' });
   res.json(user);
 });
@@ -97,7 +74,6 @@ app.get('/reseller',    page('reseller.html'));
 
 // ─── Lobby (shows game cards — filters inactive games client-side via API) ──
 app.get('/play', page('lobby.html'));
-app.get('/play/daily-bonus', gamePage('daily-bonus', 'daily-bonus.html'));
 
 // ─── Game pages — all protected by gamePage() status check ──────────────────
 app.get('/play/slots',      gamePage('slots',       'slots.html'));
@@ -110,6 +86,8 @@ app.get('/play/blackjack',  gamePage('blackjack',   'blackjack.html'));
 app.get('/play/roulette',   gamePage('roulette',    'roulette.html'));
 app.get('/play/poker',      gamePage('poker',       'poker.html'));
 app.get('/play/pulltab',    gamePage('pulltab',     'pulltab.html'));
+app.get('/play/daily-bonus', page('daily-bonus.html'));
+app.get('/play/leaderboard', page('leaderboard.html'));
 
 // ─── Also block API spins when game is not active ────────────────────────────
 // This prevents users who still have the game open from spinning after it's disabled.

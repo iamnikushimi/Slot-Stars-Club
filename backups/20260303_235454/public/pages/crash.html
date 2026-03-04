@@ -314,7 +314,6 @@ async function loadUser() {
   if (!res.ok) { window.location='/'; return; }
   const d = await res.json();
   credits = d.credits;
-    if(d.xp) showXPGain(d.xp);
   updateCredits();
 }
 

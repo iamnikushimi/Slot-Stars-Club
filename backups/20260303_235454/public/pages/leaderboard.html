@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Leaderboards — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;
+  --dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;
+  --border:rgba(255,215,0,0.15);--muted:rgba(255,255,255,0.4);
+  --purple:#a855f7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(255,215,0,0.06),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(0,255,204,0.04),transparent 50%);pointer-events:none;}
+
+nav{width:100%;display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1.2rem;padding-top:max(0.8rem,env(safe-area-inset-top));border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);z-index:10;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.back-btn{padding:0.3rem 0.8rem;border:1px solid rgba(255,255,255,0.15);background:none;color:rgba(255,255,255,0.5);font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+.container{flex:1;max-width:600px;width:100%;margin:0 auto;padding:1rem;padding-bottom:max(1.5rem,env(safe-area-inset-bottom));}
+
+/* Header */
+.lb-header{text-align:center;margin-bottom:1.2rem;}
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.lb-reset{font-size:0.65rem;color:var(--muted);letter-spacing:1px;margin-top:0.2rem;}
+.lb-reset span{color:var(--neon);}
+
+/* My stats bar */
+.my-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1.2rem;padding:0.8rem;border:1px solid var(--border);background:rgba(255,215,0,0.03);}
+.my-stat{text-align:center;}
+.my-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);}
+.my-stat-lbl{font-size:0.55rem;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+
+/* Tabs */
+.tabs{display:flex;gap:0;margin-bottom:1rem;border:1px solid var(--border);overflow-x:auto;}
+.tab{flex:1;padding:0.55rem 0.5rem;text-align:center;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;background:transparent;border:none;font-family:'Rajdhani',sans-serif;transition:all 0.2s;white-space:nowrap;min-width:0;}
+.tab:hover{color:#fff;background:rgba(255,255,255,0.03);}
+.tab.active{color:var(--gold);background:rgba(255,215,0,0.08);border-bottom:2px solid var(--gold);}
+
+/* Board */
+.board{display:flex;flex-direction:column;gap:0;}
+.board-row{display:grid;grid-template-columns:2.2rem 1fr auto;gap:0.6rem;align-items:center;padding:0.6rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.03);transition:background 0.15s;}
+.board-row:hover{background:rgba(255,255,255,0.02);}
+.board-row.me{background:rgba(0,255,204,0.06);border:1px solid rgba(0,255,204,0.15);}
+
+.rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;text-align:center;line-height:1;}
+.rank-1{color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,0.4);}
+.rank-2{color:#c0c0c0;}
+.rank-3{color:#cd7f32;}
+
+.player-info{min-width:0;overflow:hidden;}
+.player-name{font-weight:700;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-meta{font-size:0.6rem;color:var(--muted);letter-spacing:0.5px;display:flex;gap:0.5rem;align-items:center;}
+.player-level{color:var(--neon);font-weight:700;}
+.player-title{color:var(--purple);}
+
+.player-val{text-align:right;white-space:nowrap;}
+.player-val-main{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--gold);line-height:1;}
+.player-val-sub{font-size:0.55rem;color:var(--muted);letter-spacing:0.5px;text-align:right;}
+
+/* Podium top 3 */
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:0.5rem;margin-bottom:1.5rem;min-height:140px;}
+.podium-spot{display:flex;flex-direction:column;align-items:center;text-align:center;width:30%;}
+.podium-place{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;}
+.podium-spot:nth-child(2) .podium-place{font-size:2.2rem;}
+.podium-name{font-size:0.75rem;font-weight:700;margin-top:0.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.podium-amount{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--gold);margin-top:0.15rem;}
+.podium-bar{width:100%;margin-top:0.3rem;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-bottom:none;}
+.podium-spot:nth-child(1) .podium-bar{height:50px;background:rgba(192,192,192,0.08);border-color:rgba(192,192,192,0.2);}
+.podium-spot:nth-child(2) .podium-bar{height:70px;background:rgba(255,215,0,0.1);border-color:rgba(255,215,0,0.25);}
+.podium-spot:nth-child(3) .podium-bar{height:35px;background:rgba(205,127,50,0.08);border-color:rgba(205,127,50,0.2);}
+
+/* Section label */
+.section-divider{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0.8rem 0 0.4rem;border-bottom:1px solid var(--border);margin-bottom:0.2rem;}
+.section-divider .accent{color:var(--gold);}
+
+/* Empty state */
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
+
+/* All-time card */
+.alltime-row{display:grid;grid-template-columns:2rem 1fr auto auto;gap:0.5rem;align-items:center;padding:0.5rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.03);}
+.at-game{font-size:0.6rem;color:var(--muted);letter-spacing:0.5px;}
+.at-when{font-size:0.55rem;color:rgba(255,255,255,0.2);}
+
+@media(max-width:480px){
+  .podium{gap:0.3rem;min-height:120px;}
+  .podium-name{font-size:0.65rem;}
+  .my-stats{grid-template-columns:repeat(3,1fr);gap:0.3rem;padding:0.6rem;}
+  .my-stat-val{font-size:1rem;}
+  .tab{font-size:0.6rem;padding:0.5rem 0.3rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/play" class="logo">★ SLOT STARS CLUB</a>
+  <a href="/play" class="back-btn">← Lobby</a>
+</nav>
+
+<div class="container" id="main">
+  <div style="text-align:center;padding:3rem;color:var(--muted)">Loading leaderboards...</div>
+</div>
+
+<script>
+var fmt = function(c) { return '$' + (c / 100).toFixed(2); };
+var fmtN = function(n) { return n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : String(n||0); };
+var ago = function(s) { var d = Math.floor((Date.now() - new Date(s)) / 1000); return d < 60 ? d+'s' : d < 3600 ? Math.floor(d/60)+'m' : d < 86400 ? Math.floor(d/3600)+'h' : Math.floor(d/86400)+'d'; };
+var currentTab = 'bigWins';
+var lbData = null;
+var myUserId = null;
+
+async function init() {
+  try {
+    var meRes = await fetch('/api/me');
+    if (!meRes.ok) { window.location = '/'; return; }
+    var me = await meRes.json();
+    myUserId = me.id;
+
+    var res = await fetch('/api/game/leaderboard');
+    if (!res.ok) { document.getElementById('main').innerHTML = '<div class="empty">Failed to load</div>'; return; }
+    lbData = await res.json();
+    render();
+  } catch(e) {
+    document.getElementById('main').innerHTML = '<div class="empty">Connection error</div>';
+  }
+}
+
+function render() {
+  var d = lbData;
+  var resetDate = new Date(d.weekResets);
+  var now = new Date();
+  var hoursLeft = Math.max(0, Math.floor((resetDate - now) / 3600000));
+  var daysLeft = Math.floor(hoursLeft / 24);
+  var resetText = daysLeft > 0 ? daysLeft + 'd ' + (hoursLeft % 24) + 'h' : hoursLeft + 'h';
+
+  var myHtml = '';
+  if (d.me) {
+    myHtml = '<div class="my-stats">'
+      + '<div class="my-stat"><div class="my-stat-val">' + (d.me.bigWin > 0 ? fmt(d.me.bigWin) : '—') + '</div><div class="my-stat-lbl">Best Win</div></div>'
+      + '<div class="my-stat"><div class="my-stat-val">' + fmtN(d.me.wagered) + '</div><div class="my-stat-lbl">Wagered</div></div>'
+      + '<div class="my-stat"><div class="my-stat-val">Lv.' + d.me.level + '</div><div class="my-stat-lbl">' + d.me.title + '</div></div>'
+      + '</div>';
+  }
+
+  document.getElementById('main').innerHTML =
+    '<div class="lb-header">'
+    + '<div class="lb-title">LEADERBOARDS</div>'
+    + '<div class="lb-reset">Weekly reset in <span>' + resetText + '</span></div>'
+    + '</div>'
+    + myHtml
+    + '<div class="tabs">'
+    + '<button class="tab' + (currentTab === 'bigWins' ? ' active' : '') + '" onclick="switchTab(\'bigWins\')">Biggest Wins</button>'
+    + '<button class="tab' + (currentTab === 'profit' ? ' active' : '') + '" onclick="switchTab(\'profit\')">Top Earners</button>'
+    + '<button class="tab' + (currentTab === 'wagered' ? ' active' : '') + '" onclick="switchTab(\'wagered\')">Most Active</button>'
+    + '<button class="tab' + (currentTab === 'levels' ? ' active' : '') + '" onclick="switchTab(\'levels\')">Levels</button>'
+    + '</div>'
+    + '<div id="boardContent"></div>';
+
+  renderBoard();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+  renderBoard();
+}
+
+function renderBoard() {
+  var d = lbData;
+  var html = '';
+
+  if (currentTab === 'bigWins') {
+    html = renderWeeklyBoard(d.weekly.bigWins, 'best_win', 'Weekly — Biggest Single Win', function(p) {
+      return { main: fmt(p.best_win), sub: fmtN(p.rounds) + ' rounds' };
+    });
+    html += renderAllTimeWins(d.allTime.bigWins);
+
+  } else if (currentTab === 'profit') {
+    html = renderWeeklyBoard(d.weekly.profit, 'net_profit', 'Weekly — Highest Net Profit', function(p) {
+      return { main: '+' + fmt(p.net_profit), sub: fmt(p.total_won) + ' total won' };
+    });
+
+  } else if (currentTab === 'wagered') {
+    html = renderWeeklyBoard(d.weekly.wagered, 'total_wagered', 'Weekly — Most Wagered', function(p) {
+      return { main: fmt(p.total_wagered), sub: fmtN(p.rounds) + ' rounds' };
+    });
+
+  } else if (currentTab === 'levels') {
+    html = renderLevelBoard(d.allTime.levels);
+  }
+
+  document.getElementById('boardContent').innerHTML = html;
+}
+
+function renderWeeklyBoard(players, valKey, title, valFn) {
+  if (!players || !players.length) return '<div class="empty">No activity this week yet. Be the first!</div>';
+
+  // Podium (top 3)
+  var podiumHtml = '';
+  if (players.length >= 3) {
+    var order = [players[1], players[0], players[2]]; // silver, gold, bronze
+    var medals = ['🥈', '🥇', '🥉'];
+    var colors = ['#c0c0c0', 'var(--gold)', '#cd7f32'];
+    podiumHtml = '<div class="podium">';
+    for (var i = 0; i < 3; i++) {
+      var p = order[i];
+      var v = valFn(p);
+      podiumHtml += '<div class="podium-spot">'
+        + '<div class="podium-place" style="color:' + colors[i] + '">' + medals[i] + '</div>'
+        + '<div class="podium-name">' + p.username + '</div>'
+        + '<div class="podium-amount">' + v.main + '</div>'
+        + '<div class="podium-bar"></div>'
+        + '</div>';
+    }
+    podiumHtml += '</div>';
+  }
+
+  // Full list
+  var listHtml = '<div class="section-divider"><span class="accent">This Week</span> — ' + title + '</div><div class="board">';
+  players.forEach(function(p, idx) {
+    var v = valFn(p);
+    var isMe = p.user_id === myUserId;
+    var rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+    listHtml += '<div class="board-row' + (isMe ? ' me' : '') + '">'
+      + '<div class="rank ' + rankClass + '">' + (idx < 3 ? ['🥇','🥈','🥉'][idx] : '#' + (idx+1)) + '</div>'
+      + '<div class="player-info">'
+      + '<div class="player-name">' + p.username + (isMe ? ' <span style="font-size:0.6rem;color:var(--neon)">(you)</span>' : '') + '</div>'
+      + '<div class="player-meta"><span class="player-level">Lv.' + (p.level||1) + '</span><span class="player-title">' + (p.title||'Rookie') + '</span></div>'
+      + '</div>'
+      + '<div class="player-val"><div class="player-val-main">' + v.main + '</div><div class="player-val-sub">' + v.sub + '</div></div>'
+      + '</div>';
+  });
+  listHtml += '</div>';
+
+  return podiumHtml + listHtml;
+}
+
+function renderLevelBoard(players) {
+  if (!players || !players.length) return '<div class="empty">No players yet</div>';
+
+  var html = '<div class="section-divider"><span class="accent">All Time</span> — Highest Level</div><div class="board">';
+  players.forEach(function(p, idx) {
+    var isMe = p.user_id === myUserId;
+    var rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+    html += '<div class="board-row' + (isMe ? ' me' : '') + '">'
+      + '<div class="rank ' + rankClass + '">' + (idx < 3 ? ['🥇','🥈','🥉'][idx] : '#' + (idx+1)) + '</div>'
+      + '<div class="player-info">'
+      + '<div class="player-name">' + p.username + (isMe ? ' <span style="font-size:0.6rem;color:var(--neon)">(you)</span>' : '') + '</div>'
+      + '<div class="player-meta"><span class="player-title" style="color:var(--purple)">' + (p.title||'Rookie') + '</span></div>'
+      + '</div>'
+      + '<div class="player-val"><div class="player-val-main" style="color:var(--neon)">Lv.' + (p.level||1) + '</div><div class="player-val-sub">' + fmtN(p.xp||0) + ' XP</div></div>'
+      + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderAllTimeWins(wins) {
+  if (!wins || !wins.length) return '';
+  var html = '<div class="section-divider" style="margin-top:1.5rem"><span class="accent">Hall of Fame</span> — Biggest Wins Ever</div><div class="board">';
+  wins.forEach(function(w, idx) {
+    var isMe = w.user_id === myUserId;
+    html += '<div class="alltime-row' + (isMe ? ' me' : '') + '">'
+      + '<div class="rank" style="color:var(--gold);font-size:0.9rem">#' + (idx+1) + '</div>'
+      + '<div class="player-info"><div class="player-name" style="font-size:0.82rem">' + w.username + '</div></div>'
+      + '<div class="at-game">' + (w.game||'') + '</div>'
+      + '<div class="player-val"><div class="player-val-main">' + fmt(w.best_win) + '</div><div class="player-val-sub">bet ' + fmt(w.bet||0) + ' · ' + ago(w.created_at) + ' ago</div></div>'
+      + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+init();
+</script>
+</body>
+</html>

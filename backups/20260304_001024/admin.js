@@ -127,14 +127,13 @@ router.post('/games/status', requireRole('admin'), (req, res) => {
 
 // Update game description and tags from admin
 router.post('/games/update', requireRole('admin'), (req, res) => {
-  const { gameId, name, description, tags, icon, category } = req.body;
+  const { gameId, name, description, tags, icon } = req.body;
   if (!gameId) return res.status(400).json({ error: 'Missing gameId' });
   try {
     if (name !== undefined) db.prepare('UPDATE games SET name=? WHERE id=?').run(name, gameId);
     if (description !== undefined) db.prepare('UPDATE games SET description=? WHERE id=?').run(description, gameId);
     if (tags !== undefined) db.prepare('UPDATE games SET tags=? WHERE id=?').run(tags, gameId);
     if (icon !== undefined) db.prepare('UPDATE games SET icon=? WHERE id=?').run(icon, gameId);
-    if (category !== undefined) db.prepare('UPDATE games SET category=? WHERE id=?').run(category, gameId);
     res.json({ success: true });
   } catch(e) {
     res.status(500).json({ error: 'Update failed — columns may not exist. Restart server with new db.js.' });

@@ -89,7 +89,7 @@ db.getSetting    = (key) => { const r=db.prepare('SELECT value FROM settings WHE
 db.getSettingNum = (key) => parseFloat(db.getSetting(key)||0);
 
 // Fix: Fortune Dragon rtp_key was incorrectly set to rtp_slots_pro in early seeds
-try { db.prepare("UPDATE games SET rtp_key = 'rtp_fortune' WHERE id = 'fortune' AND rtp_key = 'rtp_fortune'").run(); } catch(e) {}
+try { db.prepare("UPDATE games SET rtp_key = 'rtp_fortune' WHERE id = 'fortune' AND rtp_key = 'rtp_slots_pro'").run(); } catch(e) {}
 
 const bcrypt = require('bcryptjs');
 const adminExists = db.prepare('SELECT id FROM users WHERE username=?').get('admin');

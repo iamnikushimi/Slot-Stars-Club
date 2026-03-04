@@ -386,16 +386,6 @@ main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
             </div>
             <!-- Tags -->
             <div class="le-field">
-              <div class="le-label">Category</div>
-              <select class="le-input" id="ugc-category" style="cursor:pointer">
-                <option value="slots">Slots</option>
-                <option value="live">Live Action</option>
-                <option value="cards">Card Games</option>
-                <option value="instant">Instant Win</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="le-field">
               <div class="le-label">Tags / Badges</div>
               <div class="le-tags" id="ugc-tags"></div>
               <input type="hidden" id="ugc-tags-val">
@@ -463,8 +453,8 @@ main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
     <div class="card-header">All Games Overview</div>
     <div class="card-body" style="padding:0;overflow-x:auto">
       <table class="data-table" id="allGamesTable">
-        <thead><tr><th></th><th>Game</th><th>Category</th><th>Status</th><th>RTP</th><th>Rounds</th><th>House Take</th><th>Live</th></tr></thead>
-        <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
+        <thead><tr><th></th><th>Game</th><th>Status</th><th>RTP</th><th>Rounds</th><th>House Take</th><th>Live</th></tr></thead>
+        <tbody><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -875,7 +865,6 @@ async function loadUnifiedGames() {
     return `<tr style="cursor:pointer" onclick="document.getElementById('gameSelector').value='${g.id}';showGameCard()">
       <td>${g.icon||'🎰'}</td>
       <td><strong>${g.name}</strong></td>
-      <td style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${g.category||'\u2014'}</td>
       <td><span class="status-pill ${g.status}" style="font-size:0.55rem">${g.status}</span></td>
       <td style="color:var(--gold)">${targetRTP}%</td>
       <td style="color:var(--muted)">${fmtN(gs.rounds||0)}</td>
@@ -904,7 +893,6 @@ function showGameCard() {
   document.getElementById('ugc-icon-input').value = g.icon||'🎰';
   document.getElementById('ugc-name').value = g.name||'';
   document.getElementById('ugc-desc').value = g.description||'';
-  document.getElementById('ugc-category').value = g.category||'slots';
   document.getElementById('ugc-play-link').href = g.route||'#';
 
   // Status
@@ -1003,7 +991,7 @@ async function ugcSaveCard() {
 
   const r = await fetch('/api/admin/games/update',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({gameId,name,description,tags,icon,category:document.getElementById('ugc-category').value})
+    body:JSON.stringify({gameId,name,description,tags,icon})
   });
   if(r.ok) {
     flashMsg('ugc-card-msg');

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Daily Bonus — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #FFD700; --gold2: #FFA500; --neon: #00FFCC; --red: #FF4455;
+  --dark: #050510; --dark2: #0a0a1f; --dark3: #0f0f2e;
+  --border: rgba(255,215,0,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--dark);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* Background glow */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.08), transparent 60%),
+    radial-gradient(ellipse at 30% 70%, rgba(255,165,0,0.05), transparent 50%),
+    radial-gradient(ellipse at 70% 70%, rgba(0,255,204,0.04), transparent 50%);
+  pointer-events: none;
+}
+
+nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  padding-top: max(0.8rem, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  background: rgba(5,5,16,0.95);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+}
+.back-btn {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: none;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Main content */
+.wheel-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+
+/* Streak display */
+.streak-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+.streak-day {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(255,215,0,0.15);
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.02);
+  transition: all 0.3s;
+}
+.streak-day.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255,215,0,0.12);
+  box-shadow: 0 0 12px rgba(255,215,0,0.25);
+}
+.streak-day.today {
+  border-color: var(--neon);
+  color: var(--neon);
+  background: rgba(0,255,204,0.12);
+  box-shadow: 0 0 12px rgba(0,255,204,0.3);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 12px rgba(0,255,204,0.3)} 50%{box-shadow:0 0 20px rgba(0,255,204,0.5)} }
+
+.streak-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.multiplier-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+/* Canvas wheel */
+.wheel-wrapper {
+  position: relative;
+  width: min(85vw, 380px);
+  height: min(85vw, 380px);
+}
+canvas#wheel {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 30px rgba(255,215,0,0.15));
+}
+
+/* Pointer triangle */
+.wheel-pointer {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 28px solid var(--gold);
+  filter: drop-shadow(0 2px 8px rgba(255,215,0,0.5));
+  z-index: 5;
+}
+
+/* Center button */
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--dark);
+  box-shadow: 0 0 25px rgba(255,215,0,0.35);
+  transition: all 0.2s;
+  z-index: 5;
+  user-select: none;
+}
+.wheel-center:hover { transform: translate(-50%,-50%) scale(1.08); box-shadow: 0 0 35px rgba(255,215,0,0.5); }
+.wheel-center:active { transform: translate(-50%,-50%) scale(0.95); }
+.wheel-center.disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* Win display */
+.win-display {
+  margin-top: 1.2rem;
+  text-align: center;
+  min-height: 80px;
+}
+.win-amount {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2), var(--neon));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.win-amount.show { opacity: 1; transform: scale(1); }
+.win-sub {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+}
+
+/* Already claimed state */
+.claimed-message {
+  text-align: center;
+  padding: 2rem;
+}
+.claimed-message h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 3px;
+  color: var(--neon);
+  margin-bottom: 0.5rem;
+}
+.claimed-message p {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+}
+.countdown {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-top: 0.8rem;
+}
+
+/* Confetti canvas */
+#confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 2px;
+}
+
+/* XP Popup */
+.xp-float{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;color:#00FFCC;text-shadow:0 0 12px rgba(0,255,204,0.5);pointer-events:none;z-index:200;opacity:0;animation:xpFloatUp 1.2s ease-out forwards;}
+@keyframes xpFloatUp{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}20%{opacity:1;transform:translate(-50%,-60%) scale(1.1);}100%{opacity:0;transform:translate(-50%,-120%) scale(0.8);}}
+.levelup-overlay{position:fixed;inset:0;z-index:250;background:rgba(5,5,16,0.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.levelup-overlay.show{opacity:1;pointer-events:auto;}
+.levelup-box{text-align:center;animation:levelPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes levelPop{0%{transform:scale(0);}100%{transform:scale(1);}}
+.levelup-box .lu-stars{font-size:2rem;margin-bottom:0.3rem;}
+.levelup-box .lu-text{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;background:linear-gradient(135deg,#00FFCC,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.levelup-box .lu-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:#00FFCC;line-height:1;text-shadow:0 0 30px rgba(0,255,204,0.4);}
+.levelup-box .lu-title{font-size:1rem;letter-spacing:2px;color:#FFD700;text-transform:uppercase;margin:0.2rem 0;}
+.levelup-box .lu-reward{font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.3rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/play" class="logo">★ SLOT STARS CLUB</a>
+  <a href="/play" class="back-btn">← Lobby</a>
+</nav>
+
+<div class="wheel-container" id="main">
+  <div class="loading">LOADING...</div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+const main = document.getElementById('main');
+let bonusData = null;
+let spinning = false;
+
+// ── LOAD STATUS ────────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch('/api/game/daily-bonus');
+    if (!r.ok) { window.location = '/'; return; }
+    bonusData = await r.json();
+    render();
+  } catch(e) {
+    main.innerHTML = '<div class="loading">Connection error — try again</div>';
+  }
+}
+
+function render() {
+  if (bonusData.available) {
+    renderWheel();
+  } else {
+    renderClaimed();
+  }
+}
+
+// ── CLAIMED STATE ──────────────────────────────────────────────
+function renderClaimed() {
+  main.innerHTML = `
+    ${buildStreakBar()}
+    <div class="claimed-message">
+      <h2>✓ BONUS CLAIMED TODAY</h2>
+      <p>Come back tomorrow to keep your streak!</p>
+      <div class="countdown" id="countdown"></div>
+      <p style="margin-top:1rem;color:rgba(255,255,255,0.25);font-size:0.75rem">Next bonus resets at midnight UTC</p>
+    </div>
+  `;
+  startCountdown();
+}
+
+function startCountdown() {
+  function update() {
+    const now = new Date();
+    const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    const diff = tomorrow - now;
+    const h = String(Math.floor(diff/3600000)).padStart(2,'0');
+    const m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    const el = document.getElementById('countdown');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+// ── STREAK BAR ─────────────────────────────────────────────────
+function buildStreakBar() {
+  const streak = bonusData.streak || 0;
+  let html = '<div class="streak-label">Daily Streak</div>';
+  html += `<div class="multiplier-label">${bonusData.available ? 'Spin for' : 'Current'}: ${bonusData.multiplier}× Multiplier</div>`;
+  html += '<div class="streak-bar">';
+  for (let d = 1; d <= 7; d++) {
+    const active = d <= streak;
+    const today = d === streak && bonusData.available;
+    const cls = today ? 'today' : (active ? 'active' : '');
+    html += `<div class="streak-day ${cls}">${d}</div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// ── WHEEL RENDERING ────────────────────────────────────────────
+let wheelAngle = 0;
+let wheelCanvas, wheelCtx;
+const SLICES = 8;
+const SLICE_ANGLE = (Math.PI * 2) / SLICES;
+
+// Wheel colors
+const WHEEL_COLORS = [
+  '#1a1040', '#2a1545', '#1a2545', '#351530',
+  '#153525', '#352515', '#253515', '#351540'
+];
+const WHEEL_BORDERS = [
+  '#4a30a0', '#6a35a5', '#3a55a5', '#a53550',
+  '#35a565', '#a56535', '#65a535', '#a535a0'
+];
+
+function renderWheel() {
+  const prizes = bonusData.prizes || [];
+
+  main.innerHTML = `
+    ${buildStreakBar()}
+    <div class="wheel-wrapper">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheel" width="760" height="760"></canvas>
+      <div class="wheel-center" id="spinBtn" onclick="doSpin()">SPIN</div>
+    </div>
+    <div class="win-display">
+      <div class="win-amount" id="winAmt"></div>
+      <div class="win-sub" id="winSub"></div>
+    </div>
+  `;
+
+  wheelCanvas = document.getElementById('wheel');
+  wheelCtx = wheelCanvas.getContext('2d');
+  drawWheel(prizes);
+}
+
+function drawWheel(prizes) {
+  const ctx = wheelCtx;
+  const W = wheelCanvas.width;
+  const cx = W/2, cy = W/2, r = W/2 - 12;
+
+  ctx.clearRect(0, 0, W, W);
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(wheelAngle);
+
+  // Draw slices
+  for (let i = 0; i < SLICES; i++) {
+    const startAngle = i * SLICE_ANGLE - Math.PI/2;
+    const endAngle = startAngle + SLICE_ANGLE;
+
+    // Slice fill
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    ctx.fill();
+
+    // Slice border
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.strokeStyle = WHEEL_BORDERS[i % WHEEL_BORDERS.length];
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Inner glow arc
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.92, startAngle + 0.02, endAngle - 0.02);
+    ctx.strokeStyle = WHEEL_BORDERS[i % WHEEL_BORDERS.length];
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.3;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Prize text
+    ctx.save();
+    const textAngle = startAngle + SLICE_ANGLE / 2;
+    ctx.rotate(textAngle);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Prize amount
+    ctx.font = 'bold 36px "Bebas Neue", sans-serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.shadowColor = 'rgba(255,215,0,0.5)';
+    ctx.shadowBlur = 8;
+    ctx.fillText(prizes[i]?.label || '$?', r * 0.62, 0);
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+  }
+
+  // Outer ring
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  // Inner ring
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 0.2, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,215,0,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Bulbs around edge
+  for (let i = 0; i < 24; i++) {
+    const a = (i / 24) * Math.PI * 2;
+    const bx = Math.cos(a) * (r + 2);
+    const by = Math.sin(a) * (r + 2);
+    ctx.beginPath();
+    ctx.arc(bx, by, 5, 0, Math.PI * 2);
+    const lit = (Date.now() / 300 + i) % 3 < 1.5;
+    ctx.fillStyle = lit ? '#FFD700' : '#332800';
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// ── SPIN ANIMATION ─────────────────────────────────────────────
+async function doSpin() {
+  if (spinning || !bonusData.available) return;
+  spinning = true;
+
+  const btn = document.getElementById('spinBtn');
+  btn.classList.add('disabled');
+  btn.textContent = '...';
+
+  // Call server to claim
+  let result;
+  try {
+    const r = await fetch('/api/game/claim-daily-bonus', { method: 'POST' });
+    if (!r.ok) {
+      const err = await r.json();
+      btn.classList.remove('disabled');
+      btn.textContent = 'SPIN';
+      spinning = false;
+      if (err.error === 'Already claimed today') {
+        bonusData.available = false;
+        renderClaimed();
+      }
+      return;
+    }
+    result = await r.json();
+  } catch(e) {
+    btn.classList.remove('disabled');
+    btn.textContent = 'SPIN';
+    spinning = false;
+    return;
+  }
+
+  // Calculate target angle for the winning slice
+  const targetSlice = result.prizeIndex;
+  // The pointer is at the top (12 o'clock = -PI/2)
+  // Slice 0 starts at -PI/2, so slice N center is at -PI/2 + N*SLICE_ANGLE + SLICE_ANGLE/2
+  // We need the wheel to rotate so that this slice lines up with the pointer
+  // Full rotations + landing angle
+  const sliceCenter = targetSlice * SLICE_ANGLE + SLICE_ANGLE / 2;
+  const randomOffset = (Math.random() - 0.5) * SLICE_ANGLE * 0.6; // Slight randomness within slice
+  const fullSpins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
+  const targetAngle = fullSpins * Math.PI * 2 + (Math.PI * 2 - sliceCenter) + randomOffset;
+
+  // Animate with easing
+  const startAngle = wheelAngle;
+  const totalAngle = targetAngle - (startAngle % (Math.PI * 2));
+  const duration = 4500 + Math.random() * 1000; // 4.5-5.5 seconds
+  const startTime = performance.now();
+  const prizes = result.prizes || bonusData.prizes;
+
+  // Play tick sounds
+  let lastTick = 0;
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    // Cubic ease-out
+    const ease = 1 - Math.pow(1 - t, 3);
+    wheelAngle = startAngle + totalAngle * ease;
+
+    // Tick sound effect at slice boundaries
+    const currentSlice = Math.floor(((wheelAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) / SLICE_ANGLE);
+    if (currentSlice !== lastTick) {
+      lastTick = currentSlice;
+      playTick(t);
+    }
+
+    drawWheel(prizes);
+
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      // LANDED!
+      playWin();
+      showWin(result);
+      fireConfetti();
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function showWin(result) {
+  const winAmt = document.getElementById('winAmt');
+  const winSub = document.getElementById('winSub');
+  if (winAmt) {
+    winAmt.textContent = `+${result.prizeLabel}`;
+    setTimeout(() => winAmt.classList.add('show'), 100);
+  }
+  if (result.xp) setTimeout(function(){ showXPGain(result.xp); }, 500);
+  if (winSub) {
+    const streakText = result.streak > 1 ? ` (${result.multiplier}× streak bonus!)` : '';
+    winSub.textContent = `Added to your balance${streakText}`;
+  }
+
+  // Update lobby balance if we go back
+  setTimeout(() => {
+    bonusData.available = false;
+    bonusData.streak = result.streak;
+
+    const btn = document.getElementById('spinBtn');
+    if (btn) {
+      btn.textContent = '✓';
+      btn.classList.add('disabled');
+    }
+  }, 2000);
+}
+
+// ── SOUND EFFECTS ──────────────────────────────────────────────
+let audioCtx;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTick(progress) {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 800 + progress * 400;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    osc.start(); osc.stop(ctx.currentTime + 0.05);
+  } catch(e) {}
+}
+
+function playWin() {
+  try {
+    const ctx = getAudio();
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      const t = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      osc.start(t); osc.stop(t + 0.4);
+    });
+  } catch(e) {}
+}
+
+// ── CONFETTI ───────────────────────────────────────────────────
+function fireConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#FFD700','#FFA500','#00FFCC','#FF4455','#4488FF','#FF44FF','#44FF44'];
+
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: canvas.width / 2 + (Math.random() - 0.5) * 100,
+      y: canvas.height * 0.4,
+      vx: (Math.random() - 0.5) * 12,
+      vy: -Math.random() * 14 - 4,
+      w: Math.random() * 8 + 3,
+      h: Math.random() * 6 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.3,
+      life: 1,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      if (p.life <= 0) return;
+      alive = true;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.25;
+      p.vx *= 0.99;
+      p.rotation += p.rotSpeed;
+      p.life -= 0.008;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (alive) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(draw);
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+init();
+</script>
+
+<div class="levelup-overlay" id="levelupOverlay" onclick="this.classList.remove('show')">
+  <div class="levelup-box">
+    <div class="lu-stars">✦ ✦ ✦</div>
+    <div class="lu-text">LEVEL UP!</div>
+    <div class="lu-num" id="luNum">2</div>
+    <div class="lu-title" id="luTitle">Beginner</div>
+    <div class="lu-reward" id="luReward">+$1.00 bonus credits</div>
+  </div>
+</div>
+<script>
+function showXPGain(xpData) {
+  if (!xpData || !xpData.xpGained) return;
+  var el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = '+' + xpData.xpGained + ' XP';
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 1300);
+  if (xpData.leveledUp) {
+    setTimeout(function() {
+      document.getElementById('luNum').textContent = xpData.level;
+      document.getElementById('luTitle').textContent = xpData.title;
+      document.getElementById('luReward').textContent = xpData.reward > 0 ? '+$' + (xpData.reward / 100).toFixed(2) + ' bonus credits!' : '';
+      document.getElementById('levelupOverlay').classList.add('show');
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [523, 659, 784, 1047, 1318].forEach(function(f, i) {
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.frequency.value = f; o.type = 'sine';
+          var t = ctx.currentTime + i * 0.12;
+          g.gain.setValueAtTime(0.12, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+          o.start(t); o.stop(t + 0.4);
+        });
+      } catch(e) {}
+      setTimeout(function() { document.getElementById('levelupOverlay').classList.remove('show'); }, 3000);
+    }, 800);
+  }
+}
+</script>
+</body>
+</html>
