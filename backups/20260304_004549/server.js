@@ -14,43 +14,6 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 24*60*60*1000 }
 }));
-// ── IP Logging Middleware ──
-app.use((req, res, next) => {
-  if (req.session && req.session.userId && req.path.startsWith('/api/')) {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.headers['x-real-ip'] || req.connection.remoteAddress || req.ip;
-    try {
-      // Log IP at most once per hour per user
-      const recent = db.prepare("SELECT id FROM ip_log WHERE user_id=? AND ip=? AND created_at > datetime('now','-1 hour')").get(req.session.userId, ip);
-      if (!recent) {
-        db.prepare('INSERT INTO ip_log (user_id, ip, user_agent) VALUES (?,?,?)').run(req.session.userId, ip, (req.headers['user-agent']||'').slice(0,200));
-      }
-    } catch(e) {}
-  }
-  next();
-});
-// ── Ban/Suspend Check Middleware ──
-app.use((req, res, next) => {
-  if (req.session && req.session.userId && req.path.startsWith('/api/') && !req.path.startsWith('/api/auth')) {
-    try {
-      const user = db.prepare('SELECT account_status, suspended_until, banned_until FROM users WHERE id=?').get(req.session.userId);
-      if (user) {
-        if (user.account_status === 'banned') {
-          if (!user.banned_until || new Date(user.banned_until) > new Date()) {
-            return res.status(403).json({ error: 'Account banned', banned: true });
-          }
-        }
-        if (user.account_status === 'suspended') {
-          if (!user.suspended_until || new Date(user.suspended_until) > new Date()) {
-            return res.status(403).json({ error: 'Account suspended', suspended: true });
-          }
-        }
-      }
-    } catch(e) {}
-  }
-  next();
-});
-
-
 
 // ─── Helpers (must be before routes that use them) ──────────────
 function page(p) {
@@ -98,8 +61,7 @@ app.use('/api/game',     require('./routes/game'));
 app.use('/api/game',     require('./routes/levels'));
 app.use('/api/game',     require('./routes/leaderboard'));
 app.use('/api/game',     require('./routes/daily-bonus'));
-app.use('/api/admin',    require('./routes/admin'))
-app.use('/api/admin', require('./routes/user-management'));;
+app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/admin',    require('./routes/admin-extras'));
 app.use('/api/reseller', require('./routes/reseller'));
 
@@ -169,24 +131,4 @@ app.post('/api/game/pulltab/pull',      gameApiGuard('pulltab'));
 
 // ─── Start ──────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-
-// ── Password Reset Page ──
-app.get('/reset-password', (req, res) => {
-  res.sendFile(require('path').join(__dirname, 'public/pages/reset-password.html'));
-});
-app.post('/api/auth/reset-password', (req, res) => {
-  const { token, newPassword } = req.body;
-  if (!token || !newPassword) return res.status(400).json({ error: 'Missing fields' });
-  if (newPassword.length < 4) return res.status(400).json({ error: 'Password too short' });
-  try {
-    const row = db.prepare("SELECT * FROM password_reset_tokens WHERE token=? AND expires_at > datetime('now') AND used=0").get(token);
-    if (!row) return res.status(400).json({ error: 'Invalid or expired token' });
-    const bcrypt = require('bcryptjs');
-    const hash = bcrypt.hashSync(newPassword, 10);
-    db.prepare('UPDATE users SET password=? WHERE id=?').run(hash, row.user_id);
-    db.prepare('UPDATE password_reset_tokens SET used=1 WHERE id=?').run(row.id);
-    res.json({ success: true });
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
 app.listen(PORT, () => console.log(`Slot Stars Club running on port ${PORT}`));

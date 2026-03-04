@@ -98,47 +98,4 @@ if (!adminExists) {
   db.prepare('INSERT INTO users (username,password,role,credits) VALUES (?,?,?,?)').run('admin',hash,'admin',999900);
   console.log('Admin created: admin / admin123');
 }
-
-// ── Advanced User Management migrations ──
-try { db.exec("ALTER TABLE users ADD COLUMN account_status TEXT DEFAULT 'active'"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN suspend_reason TEXT"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN ban_reason TEXT"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN suspended_until DATETIME"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN banned_until DATETIME"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN admin_notes TEXT DEFAULT ''"); } catch(e) {}
-try { db.exec("ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP"); } catch(e) {}
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS ip_log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    ip TEXT NOT NULL,
-    user_agent TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-  CREATE INDEX IF NOT EXISTS idx_ip_log_user ON ip_log(user_id);
-  CREATE INDEX IF NOT EXISTS idx_ip_log_ip ON ip_log(ip);
-
-  CREATE TABLE IF NOT EXISTS user_actions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    admin_user_id INTEGER,
-    target_user_id INTEGER NOT NULL,
-    action TEXT NOT NULL,
-    reason TEXT,
-    duration_hours INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-  CREATE INDEX IF NOT EXISTS idx_user_actions_target ON user_actions(target_user_id);
-
-  CREATE TABLE IF NOT EXISTS password_reset_tokens (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    token TEXT NOT NULL UNIQUE,
-    expires_at DATETIME NOT NULL,
-    used INTEGER DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-  CREATE INDEX IF NOT EXISTS idx_reset_tokens ON password_reset_tokens(token);
-`);
-
 module.exports = db;

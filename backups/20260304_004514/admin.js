@@ -83,7 +83,8 @@ router.post('/settings', requireRole('admin'), (req, res) => {
   res.json({ success: true });
 });
 
-// (module.exports moved to end of file)
+module.exports = router;
+// This line intentionally left blank
 
 // ─── Game Management ─────────────────────────────────────────────────────────
 router.get('/games', requireRole('admin'), (req, res) => {
@@ -269,5 +270,3 @@ router.post('/jackpot-win', requireRole('admin'), (req, res) => {
   db.prepare('INSERT INTO jackpot_winners (user_id,username,game,jackpot_type,amount) VALUES (?,?,?,?,?)').run(userId,username,game,jackpotType,amount);
   res.json({ ok: true });
 });
-
-module.exports = router;

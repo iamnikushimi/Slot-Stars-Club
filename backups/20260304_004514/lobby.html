@@ -510,17 +510,21 @@ async function applyLobbyData() {
       const iconEl = card.querySelector('.game-icon');
       if (iconEl && g.icon) iconEl.textContent = g.icon;
 
-      // Update badges/tags — always clear, then re-add from DB
-      card.querySelectorAll('.game-badge').forEach(b => b.remove());
+      // Update badges/tags — replace existing badges
       if (g.tags) {
         const tags = g.tags.split(',').filter(t => t.trim());
-        const badgeColors = { 'New': 'new', 'Popular': 'hot', 'Hot': 'hot', 'Featured': 'hot', 'Jackpots': 'jackpot', 'High Risk': 'hot' };
-        tags.forEach(tag => {
-          const span = document.createElement('span');
-          span.className = 'game-badge ' + (badgeColors[tag] || 'new');
-          span.textContent = tag;
-          card.appendChild(span);
-        });
+        if (tags.length > 0) {
+          // Remove old badges
+          card.querySelectorAll('.game-badge').forEach(b => b.remove());
+          // Add new ones
+          const badgeColors = { 'New': 'new', 'Popular': 'hot', 'Hot': 'hot', 'Featured': 'hot', 'Jackpots': 'jackpot', 'High Risk': 'hot' };
+          tags.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'game-badge ' + (badgeColors[tag] || 'new');
+            span.textContent = tag;
+            card.appendChild(span);
+          });
+        }
       }
 
       // For featured cards, update inline description too

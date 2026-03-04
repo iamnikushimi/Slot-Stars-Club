@@ -200,56 +200,6 @@ main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
   .form-row{flex-direction:column;}
   .two-col{grid-template-columns:1fr!important;}
 }
-
-  /* ── User Management ── */
-  .user-status{padding:0.15rem 0.5rem;font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:0.3rem;}
-  .user-status.online{background:rgba(0,255,157,0.1);color:var(--c-active);border:1px solid rgba(0,255,157,0.25);}
-  .user-status.online::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--c-active);animation:blink 1.5s infinite;}
-  .user-status.offline{background:rgba(255,255,255,0.03);color:var(--muted);border:1px solid rgba(255,255,255,0.08);}
-  .user-status.banned{background:rgba(255,68,85,0.1);color:var(--red);border:1px solid rgba(255,68,85,0.25);}
-  .user-status.suspended{background:rgba(255,170,0,0.1);color:var(--amber);border:1px solid rgba(255,170,0,0.25);}
-
-  .um-modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
-  .um-modal-overlay.show{display:flex;}
-  .um-modal{background:var(--dark2);border:1px solid var(--border);border-top:3px solid var(--gold);max-width:600px;width:95%;max-height:85vh;overflow-y:auto;}
-  .um-modal-head{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
-  .um-modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--gold);}
-  .um-modal-close{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:0.3rem;}
-  .um-modal-close:hover{color:var(--red);}
-  .um-modal-body{padding:1.25rem 1.5rem;}
-
-  .um-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1rem;}
-  .um-detail-item{background:var(--dark3);padding:0.6rem 0.8rem;}
-  .um-detail-val{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);letter-spacing:1px;}
-  .um-detail-lbl{font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-
-  .um-section{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);}
-  .um-section-title{font-size:0.62rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem;}
-
-  .um-action-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.6rem;}
-  .um-btn{padding:0.35rem 0.85rem;font-family:'Rajdhani',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid;background:transparent;transition:all 0.15s;}
-  .um-btn.suspend{border-color:rgba(255,170,0,0.4);color:var(--amber);}.um-btn.suspend:hover{background:rgba(255,170,0,0.1);}
-  .um-btn.ban{border-color:rgba(255,68,85,0.4);color:var(--red);}.um-btn.ban:hover{background:rgba(255,68,85,0.1);}
-  .um-btn.unban{border-color:rgba(0,255,204,0.4);color:var(--neon);}.um-btn.unban:hover{background:rgba(0,255,204,0.1);}
-  .um-btn.pw{border-color:rgba(155,89,182,0.4);color:#bb86fc;}.um-btn.pw:hover{background:rgba(155,89,182,0.1);}
-  .um-btn.sm{padding:0.2rem 0.5rem;font-size:0.68rem;}
-
-  .um-ip{font-family:monospace;font-size:0.78rem;color:var(--neon);cursor:pointer;text-decoration:underline;text-decoration-color:rgba(0,255,204,0.3);}
-  .um-ip:hover{color:#fff;}
-
-  .um-action-log{font-size:0.78rem;}
-  .um-action-log .action-item{padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:0.5rem;align-items:baseline;}
-  .action-type{padding:0.1rem 0.35rem;font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
-  .action-type.suspend{background:rgba(255,170,0,0.1);color:var(--amber);border:1px solid rgba(255,170,0,0.2);}
-  .action-type.ban{background:rgba(255,68,85,0.1);color:var(--red);border:1px solid rgba(255,68,85,0.2);}
-  .action-type.unban{background:rgba(0,255,204,0.1);color:var(--neon);border:1px solid rgba(0,255,204,0.2);}
-  .action-type.password_reset,.action-type.force_password{background:rgba(155,89,182,0.1);color:#bb86fc;border:1px solid rgba(155,89,182,0.2);}
-  .action-type.credit_add{background:rgba(0,255,157,0.1);color:var(--c-active);border:1px solid rgba(0,255,157,0.2);}
-  .action-type.credit_remove{background:rgba(255,68,85,0.1);color:var(--red);border:1px solid rgba(255,68,85,0.2);}
-
-  .um-search{padding:0.45rem 0.8rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:#fff;font-family:'Rajdhani',sans-serif;font-size:0.88rem;outline:none;width:250px;transition:border-color 0.2s;}
-  .um-search:focus{border-color:var(--gold);}
-
 </style>
 </head>
 <body>
@@ -267,7 +217,6 @@ main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
     <div class="s-section">Management</div>
     <button class="nav-link" onclick="show('games')">◉ Games</button>
     <button class="nav-link" onclick="show('users')">◈ Users</button>
-    <button class="nav-link" onclick="show('audit')">◫ Audit Log</button>
     <button class="nav-link" onclick="show('invites')">◇ Invites</button>
     <button class="nav-link" onclick="show('spins')">◎ Spin History</button>
     <div class="s-section">Engage</div>
@@ -598,60 +547,19 @@ main{margin-left:230px;flex:1;padding:2rem;min-width:0;}
   </div>
 </div>
 
-<!-- ═══════════════════════ USERS (ADVANCED) ═══════════════════════ -->
+<!-- ═══════════════════════ USERS ═══════════════════════ -->
 <div class="section" id="s-users">
   <div class="page-header">
-    <div class="page-title">User Management</div>
-    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
-      <input class="um-search" id="userSearch" placeholder="Search username or IP..." oninput="filterUsers()">
-      <button class="btn btn-gold" onclick="loadUsers()">↻ Refresh</button>
-    </div>
+    <div class="page-title">Users</div>
+    <button class="btn btn-gold" onclick="loadUsers()">↻ Refresh</button>
   </div>
-
-  <div class="stats-grid" style="margin-bottom:1.25rem">
-    <div class="stat-card"><div class="stat-num" id="um-total">—</div><div class="stat-label">Total Users</div></div>
-    <div class="stat-card neon"><div class="stat-num" id="um-online">—</div><div class="stat-label">Online Now</div></div>
-    <div class="stat-card amber"><div class="stat-num" id="um-suspended">—</div><div class="stat-label">Suspended</div></div>
-    <div class="stat-card red"><div class="stat-num" id="um-banned">—</div><div class="stat-label">Banned</div></div>
-  </div>
-
   <div class="card">
     <div class="card-body" style="padding:0;overflow-x:auto">
       <table class="data-table" id="usersTable">
-        <thead><tr>
-          <th>ID</th><th>Username</th><th>Status</th><th>Level</th><th>Role</th>
-          <th>Credits</th><th>Last IP</th><th>Rounds</th><th>P/L</th><th>Actions</th>
-        </tr></thead>
+        <thead><tr><th>ID</th><th>Username</th><th>Level</th><th>Role</th><th>Player Credits</th><th>Reseller Credits</th><th>Set Role</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════ AUDIT LOG ═══════════════════════ -->
-<div class="section" id="s-audit">
-  <div class="page-header">
-    <div class="page-title">Audit Log</div>
-    <button class="btn btn-gold" onclick="loadAuditLog()">↻ Refresh</button>
-  </div>
-  <div class="card">
-    <div class="card-body" style="padding:0;overflow-x:auto">
-      <table class="data-table" id="auditTable">
-        <thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Target</th><th>Reason</th><th>Duration</th></tr></thead>
-        <tbody><tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- User Detail Modal -->
-<div class="um-modal-overlay" id="umModal" onclick="if(event.target===this)closeUserModal()">
-  <div class="um-modal">
-    <div class="um-modal-head">
-      <div class="um-modal-title" id="umTitle">User Details</div>
-      <button class="um-modal-close" onclick="closeUserModal()">&times;</button>
-    </div>
-    <div class="um-modal-body" id="umBody">Loading...</div>
   </div>
 </div>
 
@@ -776,7 +684,7 @@ function show(name) {
   const loaders = {
     dashboard:loadDashboard, analytics:loadAnalytics, games:loadUnifiedGames,
     users:loadUsers, invites:loadInvites, spins:loadSpins, settings:loadSettings,
-    bonuses:loadBonuses, broadcast:loadBroadcast, audit:loadAuditLog
+    bonuses:loadBonuses, broadcast:loadBroadcast
   };
   loaders[name]?.();
 }
@@ -1125,8 +1033,37 @@ async function ugcSaveRTP() {
 }
 
 // ─── USERS ───────────────────────────────────────────────────
-// Old loadUsers replaced by advanced version above
-
+async function loadUsers() {
+  const res = await fetch('/api/admin/users');
+  if(!res.ok) return;
+  const {users} = await res.json();
+  document.querySelector('#usersTable tbody').innerHTML = users.map(u=>`
+    <tr>
+      <td style="color:var(--muted);font-size:0.75rem">${u.id}</td>
+      <td><strong>${u.username}</strong></td>
+      <td style="color:var(--neon);font-family:Bebas Neue,sans-serif;font-size:0.9rem">${u.level||1} <span style="font-size:0.55rem;color:var(--muted)">${u.title||"Rookie"}</span></td>
+      <td><span class="role-badge ${u.role}">${u.role}</span></td>
+      <td>
+        <div class="edit-form">
+          <input type="number" value="${(u.credits/100).toFixed(2)}" id="cr-${u.id}" min="0" step="0.01">
+          <button class="btn-sm" onclick="updateCredits(${u.id})">Save</button>
+        </div>
+      </td>
+      <td>
+        <div class="edit-form">
+          <input type="number" value="${(u.reseller_credits/100).toFixed(2)}" id="rc-${u.id}" min="0" step="0.01" ${u.role!=='reseller'&&u.role!=='admin'?'style="opacity:0.4"':''}>
+          <button class="btn-sm" style="border-color:var(--neon);color:var(--neon)" onclick="updateReseller(${u.id})">Set</button>
+        </div>
+      </td>
+      <td>
+        <select onchange="setRole(${u.id},this.value)" style="padding:0.22rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:0.78rem">
+          <option value="player" ${u.role==='player'?'selected':''}>player</option>
+          <option value="reseller" ${u.role==='reseller'?'selected':''}>reseller</option>
+          <option value="admin" ${u.role==='admin'?'selected':''}>admin</option>
+        </select>
+      </td>
+    </tr>`).join('');
+}
 
 async function updateCredits(id) {
   const credits=parseFloat(document.getElementById('cr-'+id).value);
@@ -1346,301 +1283,6 @@ async function init() {
 }
 
 init();
-
-
-// ─── ADVANCED USER MANAGEMENT ────────────────────────────────
-let allUsersData = [];
-
-async function loadUsers() {
-  try {
-    const res = await fetch('/api/admin/users-advanced');
-    if (!res.ok) { 
-      // Fallback to original endpoint
-      const r2 = await fetch('/api/admin/users');
-      if (!r2.ok) return;
-      const d = await r2.json();
-      allUsersData = d.users || [];
-      renderUsersBasic();
-      return;
-    }
-    const data = await res.json();
-    allUsersData = data.users || [];
-    renderUsers();
-  } catch(e) { console.error('Load users error:', e); }
-}
-
-function renderUsersBasic() {
-  // Fallback if advanced endpoint not available
-  const tbody = document.querySelector('#usersTable tbody');
-  tbody.innerHTML = allUsersData.map(u => `<tr>
-    <td>${u.id}</td><td><strong>${u.username}</strong></td>
-    <td><span class="user-status offline">—</span></td>
-    <td>${u.level||1} <span style="color:var(--muted);font-size:0.72rem">${u.title||''}</span></td>
-    <td><span class="role-badge ${u.role}">${u.role}</span></td>
-    <td>${fmt(u.credits||0)}</td><td>—</td><td>—</td><td>—</td>
-    <td><button class="um-btn sm suspend" onclick="toast('Restart server to enable','var(--amber)')">Details</button></td>
-  </tr>`).join('');
-}
-
-function renderUsers() {
-  const search = (document.getElementById('userSearch')?.value || '').toLowerCase();
-  const filtered = allUsersData.filter(u => {
-    if (!search) return true;
-    return u.username.toLowerCase().includes(search) || (u.last_ip||'').includes(search) || String(u.id).includes(search);
-  });
-
-  // Stats
-  document.getElementById('um-total').textContent = allUsersData.length;
-  document.getElementById('um-online').textContent = allUsersData.filter(u=>u.is_online).length;
-  document.getElementById('um-suspended').textContent = allUsersData.filter(u=>u.effective_status==='suspended').length;
-  document.getElementById('um-banned').textContent = allUsersData.filter(u=>u.effective_status==='banned').length;
-
-  const tbody = document.querySelector('#usersTable tbody');
-  tbody.innerHTML = filtered.map(u => {
-    const st = u.effective_status || 'active';
-    const statusClass = st === 'banned' ? 'banned' : st === 'suspended' ? 'suspended' : u.is_online ? 'online' : 'offline';
-    const statusLabel = st === 'banned' ? 'Banned' : st === 'suspended' ? 'Suspended' : u.is_online ? 'Online' : 'Offline';
-    const pl = (u.total_won||0) - (u.total_wagered||0);
-    return `<tr>
-      <td style="color:var(--muted);font-size:0.78rem">${u.id}</td>
-      <td><strong style="cursor:pointer;color:var(--gold)" onclick="openUserModal(${u.id})">${u.username}</strong></td>
-      <td><span class="user-status ${statusClass}">${statusLabel}</span></td>
-      <td>${u.level||1} <span style="color:var(--muted);font-size:0.68rem">${u.title||''}</span></td>
-      <td><span class="role-badge ${u.role}">${u.role}</span></td>
-      <td>${fmt(u.credits||0)}</td>
-      <td>${u.last_ip ? '<span class="um-ip" onclick="ipLookup(\''+u.last_ip+'\')" title="Click to look up">'+u.last_ip+'</span>' : '<span style="color:var(--muted)">—</span>'}</td>
-      <td style="color:var(--muted)">${fmtN(u.total_rounds||0)}</td>
-      <td style="color:${pl>=0?'var(--neon)':'var(--red)'};">${pl>=0?'+':''}${fmt(pl)}</td>
-      <td>
-        <button class="um-btn sm suspend" onclick="openUserModal(${u.id})" title="Manage user">⚙</button>
-      </td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="10" style="color:var(--muted);text-align:center;padding:1.5rem">No users found</td></tr>';
-}
-
-function filterUsers() { renderUsers(); }
-
-// ── User Detail Modal ──
-async function openUserModal(userId) {
-  document.getElementById('umModal').classList.add('show');
-  document.getElementById('umBody').innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem">Loading...</div>';
-
-  try {
-    const res = await fetch('/api/admin/user/' + userId);
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    const u = data.user;
-    const st = u.account_status || 'active';
-
-    document.getElementById('umTitle').textContent = u.username + ' — User #' + u.id;
-
-    let html = '';
-
-    // Status bar
-    const statusClass = st==='banned'?'banned':st==='suspended'?'suspended':'online';
-    html += '<div style="margin-bottom:1rem;display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">';
-    html += '<span class="user-status '+statusClass+'">'+st+'</span>';
-    html += '<span class="role-badge '+u.role+'">'+u.role+'</span>';
-    if (st==='suspended' && u.suspend_reason) html += '<span style="font-size:0.75rem;color:var(--amber)">Reason: '+u.suspend_reason+'</span>';
-    if (st==='banned' && u.ban_reason) html += '<span style="font-size:0.75rem;color:var(--red)">Reason: '+u.ban_reason+'</span>';
-    if (u.suspended_until) html += '<span style="font-size:0.68rem;color:var(--muted)">Until: '+new Date(u.suspended_until).toLocaleString()+'</span>';
-    if (u.banned_until) html += '<span style="font-size:0.68rem;color:var(--muted)">Until: '+new Date(u.banned_until).toLocaleString()+'</span>';
-    html += '</div>';
-
-    // Stats grid
-    const pl = (u.total_won||0) - (u.total_wagered||0);
-    html += '<div class="um-detail-grid">';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+fmt(u.credits||0)+'</div><div class="um-detail-lbl">Credits</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+(u.level||1)+' — '+(u.title||'Rookie')+'</div><div class="um-detail-lbl">Level</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+fmtN(u.total_rounds||0)+'</div><div class="um-detail-lbl">Total Rounds</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+fmt(u.total_wagered||0)+'</div><div class="um-detail-lbl">Total Wagered</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val" style="color:'+(pl>=0?'var(--neon)':'var(--red)')+'">'+(pl>=0?'+':'')+fmt(pl)+'</div><div class="um-detail-lbl">Net P/L</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+(u.biggest_win?fmt(u.biggest_win):'—')+'</div><div class="um-detail-lbl">Biggest Win</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+(u.favorite_game||'—')+'</div><div class="um-detail-lbl">Favorite Game</div></div>';
-    html += '<div class="um-detail-item"><div class="um-detail-val">'+(u.last_played?ago(u.last_played):'Never')+'</div><div class="um-detail-lbl">Last Played</div></div>';
-    html += '</div>';
-
-    // ── Actions ──
-    html += '<div class="um-section"><div class="um-section-title">Actions</div>';
-    html += '<div class="um-action-row">';
-    if (st !== 'suspended' && st !== 'banned') {
-      html += '<button class="um-btn suspend" onclick="promptSuspend('+u.id+')">⚠ Suspend</button>';
-      html += '<button class="um-btn ban" onclick="promptBan('+u.id+')">✕ Ban</button>';
-    } else {
-      html += '<button class="um-btn unban" onclick="doUnban('+u.id+')">✓ Lift Restrictions</button>';
-    }
-    html += '<button class="um-btn pw" onclick="promptResetPassword('+u.id+')">🔗 Reset Link</button>';
-    html += '<button class="um-btn pw" onclick="promptForcePassword('+u.id+')">🔑 Force Password</button>';
-    html += '</div>';
-
-    // Credit adjustment
-    html += '<div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.5rem;flex-wrap:wrap">';
-    html += '<input type="number" id="umCreditAmt" placeholder="Amount ($)" style="width:100px;padding:0.3rem 0.5rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;font-family:Rajdhani,sans-serif;font-size:0.85rem">';
-    html += '<input type="text" id="umCreditReason" placeholder="Reason (optional)" style="flex:1;min-width:120px;padding:0.3rem 0.5rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;font-family:Rajdhani,sans-serif;font-size:0.85rem">';
-    html += '<button class="um-btn sm unban" onclick="doAdjustCredits('+u.id+',1)">+ Add</button>';
-    html += '<button class="um-btn sm ban" onclick="doAdjustCredits('+u.id+',-1)">- Remove</button>';
-    html += '</div>';
-
-    // Role change
-    html += '<div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.6rem">';
-    html += '<span style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Set Role</span>';
-    ['player','reseller','admin'].forEach(r => {
-      const curr = r===u.role ? 'font-weight:900;' : '';
-      html += '<button class="um-btn sm" style="border-color:rgba(255,215,0,0.3);color:var(--gold);'+curr+'" onclick="doSetRole('+u.id+',\''+r+'\')">'+r+'</button>';
-    });
-    html += '</div>';
-    html += '</div>';
-
-    // ── IP History ──
-    if (data.ips && data.ips.length) {
-      html += '<div class="um-section"><div class="um-section-title">IP History ('+data.ips.length+' addresses)</div>';
-      html += '<div style="max-height:120px;overflow-y:auto">';
-      data.ips.forEach(ip => {
-        html += '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;border-bottom:1px solid rgba(255,255,255,0.03)">';
-        html += '<span class="um-ip" onclick="ipLookup(\''+ip.ip+'\')">'+ip.ip+'</span>';
-        html += '<span style="font-size:0.7rem;color:var(--muted)">'+ip.times+'x · '+ago(ip.last_seen)+'</span>';
-        html += '</div>';
-      });
-      html += '</div></div>';
-    }
-
-    // ── Admin Notes ──
-    html += '<div class="um-section"><div class="um-section-title">Admin Notes</div>';
-    html += '<textarea id="umNotes" style="width:100%;min-height:60px;padding:0.5rem;background:var(--dark3);border:1px solid var(--border2);color:#fff;font-family:Rajdhani,sans-serif;font-size:0.82rem;resize:vertical;outline:none">'+(u.admin_notes||'')+'</textarea>';
-    html += '<button class="um-btn sm" style="border-color:var(--gold);color:var(--gold);margin-top:0.4rem" onclick="saveNotes('+u.id+')">Save Notes</button>';
-    html += '</div>';
-
-    // ── Action History ──
-    if (data.actions && data.actions.length) {
-      html += '<div class="um-section"><div class="um-section-title">Action History</div>';
-      html += '<div class="um-action-log" style="max-height:150px;overflow-y:auto">';
-      data.actions.forEach(a => {
-        html += '<div class="action-item">';
-        html += '<span class="action-type '+(a.action||'')+'">'+a.action+'</span>';
-        html += '<span style="color:var(--muted);font-size:0.72rem">'+ago(a.created_at)+'</span>';
-        if (a.reason) html += '<span style="font-size:0.75rem">'+a.reason+'</span>';
-        if (a.duration_hours) html += '<span style="font-size:0.68rem;color:var(--muted)">'+a.duration_hours+'h</span>';
-        html += '</div>';
-      });
-      html += '</div></div>';
-    }
-
-    document.getElementById('umBody').innerHTML = html;
-  } catch(e) {
-    document.getElementById('umBody').innerHTML = '<div style="color:var(--red);text-align:center;padding:2rem">Failed to load user details. Make sure you ran pm2 restart after patching.</div>';
-  }
-}
-
-function closeUserModal() { document.getElementById('umModal').classList.remove('show'); }
-
-// ── Suspend/Ban prompts ──
-function promptSuspend(userId) {
-  const reason = prompt('Suspend reason:');
-  if (!reason) return;
-  const dur = prompt('Duration in hours (0 or empty = indefinite):', '24');
-  const hours = parseInt(dur) || 0;
-  doAction('/api/admin/user/suspend', { userId, reason, duration: hours });
-}
-
-function promptBan(userId) {
-  const reason = prompt('Ban reason:');
-  if (!reason) return;
-  const dur = prompt('Duration in hours (0 or empty = permanent):', '0');
-  const hours = parseInt(dur) || 0;
-  doAction('/api/admin/user/ban', { userId, reason, duration: hours });
-}
-
-function doUnban(userId) {
-  if (!confirm('Lift all restrictions for this user?')) return;
-  doAction('/api/admin/user/unban', { userId });
-}
-
-async function doAction(url, body) {
-  const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-  const d = await r.json();
-  if (r.ok && d.success) {
-    toast(d.message || 'Done ✓');
-    loadUsers();
-    if (body.userId) openUserModal(body.userId);
-  } else {
-    toast(d.error || 'Failed', 'var(--red)');
-  }
-}
-
-async function doSetRole(userId, role) {
-  const r = await fetch('/api/admin/set-role', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId, role}) });
-  if (r.ok) { toast('Role updated ✓'); loadUsers(); openUserModal(userId); }
-}
-
-function promptResetPassword(userId) {
-  doResetPassword(userId);
-}
-
-async function doResetPassword(userId) {
-  const r = await fetch('/api/admin/user/reset-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId}) });
-  const d = await r.json();
-  if (r.ok && d.success) {
-    const fullLink = window.location.origin + d.link;
-    prompt('Copy this reset link and send to ' + d.username + ':', fullLink);
-    toast('Reset link generated ✓');
-  } else {
-    toast(d.error || 'Failed', 'var(--red)');
-  }
-}
-
-function promptForcePassword(userId) {
-  const pw = prompt('Enter new password for this user (min 4 chars):');
-  if (!pw || pw.length < 4) { if(pw) toast('Password too short','var(--red)'); return; }
-  doAction('/api/admin/user/force-password', { userId, newPassword: pw });
-}
-
-async function doAdjustCredits(userId, direction) {
-  const amtEl = document.getElementById('umCreditAmt');
-  const reasonEl = document.getElementById('umCreditReason');
-  const amount = parseFloat(amtEl.value) * direction;
-  if (!amount || isNaN(amount)) { toast('Enter an amount','var(--amber)'); return; }
-  const reason = reasonEl.value.trim();
-  const r = await fetch('/api/admin/user/adjust-credits', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId, amount, reason}) });
-  if (r.ok) { toast('Credits adjusted ✓'); amtEl.value=''; reasonEl.value=''; loadUsers(); openUserModal(userId); }
-  else { toast('Failed','var(--red)'); }
-}
-
-async function saveNotes(userId) {
-  const notes = document.getElementById('umNotes').value;
-  const r = await fetch('/api/admin/user/notes', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId, notes}) });
-  if (r.ok) toast('Notes saved ✓');
-}
-
-async function ipLookup(ip) {
-  try {
-    const r = await fetch('/api/admin/ip-lookup/' + encodeURIComponent(ip));
-    const d = await r.json();
-    let msg = 'IP: ' + ip + '\n\nUsers from this IP:\n';
-    (d.users||[]).forEach(u => {
-      msg += '  #' + u.id + ' ' + u.username + ' (' + u.role + ') — ' + u.login_count + ' logins, status: ' + (u.account_status||'active') + '\n';
-    });
-    alert(msg);
-  } catch(e) { toast('Lookup failed','var(--red)'); }
-}
-
-// ── Audit Log ──
-async function loadAuditLog() {
-  try {
-    const r = await fetch('/api/admin/user-actions');
-    const d = await r.json();
-    document.querySelector('#auditTable tbody').innerHTML = (d.actions||[]).map(a => {
-      return '<tr>' +
-        '<td style="color:var(--muted);font-size:0.72rem">' + ago(a.created_at) + '</td>' +
-        '<td><strong>' + (a.admin_name||'System') + '</strong></td>' +
-        '<td><span class="action-type ' + a.action + '">' + a.action + '</span></td>' +
-        '<td><strong style="cursor:pointer;color:var(--gold)" onclick="openUserModal(' + a.target_user_id + ')">' + (a.target_name||'#'+a.target_user_id) + '</strong></td>' +
-        '<td style="font-size:0.78rem;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis">' + (a.reason||'—') + '</td>' +
-        '<td style="color:var(--muted);font-size:0.78rem">' + (a.duration_hours ? a.duration_hours+'h' : '—') + '</td>' +
-      '</tr>';
-    }).join('') || '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:1.5rem">No actions recorded yet</td></tr>';
-  } catch(e) { console.error('Audit log error:', e); }
-}
-
 </script>
 </body>
 </html>
