@@ -15,4 +15,17 @@
         <item name="colorSurface">#0a0a1f</item>
         <item name="colorOnSurface">#FFFFFF</item>
     </style>
+
+    <!-- Force update dialog styling -->
+    <style name="ForceUpdateDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:background">#1a1a2e</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#AAAAAA</item>
+        <item name="colorAccent">#FFD700</item>
+        <item name="buttonBarPositiveButtonStyle">@style/UpdateDialogButton</item>
+    </style>
+
+    <style name="UpdateDialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#FFD700</item>
+    </style>
 </resources>

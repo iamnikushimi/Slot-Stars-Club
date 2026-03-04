@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;--border:rgba(255,215,0,0.15);--muted:rgba(255,255,255,0.4);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(255,165,0,0.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,255,204,0.04),transparent 50%);pointer-events:none;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.back-btn{padding:0.3rem 0.8rem;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+main{max-width:500px;margin:0 auto;padding:1.5rem;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:4px;text-align:center;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem;}
+.page-sub{text-align:center;font-size:0.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2rem;}
+
+.card{background:var(--dark2);border:1px solid var(--border);margin-bottom:1.25rem;overflow:hidden;}
+.card-header{padding:0.8rem 1.2rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gold);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.5rem;}
+.card-body{padding:1.2rem;}
+
+/* Setting row */
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.setting-row:last-child{border:none;}
+.setting-left{flex:1;}
+.setting-name{font-size:0.88rem;font-weight:700;letter-spacing:0.5px;}
+.setting-desc{font-size:0.68rem;color:var(--muted);margin-top:0.1rem;}
+
+/* Toggle switch */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);cursor:pointer;transition:0.3s;}
+.toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:rgba(255,255,255,0.3);transition:0.3s;}
+.toggle input:checked + .toggle-slider{background:rgba(0,255,204,0.15);border-color:rgba(0,255,204,0.4);}
+.toggle input:checked + .toggle-slider:before{transform:translateX(20px);background:var(--neon);}
+
+/* Volume slider */
+.vol-wrap{display:flex;align-items:center;gap:0.6rem;width:140px;flex-shrink:0;}
+.vol-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:rgba(255,255,255,0.1);outline:none;cursor:pointer;}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--gold);cursor:pointer;border:none;}
+.vol-slider::-moz-range-thumb{width:16px;height:16px;background:var(--gold);cursor:pointer;border:none;}
+.vol-val{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--gold);width:2rem;text-align:right;}
+
+/* Test button */
+.test-btn{padding:0.3rem 0.6rem;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-left:0.5rem;flex-shrink:0;}
+.test-btn:hover{background:rgba(255,215,0,0.12);}
+
+.save-msg{text-align:center;padding:0.5rem;margin-top:1rem;font-size:0.82rem;color:var(--neon);display:none;}
+.save-msg.show{display:block;}
+
+@media(max-width:480px){main{padding:1rem;}.vol-wrap{width:110px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">★ SSC</a>
+  <a class="back-btn" href="/play">← Lobby</a>
+</nav>
+
+<main>
+  <div class="page-title">⚙️ Settings</div>
+  <div class="page-sub">Customize your experience</div>
+
+  <div class="card">
+    <div class="card-header">🔊 Sound</div>
+    <div class="card-body">
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Game Sounds</div>
+          <div class="setting-desc">Spin, win, and button sound effects</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="soundEnabled" onchange="savePrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Sound Volume</div>
+        </div>
+        <div class="vol-wrap">
+          <input type="range" class="vol-slider" id="soundVolume" min="0" max="100" value="80" oninput="updateVol('sound')">
+          <span class="vol-val" id="soundVolVal">80</span>
+        </div>
+        <button class="test-btn" onclick="testSound()">Test</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Background Music</div>
+          <div class="setting-desc">Ambient music during gameplay</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="musicEnabled" onchange="savePrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Music Volume</div>
+        </div>
+        <div class="vol-wrap">
+          <input type="range" class="vol-slider" id="musicVolume" min="0" max="100" value="50" oninput="updateVol('music')">
+          <span class="vol-val" id="musicVolVal">50</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">📱 Notifications & Haptics</div>
+    <div class="card-body">
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Push Notifications</div>
+          <div class="setting-desc">Daily bonus reminders and tournament alerts</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="notificationsEnabled" onchange="savePrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-left">
+          <div class="setting-name">Haptic Feedback</div>
+          <div class="setting-desc">Vibration on spins, wins, and buttons</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="hapticEnabled" onchange="savePrefs()"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-msg" id="saveMsg">✓ Settings saved</div>
+</main>
+
+<script>
+var saveTimeout = null;
+
+async function loadPrefs() {
+  try {
+    var r = await fetch('/api/game/preferences');
+    if (!r.ok) { window.location = '/'; return; }
+    var d = await r.json();
+    var p = d.preferences;
+    document.getElementById('soundEnabled').checked = !!p.sound_enabled;
+    document.getElementById('soundVolume').value = p.sound_volume;
+    document.getElementById('soundVolVal').textContent = p.sound_volume;
+    document.getElementById('musicEnabled').checked = !!p.music_enabled;
+    document.getElementById('musicVolume').value = p.music_volume;
+    document.getElementById('musicVolVal').textContent = p.music_volume;
+    document.getElementById('notificationsEnabled').checked = !!p.notifications_enabled;
+    document.getElementById('hapticEnabled').checked = !!p.haptic_enabled;
+  } catch(e) { console.error(e); }
+}
+
+function updateVol(type) {
+  var val = document.getElementById(type + 'Volume').value;
+  document.getElementById(type + 'VolVal').textContent = val;
+  // Debounced save
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(savePrefs, 500);
+}
+
+async function savePrefs() {
+  try {
+    var body = {
+      sound_enabled: document.getElementById('soundEnabled').checked,
+      sound_volume: parseInt(document.getElementById('soundVolume').value),
+      music_enabled: document.getElementById('musicEnabled').checked,
+      music_volume: parseInt(document.getElementById('musicVolume').value),
+      notifications_enabled: document.getElementById('notificationsEnabled').checked,
+      haptic_enabled: document.getElementById('hapticEnabled').checked
+    };
+    await fetch('/api/game/preferences', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    // Store locally too for instant access by game pages
+    try { localStorage.setItem('ssc_prefs', JSON.stringify(body)); } catch(e) {}
+    var msg = document.getElementById('saveMsg');
+    msg.classList.add('show');
+    setTimeout(function() { msg.classList.remove('show'); }, 1500);
+  } catch(e) {}
+}
+
+function testSound() {
+  try {
+    var vol = parseInt(document.getElementById('soundVolume').value) / 100;
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.value = 880;
+    gain.gain.value = vol * 0.3;
+    osc.start(); osc.stop(ctx.currentTime + 0.15);
+    setTimeout(function() {
+      var osc2 = ctx.createOscillator();
+      var gain2 = ctx.createGain();
+      osc2.connect(gain2); gain2.connect(ctx.destination);
+      osc2.type = 'sine'; osc2.frequency.value = 1320;
+      gain2.gain.value = vol * 0.3;
+      osc2.start(); osc2.stop(ctx.currentTime + 0.15);
+    }, 150);
+  } catch(e) {}
+}
+
+loadPrefs();
+</script>
+</body>
+</html>

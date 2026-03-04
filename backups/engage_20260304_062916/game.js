@@ -23,33 +23,6 @@ function calcXP(bet, payout, type) {
   return xp;
 }
 
-// ─── ACHIEVEMENT & TOURNAMENT TRACKING ────────────────────────────────────────
-var achievementsModule = null;
-try { achievementsModule = require('./achievements'); } catch(e) { console.log('Achievements module not loaded:', e.message); }
-var tournamentsModule = null;
-try { tournamentsModule = require('./tournaments'); } catch(e) { console.log('Tournaments module not loaded:', e.message); }
-
-var monetizationModule = null;
-try { monetizationModule = require('./monetization'); } catch(e) { console.log('Monetization module not loaded:', e.message); }
-
-function trackSpin(userId, bet, payout, game) {
-  try {
-    var newAchievements = [];
-    if (achievementsModule && achievementsModule.checkAfterSpin) {
-      newAchievements = achievementsModule.checkAfterSpin(userId, bet, payout, game);
-    }
-    if (tournamentsModule && tournamentsModule.recordTournamentSpin) {
-      tournamentsModule.recordTournamentSpin(userId, game, bet, payout);
-    }
-    // Check for suspicious activity every 25th spin
-    if (monetizationModule && monetizationModule.checkSuspicious) {
-      var cnt = db.prepare('SELECT COUNT(*) as c FROM spins WHERE user_id=?').get(userId).c;
-      if (cnt % 25 === 0) monetizationModule.checkSuspicious(userId);
-    }
-    return newAchievements;
-  } catch(e) { console.error('Track spin error:', e.message); return []; }
-}
-
 function getSetting(key) { return db.getSettingNum(key); }
 function getSettingStr(key) { return db.getSetting(key); }
 
@@ -122,8 +95,7 @@ router.post('/spin', requireAuth, (req, res) => {
   db.prepare('UPDATE users SET credits=? WHERE id=?').run(newCredits,userId);
   db.prepare('INSERT INTO spins(user_id,game,bet,result,payout) VALUES(?,?,?,?,?)').run(userId,'slots',bet,reels.join(','),payout);
   var xp = awardXP(userId, calcXP(bet, payout, 'spin'), 'slots');
-  var ach = trackSpin(userId, bet, payout, 'slots');
-  res.json({reels,win:payout,credits:newCredits,xp,achievements:ach});
+  res.json({reels,win:payout,credits:newCredits,xp});
 });
 
 // ─── PRO SLOTS (5-reel + jackpots) ───────────────────────────────────────────
@@ -185,10 +157,8 @@ router.post('/spin-pro', requireAuth, (req, res) => {
   var xpAmt = calcXP(bet, payout, 'spin');
   if (jackpotWin) xpAmt += XP_REWARDS.jackpot;
   var xp = awardXP(userId, xpAmt, 'slots_pro');
-  var ach = trackSpin(userId, bet, payout, 'slots_pro');
-  if (jackpotWin && achievementsModule) { try { achievementsModule.checkJackpot(userId, jackpotWin.type); } catch(e){} }
   const j=getJackpots();
-  res.json({reels,win:payout,credits:newCredits,jackpot:jackpotWin,jackpots:{mini:j.mini,major:j.major,grand:j.grand},xp,achievements:ach});
+  res.json({reels,win:payout,credits:newCredits,jackpot:jackpotWin,jackpots:{mini:j.mini,major:j.major,grand:j.grand},xp});
 });
 
 router.get('/jackpots', requireAuth, (req,res) => { res.json({jackpots:getJackpots()}); });
@@ -223,8 +193,7 @@ router.post('/crash/bet', requireAuth, (req, res) => {
   if (payout >= bet * 5) xpAmt += XP_REWARDS.big_win;
   if (payout >= bet * 20) xpAmt += XP_REWARDS.mega_win;
   var xp = awardXP(userId, xpAmt, 'crash');
-  var ach = trackSpin(userId, bet, payout, 'crash');
-  res.json({crashPoint:(crashPoint/100).toFixed(2),cashedOutAt:won?(cashoutAt/100).toFixed(2):null,win:payout,credits:newCredits,won,xp,achievements:ach});
+  res.json({crashPoint:(crashPoint/100).toFixed(2),cashedOutAt:won?(cashoutAt/100).toFixed(2):null,win:payout,credits:newCredits,won,xp});
 });
 router.get('/crash/history', requireAuth, (req, res) => {
   const history=db.prepare('SELECT crash_point,created_at FROM crash_rounds ORDER BY id DESC LIMIT 20').all();
@@ -273,7 +242,6 @@ router.post('/crash/manual-cashout', requireAuth, (req, res) => {
     lastSpin.id
   );
 
-  trackSpin(userId, bet, payout, 'crash');
   res.json({ credits: newCredits, win: payout, cashedOutAt: cashoutMult.toFixed(2), xp: null });
 });
 
@@ -310,7 +278,7 @@ router.post('/blackjack/action', requireAuth, (req, res) => {
   if(action==='hit'){
     pHand.push(remaining.pop());
     const total=handTotal(pHand);
-    if(total>21){db.prepare('INSERT INTO spins(user_id,game,bet,result,payout) VALUES(?,?,?,?,?)').run(userId,'blackjack',bet,'bust',0);var xp=awardXP(userId,XP_REWARDS.table_play,'blackjack');trackSpin(userId,bet,0,'blackjack');return res.json({player:pHand,dealer:dHand,deck:remaining,playerTotal:total,result:'bust',win:0,credits:user.credits,xp});}
+    if(total>21){db.prepare('INSERT INTO spins(user_id,game,bet,result,payout) VALUES(?,?,?,?,?)').run(userId,'blackjack',bet,'bust',0);var xp=awardXP(userId,XP_REWARDS.table_play,'blackjack');return res.json({player:pHand,dealer:dHand,deck:remaining,playerTotal:total,result:'bust',win:0,credits:user.credits,xp});}
     return res.json({player:pHand,dealer:dHand,deck:remaining,playerTotal:total,result:'continue',credits:user.credits});
   }
   if(action==='stand'||action==='double'){
@@ -344,8 +312,7 @@ router.post('/blackjack/action', requireAuth, (req, res) => {
     var bjXp = XP_REWARDS.table_play;
     if (payout > 0) bjXp += XP_REWARDS.table_win;
     var xp = awardXP(userId, bjXp, 'blackjack');
-    var ach = trackSpin(userId, bet, payout, 'blackjack');
-    return res.json({player:pHand,dealer:dHand,deck:remaining,playerTotal:pTotal,dealerTotal:dTotal,result,win:payout,credits:newCredits,xp,achievements:ach});
+    return res.json({player:pHand,dealer:dHand,deck:remaining,playerTotal:pTotal,dealerTotal:dTotal,result,win:payout,credits:newCredits,xp});
   }
 });
 
@@ -394,8 +361,7 @@ router.post('/roulette/spin', requireAuth, (req, res) => {
   if (totalPayout >= totalBet * 5) rXp += XP_REWARDS.big_win;
   if (totalPayout >= totalBet * 20) rXp += XP_REWARDS.mega_win;
   var xp = awardXP(userId, rXp, 'roulette');
-  var ach = trackSpin(userId, totalBet, totalPayout, 'roulette');
-  res.json({number,isRed,isBlack,isGreen,totalBet,win:totalPayout,credits:newCredits,xp,achievements:ach});
+  res.json({number,isRed,isBlack,isGreen,totalBet,win:totalPayout,credits:newCredits,xp});
 });
 
 // ─── VIDEO POKER ──────────────────────────────────────────────────────────────
@@ -449,8 +415,7 @@ router.post('/poker/draw', requireAuth, (req, res) => {
   if (payout >= bet * 5) pkXp += XP_REWARDS.big_win;
   if (payout >= bet * 20) pkXp += XP_REWARDS.mega_win;
   var xp = awardXP(userId, pkXp, 'poker');
-  var ach = trackSpin(userId, bet, payout, 'poker');
-  res.json({hand:newHand,rank:{name,mult},win:payout,credits:newCredits,xp,achievements:ach});
+  res.json({hand:newHand,rank:{name,mult},win:payout,credits:newCredits,xp});
 });
 
 // ─── PULL TAB ─────────────────────────────────────────────────────────────────
@@ -486,8 +451,7 @@ router.post('/pulltab/pull', requireAuth, (req, res) => {
   db.prepare('UPDATE users SET credits=? WHERE id=?').run(newCredits,userId);
   db.prepare('INSERT INTO spins(user_id,game,bet,result,payout) VALUES(?,?,?,?,?)').run(userId,'pulltab',bet,tabs.join(','),payout);
   var xp = awardXP(userId, calcXP(bet, payout, 'spin'), 'pulltab');
-  var ach = trackSpin(userId, bet, payout, 'pulltab');
-  res.json({tabs,win:payout,credits:newCredits,multiplier:mult,xp,achievements:ach});
+  res.json({tabs,win:payout,credits:newCredits,multiplier:mult,xp});
 });
 
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
@@ -498,9 +462,7 @@ router.get('/public-settings', (req, res) => {
   res.json({
     rtp_slots:db.getSetting('rtp_slots'),rtp_slots_pro:db.getSetting('rtp_slots_pro'),
     rtp_crash:db.getSetting('rtp_crash'),rtp_fortune:db.getSetting('rtp_fortune'),
-    rtp_nebula:db.getSetting('rtp_nebula'),rtp_ocean:db.getSetting('rtp_ocean'),
-    rtp_blackjack:db.getSetting('rtp_blackjack'),rtp_roulette:db.getSetting('rtp_roulette'),
-    rtp_poker:db.getSetting('rtp_poker'),rtp_pulltab:db.getSetting('rtp_pulltab'),
+    rtp_nebula:db.getSetting('rtp_nebula'),
     minBet:db.getSettingNum('min_bet'),maxBet:db.getSettingNum('max_bet')
   });
 });
@@ -618,10 +580,8 @@ router.post('/spin-deluxe', requireAuth, (req, res) => {
   var fdXp = calcXP(bet, totalPayout, 'spin');
   if (jackpotWin) fdXp += XP_REWARDS.jackpot;
   var xp = awardXP(userId, fdXp, 'fortune');
-  var ach = trackSpin(userId, bet, totalPayout, 'fortune');
-  if (jackpotWin && achievementsModule) { try { achievementsModule.checkJackpot(userId, jackpotWin.type); } catch(e){} }
   const j=getJackpots();
-  res.json({grid,win:totalPayout,credits:newCredits,jackpot:jackpotWin,scatters,jackpots:{mini:j.mini,major:j.major,grand:j.grand},xp,achievements:ach});
+  res.json({grid,win:totalPayout,credits:newCredits,jackpot:jackpotWin,scatters,jackpots:{mini:j.mini,major:j.major,grand:j.grand},xp});
 });
 
 // ─── NEBULA BOTS (5×3 + Boost Meter) ────────────────────────────────────────
@@ -715,8 +675,7 @@ router.post('/spin-nebula', requireAuth, (req, res) => {
     userId,'nebula_bots',bet,grid.map(c=>c.join('|')).join(','),finalWin
   );
   var xp = awardXP(userId, calcXP(bet, finalWin, 'spin'), 'nebula_bots');
-  var ach = trackSpin(userId, bet, finalWin, 'nebula_bots');
-  res.json({grid,win:finalWin,credits:newCredits,multiplier:newMult,boostActive,boostVal,scatters,stacks,xp,achievements:ach});
+  res.json({grid,win:finalWin,credits:newCredits,multiplier:newMult,boostActive,boostVal,scatters,stacks,xp});
 });
 
 // ─── OCEAN BINGO (5×3 + Bingo Mode) ─────────────────────────────────────────
@@ -802,9 +761,8 @@ router.post('/spin-ocean', requireAuth, (req, res) => {
     userId,'ocean_bingo',bet,grid.map(c=>c.join('|')).join(','),finalWin
   );
   var xp = awardXP(userId, calcXP(bet, finalWin, 'spin'), 'ocean_bingo');
-  var ach = trackSpin(userId, bet, finalWin, 'ocean_bingo');
   const jp=getJackpots();
-  res.json({grid,win:totalWin,credits:newCredits,scatters,jackpots:jp,bingoDaubs,bingoWin,xp,achievements:ach});
+  res.json({grid,win:totalWin,credits:newCredits,scatters,jackpots:jp,bingoDaubs,bingoWin,xp});
 });
 
 // Public endpoint — returns status of all games so the lobby can show/hide cards
