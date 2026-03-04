@@ -33,21 +33,53 @@
   /* Stars background */
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(255,165,0,0.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,255,204,0.04),transparent 50%);pointer-events:none;}
 
-  nav{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.5rem;padding-top:max(0.9rem,env(safe-area-inset-top));border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;padding-top:max(0.75rem,env(safe-area-inset-top));border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
   .logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
-  .nav-right{display:flex;align-items:center;gap:0.75rem;}
+  .nav-right{display:flex;align-items:center;gap:0.6rem;}
   .credits-pill{display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.8rem;border:1px solid var(--gold);background:rgba(255,215,0,0.06);}
   .credits-label{font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .credits-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);}
   .username{font-size:0.8rem;color:var(--muted);letter-spacing:1px;}
 
-  /* Level & XP */
-  .level-pill{display:flex;align-items:center;gap:0.4rem;padding:0.25rem 0.65rem;border:1px solid rgba(0,255,204,0.25);background:rgba(0,255,204,0.05);cursor:pointer;position:relative;}
-  .level-pill:hover{background:rgba(0,255,204,0.1);}
-  .level-num{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);line-height:1;}
-  .level-label{font-size:0.5rem;letter-spacing:1.5px;color:rgba(0,255,204,0.5);text-transform:uppercase;}
-  .xp-bar-wrap{position:absolute;bottom:-3px;left:0;right:0;height:3px;background:rgba(255,255,255,0.06);overflow:hidden;}
-  .xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--gold));transition:width 0.6s ease;min-width:2px;}
+  /* Hamburger button */
+  .menu-btn{background:var(--dark2);border:1px solid var(--border);color:var(--gold);padding:0.3rem 0.55rem;font-size:1.15rem;cursor:pointer;line-height:1;transition:all 0.2s;}
+  .menu-btn:hover{border-color:var(--gold);background:rgba(255,215,0,0.06);}
+
+  /* Slide-out menu */
+  .menu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;opacity:0;transition:opacity 0.3s;}
+  .menu-overlay.open{display:block;opacity:1;}
+  .slide-menu{position:fixed;top:0;left:-280px;width:280px;height:100%;background:var(--dark2);border-right:1px solid var(--border);z-index:100;transition:left 0.3s cubic-bezier(0.25,0.8,0.25,1);overflow-y:auto;display:flex;flex-direction:column;}
+  .slide-menu.open{left:0;}
+
+  .sm-header{padding:1.2rem 1.2rem 0.8rem;border-bottom:1px solid var(--border);}
+  .sm-logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .sm-user{display:flex;align-items:center;gap:0.6rem;margin-top:0.6rem;}
+  .sm-username{font-size:0.85rem;font-weight:700;letter-spacing:1px;}
+  .sm-level{display:flex;align-items:center;gap:0.3rem;padding:0.15rem 0.5rem;border:1px solid rgba(0,255,204,0.25);background:rgba(0,255,204,0.05);cursor:pointer;}
+  .sm-level-num{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--neon);line-height:1;}
+  .sm-level-label{font-size:0.5rem;letter-spacing:1px;color:rgba(0,255,204,0.5);text-transform:uppercase;}
+  .sm-xp-bar{height:3px;background:rgba(255,255,255,0.06);margin-top:0.5rem;overflow:hidden;}
+  .sm-xp-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--gold));transition:width 0.6s ease;min-width:2px;}
+
+  .sm-section{font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:1rem 1.2rem 0.4rem;}
+  .sm-link{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 1.2rem;color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.85rem;font-weight:600;letter-spacing:0.5px;transition:all 0.15s;border-left:3px solid transparent;}
+  .sm-link:hover{background:rgba(255,215,0,0.04);color:#fff;border-left-color:var(--gold);}
+  .sm-link .sm-icon{font-size:1rem;width:1.4rem;text-align:center;flex-shrink:0;}
+  .sm-link .sm-badge{margin-left:auto;padding:0.1rem 0.4rem;font-size:0.55rem;letter-spacing:1px;border:1px solid rgba(0,255,204,0.3);color:var(--neon);background:rgba(0,255,204,0.06);text-transform:uppercase;}
+  .sm-link.admin-link{color:var(--neon);}
+  .sm-link.admin-link:hover{border-left-color:var(--neon);}
+
+  .sm-footer{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid var(--border);}
+  .sm-logout{width:100%;padding:0.5rem;background:none;border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .sm-logout:hover{border-color:var(--red);color:var(--red);}
+
+  /* Hide old elements */
+  .panel-btn{display:none !important;}
+  .logout-btn-nav{display:none;}
+
+  /* Level & XP (in slide menu now) */
+  .level-pill{display:none;}
+  .level-num,.level-label,.xp-bar-wrap,.xp-bar-fill{display:none;}
 
   /* Level up toast */
   .level-up-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:200;background:rgba(5,5,16,0.95);border:2px solid var(--neon);padding:2rem 3rem;text-align:center;backdrop-filter:blur(12px);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);pointer-events:none;}
@@ -68,10 +100,7 @@
   .lp-title{flex:1;font-size:0.8rem;font-weight:600;letter-spacing:1px;}
   .lp-xp{font-size:0.65rem;color:var(--muted);letter-spacing:1px;}
   .lp-reward{font-size:0.65rem;color:var(--gold);letter-spacing:1px;}
-  .panel-btn{display:none;padding:0.3rem 0.8rem;border:1px solid var(--neon);background:rgba(0,255,204,0.06);color:var(--neon);font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
-  .panel-btn:hover{background:rgba(0,255,204,0.15);}
-  .logout-btn{background:none;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:0.3rem 0.7rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  /* (panel-btn and logout-btn moved to slide menu) */
 
   main{flex:1;padding:1.5rem;padding-bottom:max(1.5rem,env(safe-area-inset-bottom));}
 
@@ -93,8 +122,6 @@
   @keyframes bonusBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
 
   .lobby-header{text-align:center;margin-bottom:2rem;}
-  .lb-btn{display:inline-block;margin-top:0.6rem;padding:0.35rem 1rem;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
-  .lb-btn:hover{background:rgba(255,215,0,0.12);border-color:var(--gold);}
   .lobby-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .lobby-sub{font-size:0.75rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:0.25rem;}
 
@@ -141,14 +168,14 @@
   .game-badge.jackpot{border-color:rgba(255,215,0,0.5);color:rgba(255,215,0,0.9);}
   .game-rtp{position:absolute;top:0.5rem;right:0.6rem;font-size:0.6rem;color:var(--muted);letter-spacing:1px;}
 
+  /* Favorite heart */
+  .fav-btn{position:absolute;top:0.4rem;left:0.4rem;font-size:0.9rem;color:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;z-index:2;line-height:1;}
+  .fav-btn:hover{color:rgba(255,68,85,0.5);transform:scale(1.2);}
+  .fav-btn.active{color:#FF4466;text-shadow:0 0 8px rgba(255,68,102,0.4);}
+
   @media(max-width:480px){
-    nav{padding:0.75rem 1rem;}
-    .username{display:none;}
+    nav{padding:0.6rem 0.75rem;}
     .credits-label{display:none;}
-    .level-label{display:none;}
-    .level-pill{padding:0.2rem 0.5rem;}
-    .level-num{font-size:0.95rem;}
-    .lb-btn{font-size:0.65rem;padding:0.3rem 0.8rem;}
     main{padding:1rem;}
     .lobby-title{font-size:1.8rem;}
     .games-grid{grid-template-columns:repeat(2,1fr);gap:0.75rem;}
@@ -158,89 +185,62 @@
     .game-desc{display:none;}
     .level-popup-inner{max-width:95%;padding:1rem;}
   }
-/* xp-mobile-fix */
-@media(max-width:480px){
-  .level-label{display:none;}
-  .level-pill{padding:0.15rem 0.4rem;}
-  .level-num{font-size:0.85rem;}
-  .lb-btn{font-size:0.65rem;padding:0.2rem 0.4rem;}
-  .level-popup-inner{width:95%;max-width:95%;}
-}
-
-  /* ── App Download Popup ── */
-  .app-popup-overlay{display:none;position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;animation:appPopFadeIn 0.3s ease;}
-  .app-popup-overlay.show{display:flex;}
-  @keyframes appPopFadeIn{from{opacity:0}to{opacity:1}}
-
-  .app-popup{
-    background:linear-gradient(165deg, var(--dark2) 0%, var(--dark3) 100%);
-    border:1px solid var(--border);
-    border-top:3px solid var(--gold);
-    max-width:380px;width:90%;padding:0;
-    position:relative;overflow:hidden;
-    animation:appPopSlideIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-  }
-  @keyframes appPopSlideIn{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-
-  .app-popup-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:120px;background:radial-gradient(ellipse,rgba(255,215,0,0.12),transparent 70%);pointer-events:none;}
-  .app-popup-close{position:absolute;top:0.7rem;right:0.8rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:0.2rem;transition:color 0.2s;z-index:2;}
-  .app-popup-close:hover{color:var(--red);}
-
-  .app-popup-header{padding:1.8rem 1.5rem 0.8rem;text-align:center;position:relative;}
-  .app-popup-phone{font-size:2.8rem;line-height:1;margin-bottom:0.5rem;display:block;filter:drop-shadow(0 0 12px rgba(255,215,0,0.3));}
-  .app-popup-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;}
-  .app-popup-subtitle{font-size:0.72rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:0.3rem;}
-
-  .app-popup-body{padding:0.8rem 1.5rem 1.2rem;}
-
-  .app-popup-perks{display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1.2rem;}
-  .app-perk{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.3;}
-  .app-perk-icon{font-size:1.1rem;flex-shrink:0;width:1.5rem;text-align:center;}
-  .app-perk strong{color:var(--gold);font-weight:700;}
-
-  .app-popup-dl{
-    display:block;width:100%;padding:0.85rem;
-    background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.08));
-    border:2px solid var(--gold);color:var(--gold);
-    font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:3px;
-    text-align:center;text-decoration:none;
-    cursor:pointer;transition:all 0.25s;
-    position:relative;overflow:hidden;
-  }
-  .app-popup-dl:hover{background:linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,165,0,0.15));transform:translateY(-1px);box-shadow:0 6px 25px rgba(255,215,0,0.15);}
-  .app-popup-dl:active{transform:scale(0.98);}
-  .app-popup-dl::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.08),transparent);animation:appDlShimmer 3s infinite;}
-  @keyframes appDlShimmer{0%{left:-100%}100%{left:200%}}
-
-  .app-popup-version{text-align:center;font-size:0.6rem;color:var(--muted);letter-spacing:1.5px;margin-top:0.5rem;}
-
-  .app-popup-footer{padding:0.8rem 1.5rem 1.2rem;border-top:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;gap:0.6rem;}
-  .app-popup-dismiss{background:none;border:none;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:1px;cursor:pointer;padding:0.3rem 0;transition:color 0.2s;display:flex;align-items:center;gap:0.4rem;}
-  .app-popup-dismiss:hover{color:rgba(255,255,255,0.7);}
-  .app-popup-checkbox{width:13px;height:13px;accent-color:var(--gold);cursor:pointer;}
-
 </style>
 </head>
 <body>
 <nav>
-  <a class="logo" href="/">★ SSC</a>
+  <div style="display:flex;align-items:center;gap:0.6rem;">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <a class="logo" href="/">★ SSC</a>
+  </div>
   <div class="nav-right">
-    <span class="username" id="username">—</span>
-    <a class="panel-btn" id="panelBtn" href="#" style="display:none">Panel</a>
-    <div class="level-pill" id="levelPill" onclick="toggleLevelPopup()" title="View levels">
-      <div>
-        <div class="level-label">LVL</div>
-        <div class="level-num" id="levelNum">1</div>
-      </div>
-      <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
-    </div>
     <div class="credits-pill">
       <span class="credits-label">Balance</span>
       <span class="credits-val" id="credits">—</span>
     </div>
-    <button class="logout-btn" onclick="logout()">Exit</button>
   </div>
 </nav>
+
+<!-- Menu overlay -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+<!-- Slide-out menu -->
+<div class="slide-menu" id="slideMenu">
+  <div class="sm-header">
+    <div class="sm-logo">★ Slot Stars Club</div>
+    <div class="sm-user">
+      <span class="sm-username" id="smUsername">—</span>
+      <div class="sm-level" onclick="toggleLevelPopup();toggleMenu();">
+        <span class="sm-level-label">LVL</span>
+        <span class="sm-level-num" id="smLevelNum">1</span>
+      </div>
+    </div>
+    <div class="sm-xp-bar"><div class="sm-xp-fill" id="smXpBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="sm-section">Play</div>
+  <a class="sm-link" href="/play"><span class="sm-icon">🎰</span> Game Lobby</a>
+  <a class="sm-link" href="/play/daily-bonus"><span class="sm-icon">🎡</span> Daily Bonus <span class="sm-badge" id="smBonusBadge" style="display:none">Free</span></a>
+  <a class="sm-link" href="/play/history"><span class="sm-icon">📋</span> History & Promos</a>
+
+  <div class="sm-section">Compete</div>
+  <a class="sm-link" href="/play/leaderboard"><span class="sm-icon">🏆</span> Leaderboards</a>
+  <a class="sm-link" href="/play/tournaments"><span class="sm-icon">🎪</span> Tournaments</a>
+  <a class="sm-link" href="/play/achievements"><span class="sm-icon">⭐</span> Achievements</a>
+
+  <div class="sm-section">Social</div>
+  <a class="sm-link" href="/play/referrals"><span class="sm-icon">🦋</span> Refer Friends</a>
+
+  <div class="sm-section">Account</div>
+  <a class="sm-link" href="/play/settings"><span class="sm-icon">⚙️</span> Settings</a>
+
+  <div class="sm-section" id="smAdminSection" style="display:none">Admin</div>
+  <a class="sm-link admin-link" id="smAdminLink" href="/admin" style="display:none"><span class="sm-icon">⬡</span> Admin Panel</a>
+
+  <div class="sm-footer">
+    <button class="sm-logout" onclick="logout()">Sign Out</button>
+  </div>
+</div>
 
 <!-- Level-up celebration toast -->
 <div class="level-up-toast" id="levelUpToast">
@@ -275,7 +275,6 @@
   <div class="lobby-header">
     <div class="lobby-title">Game Lobby</div>
     <div class="lobby-sub">Choose your game — Good luck ✦</div>
-    <a href="/play/leaderboard" class="lb-btn">🏆 Leaderboards</a>
   </div>
 
   <!-- Jackpot ticker -->
@@ -289,80 +288,9 @@
     <div style="font-size:0.65rem;color:var(--muted);align-self:center;letter-spacing:1px;white-space:nowrap">PRO SLOTS JACKPOTS</div>
   </div>
 
-  <div class="section-label">Slots</div>
-  <!-- Featured game card -->
-  <!-- Nebula Bots -->
-  <a class="game-card featured-card" href="/play/nebula-bots" style="border-top-color:#00e5ff;margin-bottom:0.75rem;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
-    <div style="font-size:2.5rem;line-height:1;">🤖</div>
-    <div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;background:linear-gradient(135deg,#00e5ff,#7b2fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Nebula Bots</div>
-      <div style="font-size:0.65rem;letter-spacing:2px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-top:0.2rem;">Boost Meter · Stacked Multipliers · Free Spins</div>
-    </div>
-  </a>
-
-  <a class="game-card featured-card" href="/play/fortune" style="border-top-color:#FF4422;margin-bottom:0.75rem;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
-    <div style="font-size:3.5rem;line-height:1;">🐉</div>
-    <div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;background:linear-gradient(135deg,#FFD700,#FF4422);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Fortune Dragon</div>
-      <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.5;margin:0.3rem 0;">5×3 reel · Expanding Wilds · Free Spins · 20 Paylines · Up to 500× bet</div>
-    </div>
-  </a>
-  <div class="games-grid">
-    <a class="game-card" href="/play/slots">
-      <span class="game-rtp" id="rtp-slots">—%</span>
-      <div class="game-icon">🎰</div>
-      <div class="game-name">Classic Slots</div>
-      <div class="game-desc">3-reel, 6 symbols. Up to 50× your bet.</div>
-    </a>
-    <a class="game-card pro" href="/play/slots-pro">
-      <span class="game-rtp" id="rtp-slots-pro">—%</span>
-      <div class="game-icon">💎</div>
-      <div class="game-name">Pro Slots</div>
-      <div class="game-desc">5-reel + Wilds. Mini, Major & Grand jackpots.</div>
-    </a>
-  </div>
-
-  <div class="section-label">Live Action</div>
-  <div class="games-grid">
-    <a class="game-card crash" href="/play/crash">
-      <span class="game-rtp" id="rtp-crash">—%</span>
-      <div class="game-icon">🚀</div>
-      <div class="game-name">Crash Out</div>
-      <div class="game-desc">Set cashout, watch it fly. Don't get greedy.</div>
-    </a>
-    <a class="game-card roulette-card" href="/play/roulette">
-      <div class="game-icon">🎡</div>
-      <div class="game-name">Roulette</div>
-      <div class="game-desc">European roulette. Straights pay 36×.</div>
-    </a>
-  </div>
-
-  <div class="section-label">Card Games</div>
-  <div class="games-grid">
-    <a class="game-card bj-card" href="/play/blackjack">
-      <div class="game-icon">🃏</div>
-      <div class="game-name">Blackjack</div>
-      <div class="game-desc">Hit, stand, or double down. Beat the dealer.</div>
-    </a>
-    <a class="game-card poker-card" href="/play/poker">
-      <div class="game-icon">♠️</div>
-      <div class="game-name">Video Poker</div>
-      <div class="game-desc">Jacks or Better. Royal Flush pays 800×.</div>
-    </a>
-  </div>
-
-  <div class="section-label">Instant Win</div>
-  <div class="games-grid">
-    <a class="game-card pull-card" href="/play/pulltab">
-      <div class="game-icon">🎟️</div>
-      <div class="game-name">Pull Tab</div>
-      <div class="game-desc">Scratch & reveal. Instant win tickets.</div>
-    </a>
-    <a class="game-card" href="/play/ocean-bingo" style="border-top-color:#00d4ff;">
-      <div class="game-icon">🌊</div>
-      <div class="game-name">Ocean Bingo</div>
-      <div class="game-desc">Dual-mode: Slots + Bingo Blitz. Underwater theme.</div>
-    </a>
+  <!-- All game cards are rendered dynamically by buildLobbyCards() -->
+  <div id="gamesContainer">
+    <div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.8rem;letter-spacing:2px;">Loading games...</div>
   </div>
 </main>
 
@@ -393,14 +321,6 @@
 a.featured-card.status-maintenance::before {
   border-radius: 0;
 }
-/* xp-mobile-fix */
-@media(max-width:480px){
-  .level-label{display:none;}
-  .level-pill{padding:0.15rem 0.4rem;}
-  .level-num{font-size:0.85rem;}
-  .lb-btn{font-size:0.65rem;padding:0.2rem 0.4rem;}
-  .level-popup-inner{width:95%;max-width:95%;}
-}
 </style>
 
 <!-- Daily Bonus Button -->
@@ -413,141 +333,257 @@ a.featured-card.status-maintenance::before {
 </a>
 
 <script>
+// Menu toggle
+function toggleMenu() {
+  document.getElementById('slideMenu').classList.toggle('open');
+  document.getElementById('menuOverlay').classList.toggle('open');
+}
+
 async function loadUser() {
-  const res = await fetch('/api/me');
+  var res = await fetch('/api/me');
   if (!res.ok) { window.location='/'; return; }
-  const d = await res.json();
-  document.getElementById('username').textContent = d.username;
+  var d = await res.json();
+  document.getElementById('smUsername').textContent = d.username;
   document.getElementById('credits').textContent = '$'+(d.credits/100).toFixed(2);
   if (d.role==='admin'||d.role==='reseller') {
-    const btn=document.getElementById('panelBtn');
-    btn.style.display='inline-block';
-    btn.href=d.role==='admin'?'/admin':'/reseller';
-    btn.textContent=d.role==='admin'?'⬡ Admin':'◈ Reseller';
+    document.getElementById('smAdminSection').style.display = '';
+    var link = document.getElementById('smAdminLink');
+    link.style.display = '';
+    link.href = d.role==='admin' ? '/admin' : '/reseller';
+    link.innerHTML = '<span class="sm-icon">⬡</span> ' + (d.role==='admin' ? 'Admin Panel' : 'Reseller Panel');
   }
 }
 
-async function loadRTPs() {
-  try {
-    const r=await fetch('/api/game/public-settings');
-    const d=await r.json();
-    if(document.getElementById('rtp-slots'))    document.getElementById('rtp-slots').textContent=`RTP ${d.rtp_slots}%`;
-    if(document.getElementById('rtp-slots-pro'))document.getElementById('rtp-slots-pro').textContent=`RTP ${d.rtp_slots_pro}%`;
-    if(document.getElementById('rtp-crash'))    document.getElementById('rtp-crash').textContent=`RTP ${d.rtp_crash}%`;
-  } catch(e){}
-}
+// ─── BADGE COLORS ───
+var BADGE_COLORS = { 'New':'new', 'Popular':'hot', 'Hot':'hot', 'Featured':'hot', 'Jackpots':'jackpot', 'High Risk':'hot', 'Free Spins':'jackpot' };
+
+// ─── FEATURED CARD GRADIENTS (by game ID) ───
+var FEATURED_GRADIENTS = {
+  'nebula-bots': 'linear-gradient(135deg,#00e5ff,#7b2fff)',
+  'fortune':     'linear-gradient(135deg,#FFD700,#FF4422)',
+  'golden-dragon-fortune': 'linear-gradient(135deg,#FFD700,#FF4422)',
+};
+
+// ─── CARD ACCENT COLORS (border-top) by game ID ───
+var ACCENT_COLORS = {
+  'slots':       '#FFD700',
+  'slots-pro':   '#00FFCC',
+  'crash':       '#FF4455',
+  'roulette':    '#ff6600',
+  'blackjack':   '#33aaff',
+  'poker':       '#9966ff',
+  'pulltab':     '#ff99cc',
+  'ocean-bingo': '#00d4ff',
+  'nebula-bots': '#00e5ff',
+  'fortune':     '#FF4422',
+  'golden-dragon-fortune': '#FF4422',
+};
+
+// Category display names
+var CATEGORY_LABELS = {
+  'slots':       'Slots',
+  'live':        'Live Action',
+  'live_action': 'Live Action',
+  'live action': 'Live Action',
+  'card':        'Card Games',
+  'card_games':  'Card Games',
+  'card games':  'Card Games',
+  'instant':     'Instant Win',
+  'instant_win': 'Instant Win',
+  'instant win': 'Instant Win',
+  'specialty':   'Specialty',
+  'table':       'Table Games',
+  'table_games': 'Table Games',
+  'table games': 'Table Games',
+};
+
+var lobbyRtpData = {};
 
 async function loadJackpots() {
   try {
-    const r=await fetch('/api/game/jackpots');
-    const d=await r.json();
+    var r=await fetch('/api/game/jackpots');
+    var d=await r.json();
     if(document.getElementById('jp-mini'))  document.getElementById('jp-mini').textContent='$'+(d.jackpots.mini/100).toFixed(2);
     if(document.getElementById('jp-major')) document.getElementById('jp-major').textContent='$'+(d.jackpots.major/100).toFixed(2);
     if(document.getElementById('jp-grand')) document.getElementById('jp-grand').textContent='$'+(d.jackpots.grand/100).toFixed(2);
   } catch(e){}
 }
 
-// Map href paths to game IDs
-const GAME_ROUTE_MAP = {
-  '/play/slots':       'slots',
-  '/play/slots-pro':   'slots-pro',
-  '/play/fortune':     'fortune',
-  '/play/nebula-bots': 'nebula-bots',
-  '/play/crash':       'crash',
-  '/play/blackjack':   'blackjack',
-  '/play/roulette':    'roulette',
-  '/play/poker':       'poker',
-  '/play/pulltab':     'pulltab',
-  '/play/ocean-bingo': 'ocean-bingo',
-};
-
-async function applyGameStatuses() {
-  try {
-    const r = await fetch('/api/game/statuses');
-    if (!r.ok) return;
-    const { games } = await r.json();
-
-    // Find all game card links and apply status classes
-    document.querySelectorAll('a.game-card, a.featured-card').forEach(card => {
-      const href = card.getAttribute('href');
-      const gameId = GAME_ROUTE_MAP[href];
-      if (!gameId) return;
-      const status = games[gameId] || 'active';
-      card.classList.remove('status-active','status-maintenance','status-disabled');
-      card.classList.add('status-' + status);
-      // Prevent clicking maintenance/disabled cards
-      if (status !== 'active') {
-        card.onclick = e => e.preventDefault();
-      }
-    });
-  } catch(e) {}
+// Status overlay for maintenance/disabled
+function applyGameStatuses() {
+  document.querySelectorAll('a.game-card, a.featured-card').forEach(function(card) {
+    if (card.classList.contains('status-maintenance') || card.classList.contains('status-disabled')) {
+      card.onclick = function(e) { e.preventDefault(); };
+    }
+  });
 }
 
-// Dynamically apply game descriptions and tags from the database
-async function applyLobbyData() {
+// ─── BUILD ENTIRE LOBBY FROM DATABASE ───
+var playerFavorites = [];
+
+async function buildLobbyCards() {
   try {
-    const r = await fetch('/api/admin/games/lobby-data');
-    if (!r.ok) return;
-    const { games } = await r.json();
-    const gameMap = {};
-    games.forEach(g => gameMap[g.id] = g);
+    var results = await Promise.all([
+      fetch('/api/game/public-settings'),
+      fetch('/api/admin/games/lobby-data'),
+      fetch('/api/game/favorites')
+    ]);
 
-    document.querySelectorAll('a.game-card, a.featured-card').forEach(card => {
-      const href = card.getAttribute('href');
-      const gameId = GAME_ROUTE_MAP[href];
-      if (!gameId || !gameMap[gameId]) return;
-      const g = gameMap[gameId];
+    if (results[0].ok) lobbyRtpData = await results[0].json();
+    if (!results[1].ok) return;
 
-      // Update description
-      const descEl = card.querySelector('.game-desc');
-      if (descEl && g.description) descEl.textContent = g.description;
+    var data = await results[1].json();
+    var games = data.games;
+    if (!games || !games.length) return;
 
-      // Update name
-      const nameEl = card.querySelector('.game-name');
-      if (nameEl && g.name) nameEl.textContent = g.name;
+    // Load favorites
+    if (results[2].ok) {
+      var favData = await results[2].json();
+      playerFavorites = favData.favorites || [];
+    }
 
-      // Update icon
-      const iconEl = card.querySelector('.game-icon');
-      if (iconEl && g.icon) iconEl.textContent = g.icon;
+    var container = document.getElementById('gamesContainer');
 
-      // Update badges/tags — always clear, then re-add from DB
-      card.querySelectorAll('.game-badge').forEach(b => b.remove());
-      if (g.tags) {
-        const tags = g.tags.split(',').filter(t => t.trim());
-        const badgeColors = { 'New': 'new', 'Popular': 'hot', 'Hot': 'hot', 'Featured': 'hot', 'Jackpots': 'jackpot', 'High Risk': 'hot' };
-        tags.forEach(tag => {
-          const span = document.createElement('span');
-          span.className = 'game-badge ' + (badgeColors[tag] || 'new');
-          span.textContent = tag;
-          card.appendChild(span);
-        });
+    // Build a map for quick lookup
+    var gameMap = {};
+    games.forEach(function(g) { gameMap[g.id] = g; });
+
+    // Separate featured games from regular games
+    var featuredGames = [];
+    var regularByCategory = {};
+    var categoryOrder = [];
+
+    games.forEach(function(g) {
+      if (g.featured) {
+        featuredGames.push(g);
+      } else {
+        var cat = (g.category || 'other').toLowerCase();
+        if (!regularByCategory[cat]) {
+          regularByCategory[cat] = [];
+          categoryOrder.push(cat);
+        }
+        regularByCategory[cat].push(g);
       }
-
-      // For featured cards, update inline description too
-      const featuredDesc = card.querySelector('[style*="font-size:0.8rem"]');
-      if (featuredDesc && g.description) featuredDesc.textContent = g.description;
-      const featuredDesc2 = card.querySelector('[style*="font-size:0.65rem"][style*="letter-spacing:2px"]');
-      if (featuredDesc2 && g.description) featuredDesc2.textContent = g.description;
     });
-  } catch(e) { console.error('Lobby data error:', e); }
+
+    var html = '';
+
+    // Render "My Games" section if player has favorites
+    var favGames = playerFavorites.map(function(id) { return gameMap[id]; }).filter(function(g) { return g; });
+    if (favGames.length > 0) {
+      html += '<div class="section-label">❤️ My Games</div>';
+      html += '<div class="games-grid">';
+      favGames.forEach(function(g) { html += buildGameCard(g); });
+      html += '</div>';
+    }
+
+    // Render featured games (big cards, before categories)
+    featuredGames.forEach(function(g) {
+      html += buildFeaturedCard(g);
+    });
+
+    // Render each category
+    categoryOrder.forEach(function(cat, catIdx) {
+      var gamesInCat = regularByCategory[cat];
+      var label = CATEGORY_LABELS[cat] || cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
+
+      html += '<div class="section-label">' + label + '</div>';
+
+      html += '<div class="games-grid">';
+      gamesInCat.forEach(function(g) {
+        html += buildGameCard(g);
+      });
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+    applyGameStatuses();
+
+  } catch(e) {
+    console.error('Build lobby error:', e);
+  }
+}
+
+function buildFeaturedCard(g) {
+  var accent = ACCENT_COLORS[g.id] || '#FFD700';
+  var gradient = FEATURED_GRADIENTS[g.id] || 'linear-gradient(135deg,' + accent + ',#fff)';
+  var tags = (g.tags || '').split(',').filter(function(t) { return t.trim(); });
+  var sc = g.status === 'maintenance' ? ' status-maintenance' : g.status === 'disabled' ? ' status-disabled' : '';
+
+  var tagsHtml = '';
+  if (tags.length) {
+    tagsHtml = '<div style="display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap;">';
+    tags.forEach(function(t) {
+      var cls = BADGE_COLORS[t.trim()] || 'new';
+      tagsHtml += '<span class="game-badge ' + cls + '">' + t.trim() + '</span>';
+    });
+    tagsHtml += '</div>';
+  }
+
+  return '<a class="game-card featured-card' + sc + '" href="' + (g.route || '#') + '" '
+    + 'style="border-top-color:' + accent + ';margin-bottom:0.75rem;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">'
+    + '<div class="game-icon" style="font-size:3rem;line-height:1;">' + (g.icon || '🎰') + '</div>'
+    + '<div>'
+    + '<div class="game-name" style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;letter-spacing:3px;background:' + gradient + ';-webkit-background-clip:text;-webkit-text-fill-color:transparent;">' + g.name + '</div>'
+    + '<div class="game-desc" style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.5;margin:0.3rem 0;">' + (g.description || '') + '</div>'
+    + tagsHtml
+    + '</div></a>';
+}
+
+function buildGameCard(g) {
+  var accent = ACCENT_COLORS[g.id] || '#FFD700';
+  var tags = (g.tags || '').split(',').filter(function(t) { return t.trim(); });
+  var rtpKey = g.rtp_key || '';
+  var rtpVal = rtpKey ? lobbyRtpData[rtpKey] : null;
+  var sc = g.status === 'maintenance' ? ' status-maintenance' : g.status === 'disabled' ? ' status-disabled' : '';
+  var isFav = playerFavorites.indexOf(g.id) !== -1;
+
+  var tagsHtml = '';
+  tags.forEach(function(t) {
+    var cls = BADGE_COLORS[t.trim()] || 'new';
+    tagsHtml += '<span class="game-badge ' + cls + '">' + t.trim() + '</span>';
+  });
+
+  return '<a class="game-card' + sc + '" href="' + (g.route || '#') + '" style="border-top-color:' + accent + ';" data-game-id="' + g.id + '">'
+    + '<span class="fav-btn' + (isFav ? ' active' : '') + '" onclick="event.preventDefault();event.stopPropagation();toggleFav(\'' + g.id + '\',this)">♥</span>'
+    + (rtpVal ? '<span class="game-rtp">RTP ' + rtpVal + '%</span>' : '')
+    + '<div class="game-icon">' + (g.icon || '🎰') + '</div>'
+    + '<div class="game-name">' + g.name + '</div>'
+    + (g.description ? '<div class="game-desc">' + g.description + '</div>' : '')
+    + tagsHtml
+    + '</a>';
+}
+
+async function toggleFav(gameId, el) {
+  try {
+    var r = await fetch('/api/game/favorites/toggle', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ gameId: gameId })
+    });
+    var d = await r.json();
+    if (d.favorited) {
+      el.classList.add('active');
+      if (playerFavorites.indexOf(gameId) === -1) playerFavorites.push(gameId);
+    } else {
+      el.classList.remove('active');
+      playerFavorites = playerFavorites.filter(function(id) { return id !== gameId; });
+    }
+  } catch(e) {}
 }
 
 async function logout() { await fetch('/api/auth/logout',{method:'POST'}); window.location='/'; }
 
 // Track lobby visit and send heartbeats
-fetch('/api/admin/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(()=>{});
-setInterval(()=>{fetch('/api/admin/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(()=>{});},30000);
+fetch('/api/admin/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(function(){});
+setInterval(function(){fetch('/api/admin/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gameId:'lobby'})}).catch(function(){});},30000);
 
 loadUser();
-loadRTPs();
+buildLobbyCards();
 loadJackpots();
 loadPlayerLevel();
-applyGameStatuses();
-applyLobbyData();
 checkDailyBonus();
 checkBroadcast();
 setInterval(loadJackpots, 15000);
-setInterval(applyGameStatuses, 30000);
 
 async function checkDailyBonus() {
   try {
@@ -555,13 +591,17 @@ async function checkDailyBonus() {
     if (!r.ok) return;
     var data = await r.json();
     if (data.available) {
+      // Show floating button
       var btn = document.getElementById('dailyBonusBtn');
-      var sub = document.getElementById('bonusSubText');
       if (btn) btn.style.display = 'flex';
+      var sub = document.getElementById('bonusSubText');
       if (sub) {
         var streak = data.streak || 1;
         sub.textContent = streak > 1 ? data.multiplier + '\u00d7 streak bonus!' : 'Spin for free credits!';
       }
+      // Show badge in slide menu
+      var badge = document.getElementById('smBonusBadge');
+      if (badge) badge.style.display = '';
     }
   } catch(e) {}
 }
@@ -580,9 +620,10 @@ async function loadPlayerLevel() {
 function updateLevelUI() {
   if (!playerLevelData) return;
   var d = playerLevelData;
-  document.getElementById('levelNum').textContent = d.level;
-  document.getElementById('xpBar').style.width = Math.round(d.progress * 100) + '%';
-  document.getElementById('levelPill').title = d.title + ' \u2014 ' + d.xp + ' XP';
+  var levelEl = document.getElementById('smLevelNum');
+  var xpEl = document.getElementById('smXpBar');
+  if (levelEl) levelEl.textContent = d.level;
+  if (xpEl) xpEl.style.width = Math.round(d.progress * 100) + '%';
 }
 
 function toggleLevelPopup() {
@@ -650,88 +691,6 @@ async function checkBroadcast() {
     }
   } catch(e) {}
 }
-
-
-// ─── App Download Popup ──────────────────────────────────
-function showAppPopup() {
-  // Don't show if user opted out or already on the app (standalone mode)
-  if (localStorage.getItem('ssc_app_dismiss') === '1') return;
-  if (window.matchMedia('(display-mode: standalone)').matches) return;
-  if (window.navigator.standalone === true) return;
-
-  setTimeout(function() {
-    var popup = document.getElementById('app-download-popup');
-    if (popup) popup.classList.add('show');
-  }, 1500);
-}
-
-function closeAppPopup() {
-  var popup = document.getElementById('app-download-popup');
-  if (popup) popup.classList.remove('show');
-  // Save "don't show again" preference
-  var cb = document.getElementById('appDontShow');
-  if (cb && cb.checked) {
-    localStorage.setItem('ssc_app_dismiss', '1');
-  }
-}
-
-// Track download click
-var dlBtn = document.getElementById('appDownloadBtn');
-if (dlBtn) {
-  dlBtn.addEventListener('click', function() {
-    // Auto-dismiss after clicking download
-    setTimeout(closeAppPopup, 500);
-  });
-}
-
-showAppPopup();
-
 </script>
-
-<!-- App Download Popup -->
-<div class="app-popup-overlay" id="app-download-popup" onclick="if(event.target===this)closeAppPopup()">
-  <div class="app-popup">
-    <div class="app-popup-glow"></div>
-    <button class="app-popup-close" onclick="closeAppPopup()" title="Close">&times;</button>
-
-    <div class="app-popup-header">
-      <span class="app-popup-phone">📲</span>
-      <div class="app-popup-title">Get the App</div>
-      <div class="app-popup-subtitle">Slot Stars Club for Android</div>
-    </div>
-
-    <div class="app-popup-body">
-      <div class="app-popup-perks">
-        <div class="app-perk">
-          <span class="app-perk-icon">⚡</span>
-          <span><strong>Faster gameplay</strong> — native performance, no browser lag</span>
-        </div>
-        <div class="app-perk">
-          <span class="app-perk-icon">🔔</span>
-          <span><strong>Push notifications</strong> — never miss daily bonuses or jackpots</span>
-        </div>
-        <div class="app-perk">
-          <span class="app-perk-icon">🎰</span>
-          <span><strong>Instant access</strong> — one tap from your home screen</span>
-        </div>
-        <div class="app-perk">
-          <span class="app-perk-icon">🏆</span>
-          <span><strong>Full screen mode</strong> — immersive, distraction-free play</span>
-        </div>
-      </div>
-
-      <a href="https://slotstarsclub.fun/Slot-Stars-ClubV1.0.apk" class="app-popup-dl" id="appDownloadBtn">
-        ★ Download APK — Free
-      </a>
-      <div class="app-popup-version">V1.0 · Android 8.0+ · 12 MB</div>
-    </div>
-
-    <div class="app-popup-footer">
-      <input type="checkbox" class="app-popup-checkbox" id="appDontShow">
-      <label for="appDontShow" class="app-popup-dismiss">Don't show this again</label>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>

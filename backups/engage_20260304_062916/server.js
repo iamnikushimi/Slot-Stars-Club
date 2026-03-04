@@ -98,10 +98,6 @@ app.use('/api/game',     require('./routes/game'));
 app.use('/api/game',     require('./routes/levels'));
 app.use('/api/game',     require('./routes/leaderboard'));
 app.use('/api/game',     require('./routes/daily-bonus'));
-app.use('/api/game',     require('./routes/preferences'));
-app.use('/api/game',     require('./routes/referrals'));
-app.use('/api/game',     require('./routes/achievements'));
-app.use('/api/game',     require('./routes/tournaments'));
 app.use('/api/admin',    require('./routes/admin'))
 app.use('/api/admin',    require('./routes/admin-extras'));
 app.use('/api/admin',    require('./routes/admin-users'));
@@ -156,11 +152,6 @@ app.get('/play/roulette',    gamePage('roulette',    'roulette.html'));
 app.get('/play/poker',       gamePage('poker',       'poker.html'));
 app.get('/play/pulltab',     gamePage('pulltab',     'pulltab.html'));
 app.get('/play/daily-bonus', gamePage('daily-bonus', 'daily-bonus.html'));
-app.get('/play/referrals', page('referrals.html'));
-app.get('/play/achievements', page('achievements.html'));
-app.get('/play/tournaments', page('tournaments.html'));
-app.get('/play/history', page('history.html'));
-app.get('/play/settings', page('settings.html'));
 app.get('/play/leaderboard', gamePage('leaderboard', 'leaderboard.html'));
 
 // ─── API Guards ─────────────────────────────────────────────────

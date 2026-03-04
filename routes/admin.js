@@ -83,7 +83,8 @@ router.post('/settings', requireRole('admin'), (req, res) => {
   res.json({ success: true });
 });
 
-// (module.exports moved to end of file)
+module.exports = router;
+// This line intentionally left blank
 
 // ─── Game Management ─────────────────────────────────────────────────────────
 router.get('/games', requireRole('admin'), (req, res) => {
@@ -103,12 +104,11 @@ router.get('/games', requireRole('admin'), (req, res) => {
 // Public endpoint for lobby to get game metadata (descriptions, tags)
 router.get('/games/lobby-data', (req, res) => {
   try {
-    const games = db.prepare('SELECT id, name, icon, description, tags, status, route, category FROM games WHERE status != ? ORDER BY sort_order').all('disabled');
+    const games = db.prepare('SELECT id, name, icon, description, tags, status, route, category, rtp_key FROM games WHERE status != ? ORDER BY sort_order').all('disabled');
     res.json({ games });
   } catch(e) {
-    // Fallback if description/tags columns don't exist yet
     try {
-      const games = db.prepare('SELECT id, name, icon, status, route, category FROM games WHERE status != ? ORDER BY sort_order').all('disabled');
+      const games = db.prepare('SELECT id, name, icon, status, route, category, rtp_key FROM games WHERE status != ? ORDER BY sort_order').all('disabled');
       games.forEach(g => { g.description = ''; g.tags = ''; });
       res.json({ games });
     } catch(e2) {
@@ -126,14 +126,13 @@ router.post('/games/status', requireRole('admin'), (req, res) => {
 
 // Update game description and tags from admin
 router.post('/games/update', requireRole('admin'), (req, res) => {
-  const { gameId, name, description, tags, icon, category } = req.body;
+  const { gameId, name, description, tags, icon } = req.body;
   if (!gameId) return res.status(400).json({ error: 'Missing gameId' });
   try {
     if (name !== undefined) db.prepare('UPDATE games SET name=? WHERE id=?').run(name, gameId);
     if (description !== undefined) db.prepare('UPDATE games SET description=? WHERE id=?').run(description, gameId);
     if (tags !== undefined) db.prepare('UPDATE games SET tags=? WHERE id=?').run(tags, gameId);
     if (icon !== undefined) db.prepare('UPDATE games SET icon=? WHERE id=?').run(icon, gameId);
-    if (category !== undefined) db.prepare('UPDATE games SET category=? WHERE id=?').run(category, gameId);
     res.json({ success: true });
   } catch(e) {
     res.status(500).json({ error: 'Update failed — columns may not exist. Restart server with new db.js.' });
@@ -269,5 +268,3 @@ router.post('/jackpot-win', requireRole('admin'), (req, res) => {
   db.prepare('INSERT INTO jackpot_winners (user_id,username,game,jackpot_type,amount) VALUES (?,?,?,?,?)').run(userId,username,game,jackpotType,amount);
   res.json({ ok: true });
 });
-
-module.exports = router;

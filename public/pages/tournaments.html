@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tournaments — Slot Stars Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--neon:#00FFCC;--red:#FF4455;--dark:#050510;--dark2:#0a0a1f;--dark3:#0f0f2e;--border:rgba(255,215,0,0.15);--muted:rgba(255,255,255,0.4);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(255,165,0,0.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,255,204,0.04),transparent 50%);pointer-events:none;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(5,5,16,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.back-btn{padding:0.3rem 0.8rem;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+main{max-width:700px;margin:0 auto;padding:1.5rem;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:4px;text-align:center;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem;}
+.page-sub{text-align:center;font-size:0.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem;}
+
+/* Tabs */
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--border);}
+.tab{flex:1;padding:0.6rem;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:2px;color:var(--muted);cursor:pointer;transition:all 0.2s;border-right:1px solid var(--border);}
+.tab:last-child{border-right:none;}
+.tab.active{color:var(--gold);background:rgba(255,215,0,0.06);}
+.tab:hover{color:#fff;}
+
+/* Tournament card */
+.t-card{background:var(--dark2);border:1px solid var(--border);margin-bottom:1rem;overflow:hidden;transition:border-color 0.2s;}
+.t-card:hover{border-color:rgba(255,215,0,0.3);}
+.t-card.active{border-left:3px solid var(--neon);}
+.t-card.upcoming{border-left:3px solid var(--gold);}
+.t-card.completed{border-left:3px solid var(--muted);opacity:0.8;}
+.t-header{padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;}
+.t-name{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:2px;color:var(--gold);}
+.t-status{padding:0.15rem 0.5rem;font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.t-status.active{color:var(--neon);border:1px solid rgba(0,255,204,0.3);background:rgba(0,255,204,0.06);}
+.t-status.upcoming{color:var(--gold);border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);}
+.t-status.completed{color:var(--muted);border:1px solid rgba(255,255,255,0.15);}
+.t-body{padding:0 1.2rem 1rem;}
+.t-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
+.t-meta-item{background:rgba(0,0,0,0.3);padding:0.5rem;text-align:center;}
+.t-meta-val{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);line-height:1;}
+.t-meta-label{font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:0.1rem;}
+.t-info{font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.4;}
+.t-info strong{color:rgba(255,255,255,0.7);}
+.t-time{font-size:0.68rem;color:var(--muted);letter-spacing:1px;margin-bottom:0.75rem;}
+.t-time strong{color:var(--neon);}
+
+/* Buttons */
+.t-btn{padding:0.45rem 1.2rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:2px;cursor:pointer;transition:all 0.2s;border:none;}
+.t-btn.join{background:linear-gradient(135deg,rgba(0,255,204,0.15),rgba(0,255,204,0.05));border:1px solid rgba(0,255,204,0.4);color:var(--neon);}
+.t-btn.join:hover{background:rgba(0,255,204,0.2);}
+.t-btn.entered{background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);color:var(--gold);cursor:default;}
+.t-btn.view{background:none;border:1px solid var(--border);color:var(--muted);}
+.t-btn.view:hover{border-color:var(--gold);color:var(--gold);}
+.t-actions{display:flex;gap:0.5rem;align-items:center;}
+.t-my-rank{font-size:0.75rem;color:var(--neon);margin-left:auto;}
+
+/* Leaderboard modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--dark2);border:1px solid var(--border);max-width:500px;width:95%;max-height:80vh;overflow-y:auto;padding:1.5rem;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--gold);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;}
+.modal-close:hover{color:#fff;}
+
+/* Leaderboard table */
+.lb-table{width:100%;border-collapse:collapse;}
+.lb-table th{padding:0.5rem;text-align:left;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.lb-table td{padding:0.5rem;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.03);}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:1rem;}
+.lb-score{font-family:'Bebas Neue',sans-serif;color:var(--gold);}
+
+/* Winner display */
+.winner-row{background:rgba(255,215,0,0.04);}
+.winner-row td{color:var(--gold);}
+
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+@media(max-width:480px){main{padding:1rem;}.t-meta{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">★ SSC</a>
+  <a class="back-btn" href="/play">← Lobby</a>
+</nav>
+
+<main>
+  <div class="page-title">🎪 Tournaments</div>
+  <div class="page-sub">Compete for prizes</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('active')">Active</div>
+    <div class="tab" onclick="switchTab('history')">Past</div>
+  </div>
+
+  <div class="tab-content active" id="tab-active">
+    <div id="activeList"><div class="empty">Loading...</div></div>
+  </div>
+  <div class="tab-content" id="tab-history">
+    <div id="historyList"><div class="empty">Loading...</div></div>
+  </div>
+</main>
+
+<!-- Leaderboard Modal -->
+<div class="modal-bg" id="lbModal" onclick="if(event.target===this)closeLB()">
+  <div class="modal">
+    <div class="modal-title"><span id="lbTitle">Leaderboard</span><button class="modal-close" onclick="closeLB()">✕</button></div>
+    <div id="lbContent"></div>
+  </div>
+</div>
+
+<script>
+function ago(d) {
+  if (!d) return '';
+  var s = Math.floor((Date.now() - new Date(d+'Z').getTime()) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function timeLeft(d) {
+  if (!d) return '';
+  var ms = new Date(d+'Z').getTime() - Date.now();
+  if (ms <= 0) return 'Ended';
+  var h = Math.floor(ms / 3600000);
+  var m = Math.floor((ms % 3600000) / 60000);
+  if (h > 24) return Math.floor(h/24) + 'd ' + (h%24) + 'h left';
+  return h + 'h ' + m + 'm left';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(t,i) { t.classList.toggle('active', (tab==='active'?i===0:i===1)); });
+  document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab === 'history') loadHistory();
+}
+
+function renderTournament(t) {
+  var statusClass = t.status;
+  var statusLabel = t.status === 'active' ? 'Live' : t.status === 'upcoming' ? 'Starting Soon' : 'Completed';
+  var timeStr = t.status === 'active' ? timeLeft(t.ends_at) : t.status === 'upcoming' ? 'Starts ' + ago(t.starts_at) : 'Ended ' + ago(t.ends_at);
+
+  var btnHtml = '';
+  if (t.entered) {
+    btnHtml = '<button class="t-btn entered">✓ Entered</button>';
+    if (t.myScore) btnHtml += '<span class="t-my-rank">Score: ' + t.myScore + '</span>';
+  } else if (t.status === 'active' || t.status === 'upcoming') {
+    btnHtml = '<button class="t-btn join" onclick="joinTournament(' + t.id + ')">Join' + (t.entry_fee > 0 ? ' ($' + t.entry_fee_display.toFixed(2) + ')' : ' Free') + '</button>';
+  }
+  btnHtml += '<button class="t-btn view" onclick="viewLeaderboard(' + t.id + ')">Leaderboard</button>';
+
+  return '<div class="t-card ' + statusClass + '">'
+    + '<div class="t-header"><div class="t-name">' + t.name + '</div><span class="t-status ' + statusClass + '">' + statusLabel + '</span></div>'
+    + '<div class="t-body">'
+    + '<div class="t-meta">'
+    + '<div class="t-meta-item"><div class="t-meta-val">$' + t.prize_pool_display.toFixed(2) + '</div><div class="t-meta-label">Prize Pool</div></div>'
+    + '<div class="t-meta-item"><div class="t-meta-val">' + (t.player_count || 0) + '</div><div class="t-meta-label">Players</div></div>'
+    + '<div class="t-meta-item"><div class="t-meta-val">' + (t.scoring?.label || t.type) + '</div><div class="t-meta-label">Scoring</div></div>'
+    + '</div>'
+    + '<div class="t-info">Game: <strong>' + (t.game === 'all' ? 'All Games' : t.game) + '</strong> · Max <strong>' + t.max_players + '</strong> players</div>'
+    + '<div class="t-time">' + timeStr + '</div>'
+    + '<div class="t-actions">' + btnHtml + '</div>'
+    + '</div></div>';
+}
+
+async function loadActive() {
+  try {
+    var r = await fetch('/api/game/tournaments');
+    if (!r.ok) return;
+    var d = await r.json();
+    var list = document.getElementById('activeList');
+    if (!d.tournaments || !d.tournaments.length) {
+      list.innerHTML = '<div class="empty">No active tournaments right now. Check back soon!</div>';
+      return;
+    }
+    list.innerHTML = d.tournaments.map(renderTournament).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function loadHistory() {
+  try {
+    var r = await fetch('/api/game/tournaments-history');
+    if (!r.ok) return;
+    var d = await r.json();
+    var list = document.getElementById('historyList');
+    if (!d.tournaments || !d.tournaments.length) {
+      list.innerHTML = '<div class="empty">No past tournaments yet.</div>';
+      return;
+    }
+    list.innerHTML = d.tournaments.map(function(t) {
+      var winner = t.winner ? '🏆 Winner: <strong style="color:var(--gold)">' + t.winner.username + '</strong> ($' + t.winner.amount.toFixed(2) + ')' : '';
+      return '<div class="t-card completed"><div class="t-header"><div class="t-name">' + t.name + '</div><span class="t-status completed">Completed</span></div>'
+        + '<div class="t-body"><div class="t-info">Prize: <strong>$' + t.prize_pool_display.toFixed(2) + '</strong> · ' + (t.player_count || 0) + ' players · ' + winner + '</div>'
+        + '<button class="t-btn view" onclick="viewLeaderboard(' + t.id + ')">Results</button></div></div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function joinTournament(id) {
+  try {
+    var r = await fetch('/api/game/tournaments/' + id + '/join', { method: 'POST' });
+    var d = await r.json();
+    if (r.ok && d.success) {
+      loadActive();
+    } else {
+      alert(d.error || 'Failed to join');
+    }
+  } catch(e) { alert('Error joining tournament'); }
+}
+
+async function viewLeaderboard(id) {
+  try {
+    var r = await fetch('/api/game/tournaments/' + id);
+    if (!r.ok) return;
+    var d = await r.json();
+
+    document.getElementById('lbTitle').textContent = d.tournament.name;
+
+    var html = '';
+    if (d.prizes && d.prizes.length) {
+      html += '<div style="margin-bottom:1rem;">';
+      d.prizes.forEach(function(p) {
+        var medal = ['🥇','🥈','🥉'][p.place-1] || '#'+p.place;
+        html += '<div style="display:flex;align-items:center;gap:0.7rem;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
+          + '<span style="font-size:1.2rem">' + medal + '</span>'
+          + '<span style="flex:1;font-weight:700">' + (p.username||'—') + '</span>'
+          + '<span style="font-family:Bebas Neue,sans-serif;color:var(--gold)">$' + p.amount.toFixed(2) + '</span></div>';
+      });
+      html += '</div>';
+    }
+
+    if (d.leaderboard && d.leaderboard.length) {
+      html += '<table class="lb-table"><thead><tr><th>#</th><th>Player</th><th>Score</th><th>Rounds</th><th>Wagered</th></tr></thead><tbody>';
+      d.leaderboard.forEach(function(e, i) {
+        var cls = i < 3 ? 'winner-row' : '';
+        html += '<tr class="' + cls + '"><td class="lb-rank">' + (i+1) + '</td><td><strong>' + e.username + '</strong></td><td class="lb-score">' + e.score + '</td><td style="color:var(--muted)">' + e.rounds_played + '</td><td style="color:var(--muted)">$' + e.total_wagered.toFixed(2) + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      html += '<div class="empty">No entries yet</div>';
+    }
+
+    document.getElementById('lbContent').innerHTML = html;
+    document.getElementById('lbModal').classList.add('show');
+  } catch(e) {}
+}
+
+function closeLB() { document.getElementById('lbModal').classList.remove('show'); }
+
+loadActive();
+setInterval(loadActive, 60000);
+</script>
+</body>
+</html>

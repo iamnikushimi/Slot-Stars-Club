@@ -46,3 +46,25 @@ router.post('/logout', (req, res) => {
 });
 
 module.exports = router;
+
+// ── Password Reset (token-based) ──
+const crypto = require('crypto');
+
+router.get('/reset-password', (req, res) => {
+  res.sendFile(require('path').join(__dirname, '..', 'public', 'pages', 'reset-password.html'));
+});
+
+router.post('/reset-password', (req, res) => {
+  const { token, password, newPassword } = req.body; const pw = password || newPassword;
+  if (!token || !pw || pw.length < 4) return res.status(400).json({ error: 'Invalid request' });
+
+  const row = db.prepare('SELECT * FROM password_resets WHERE token=? AND used=0').get(token);
+  if (!row) return res.status(400).json({ error: 'Invalid or expired token' });
+  if (new Date(row.expires_at) < new Date()) return res.status(400).json({ error: 'Token expired' });
+
+  const hash = bcrypt.hashSync(pw, 10);
+  db.prepare('UPDATE users SET password=? WHERE id=?').run(hash, row.user_id);
+  db.prepare('UPDATE password_resets SET used=1 WHERE id=?').run(row.id);
+
+  res.json({ success: true, message: 'Password updated' });
+});

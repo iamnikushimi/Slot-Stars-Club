@@ -4,13 +4,80 @@
     android:layout_height="match_parent"
     android:background="#050510">
 
-    <!-- WebView fills everything -->
-    <WebView
-        android:id="@+id/webView"
+    <!-- SwipeRefreshLayout wraps WebView for pull-to-refresh -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <!-- Offline / Error overlay -->
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Page transition loading overlay (between page navigations) -->
+    <FrameLayout
+        android:id="@+id/pageLoadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC050510"
+        android:visibility="gone"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Animated dots container -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <View
+                    android:id="@+id/loadDot1"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/loading_dot" />
+
+                <View
+                    android:id="@+id/loadDot2"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/loading_dot" />
+
+                <View
+                    android:id="@+id/loadDot3"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/loading_dot" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/loadingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Loading..."
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Offline / Error overlay with pull-down hint -->
     <LinearLayout
         android:id="@+id/errorView"
         android:layout_width="match_parent"
@@ -19,7 +86,8 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="32dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:elevation="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,41 +131,191 @@
             android:textColor="#050510"
             android:textSize="14sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="or pull down to refresh"
+            android:textColor="#555555"
+            android:textSize="12sp" />
+
     </LinearLayout>
 
-    <!-- Splash overlay — shown while page loads -->
-    <LinearLayout
+    <!-- APK download progress overlay -->
+    <FrameLayout
+        android:id="@+id/downloadOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6050510"
+        android:visibility="gone"
+        android:elevation="30dp">
+
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/download_card_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⬇"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Downloading Update"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <ProgressBar
+                android:id="@+id/downloadProgress"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="20dp"
+                android:max="100"
+                android:progress="0"
+                android:progressTint="#FFD700"
+                android:progressBackgroundTint="#1a1a2e" />
+
+            <TextView
+                android:id="@+id/downloadPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="0%"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Animated splash screen overlay -->
+    <FrameLayout
         android:id="@+id/splashView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#050510"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:elevation="40dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="★"
-            android:textColor="#FFD700"
-            android:textSize="72sp" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
+            <!-- Animated star -->
+            <TextView
+                android:id="@+id/splashStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="★"
+                android:textColor="#FFD700"
+                android:textSize="80sp" />
+
+            <!-- Title with letter spacing -->
+            <TextView
+                android:id="@+id/splashTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:alpha="0"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.3"
+                android:text="SLOT STARS CLUB"
+                android:textAllCaps="true"
+                android:textColor="#FFD700"
+                android:textSize="24sp" />
+
+            <!-- Tagline -->
+            <TextView
+                android:id="@+id/splashTagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.15"
+                android:text="PLAY • WIN • REPEAT"
+                android:textColor="#00FFCC"
+                android:textSize="12sp" />
+
+            <ProgressBar
+                android:id="@+id/splashProgress"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="36dp"
+                android:alpha="0"
+                android:indeterminateTint="#FFD700" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Biometric lock screen overlay -->
+    <FrameLayout
+        android:id="@+id/biometricOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#050510"
+        android:visibility="gone"
+        android:elevation="50dp">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.25"
-            android:text="SLOT STARS CLUB"
-            android:textAllCaps="true"
-            android:textColor="#FFD700"
-            android:textSize="24sp" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <ProgressBar
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="32dp"
-            android:indeterminateTint="#FFD700" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔒"
+                android:textSize="56sp" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.2"
+                android:text="SLOT STARS CLUB"
+                android:textColor="#FFD700"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Verify your identity to continue"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/unlockButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="#FFD700"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.1"
+                android:paddingHorizontal="48dp"
+                android:text="UNLOCK"
+                android:textColor="#050510"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </FrameLayout>
